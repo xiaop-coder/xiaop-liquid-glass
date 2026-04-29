@@ -7,6 +7,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../dist/liquid-glass.css" rel="stylesheet">
     <style>
+        :root {
+            --nav-highlight: rgba(255,255,255,0.08);
+            --nav-refraction: rgba(255,255,255,0.5);
+            --sidebar-highlight: rgba(255,255,255,0.06);
+            --sidebar-refraction: rgba(255,255,255,0.2);
+            --card-highlight: rgba(255,255,255,0.1);
+            --card-highlight-diagonal: rgba(255,255,255,0.1);
+            --btn-highlight: rgba(255,255,255,0.15);
+            --tab-highlight: rgba(255,255,255,0.06);
+            --content-highlight: rgba(255,255,255,0.06);
+        }
+        @media (prefers-color-scheme: light) {
+            :root {
+                --nav-highlight: rgba(255,255,255,0.6);
+                --nav-refraction: rgba(0,0,0,0.08);
+                --sidebar-highlight: rgba(255,255,255,0.7);
+                --sidebar-refraction: rgba(0,0,0,0.06);
+                --card-highlight: rgba(255,255,255,0.8);
+                --card-highlight-diagonal: rgba(255,255,255,0.5);
+                --btn-highlight: rgba(255,255,255,0.4);
+                --tab-highlight: rgba(255,255,255,0.5);
+                --content-highlight: rgba(255,255,255,0.5);
+            }
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -35,12 +59,12 @@
         }
         .nav-container::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+            background: linear-gradient(to bottom, var(--nav-highlight), transparent);
             pointer-events: none;
         }
         .nav-container::after {
             content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            background: linear-gradient(90deg, transparent, var(--nav-refraction), transparent);
             pointer-events: none;
         }
         .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); position: relative; z-index: 1; }
@@ -79,7 +103,7 @@
         .nav-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,122,255,0.4); }
         .nav-btn-primary::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            background: linear-gradient(to bottom, var(--btn-highlight), transparent);
             border-radius: inherit; pointer-events: none;
         }
         .content { padding: 40px 28px; max-width: 1100px; margin: 0 auto; }
@@ -106,12 +130,12 @@
         }
         .sidebar-nav::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.06), transparent);
+            background: linear-gradient(to bottom, var(--sidebar-highlight), transparent);
             pointer-events: none; border-radius: inherit;
         }
         .sidebar-nav::after {
             content: ""; position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, var(--sidebar-refraction), transparent);
             pointer-events: none;
         }
         .sidebar-profile {
@@ -170,7 +194,7 @@
         }
         .content-header::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(to bottom, var(--card-highlight), transparent);
             pointer-events: none; border-radius: inherit;
         }
         .content-header h3 { font-size: 18px; font-weight: 700; color: var(--lg-text-primary); margin-bottom: 4px; position: relative; z-index: 1; }
@@ -186,7 +210,7 @@
         }
         .stat-card::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
+            background: linear-gradient(135deg, var(--card-highlight-diagonal) 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
             pointer-events: none; border-radius: inherit;
         }
         .stat-card:hover { transform: translateY(-4px); box-shadow: var(--lg-card-shadow-hover); }
@@ -209,7 +233,7 @@
         }
         .tab-bar::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.06), transparent);
+            background: linear-gradient(to bottom, var(--tab-highlight), transparent);
             pointer-events: none; border-radius: inherit;
         }
         .tab-item {
@@ -224,7 +248,7 @@
         }
         .tab-item.active::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            background: linear-gradient(to bottom, var(--btn-highlight), transparent);
             border-radius: inherit; pointer-events: none;
         }
         .tab-content-area {
@@ -236,7 +260,7 @@
         }
         .tab-content-area::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.06), transparent);
+            background: linear-gradient(to bottom, var(--content-highlight), transparent);
             pointer-events: none; border-radius: inherit;
         }
         .tab-content-area p { color: var(--lg-text-secondary); font-size: 14px; line-height: 1.7; position: relative; z-index: 1; }
