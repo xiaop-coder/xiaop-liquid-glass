@@ -7,231 +7,297 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../dist/liquid-glass.css" rel="stylesheet">
     <style>
+        :root {
+            --highlight-top: rgba(255,255,255,0.25);
+            --highlight-edge: rgba(255,255,255,0.6);
+            --refraction-line: rgba(255,255,255,0.5);
+        }
+        @media (prefers-color-scheme: light) {
+            :root {
+                --highlight-top: rgba(255,255,255,0.8);
+                --highlight-edge: rgba(255,255,255,0.9);
+                --refraction-line: rgba(0,0,0,0.08);
+            }
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh; position: relative;
             background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
             background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
+            color: var(--lg-text-primary);
         }
-        .nav {
+        body::before {
+            content: ""; position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(0,122,255,0.15), transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(139,92,246,0.15), transparent 50%);
+            pointer-events: none;
+        }
+        .page-nav {
             position: sticky; top: 0; z-index: 100;
             background: var(--lg-header-bg); backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-bottom: 1px solid var(--lg-header-border);
+            box-shadow: 0 4px 30px var(--lg-glass-shadow), var(--lg-glass-inner-highlight);
             padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+            overflow: hidden;
+        }
+        .page-nav::after {
+            content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--refraction-line), transparent);
+            pointer-events: none;
         }
         .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); }
-        .nav-brand i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px; }
+        .nav-brand i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px; }
         .nav-links { display: flex; gap: 6px; }
         .nav-link { padding: 8px 16px; border-radius: 10px; color: var(--lg-text-secondary); text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.2s; }
         .nav-link:hover, .nav-link.active { background: var(--lg-item-hover); color: var(--lg-text-primary); }
         .content { padding: 40px 28px; max-width: 1100px; margin: 0 auto; }
         .section-title { color: var(--lg-text-primary); font-size: 24px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .section-title i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-title i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .section-desc { color: var(--lg-text-secondary); font-size: 14px; margin-bottom: 32px; line-height: 1.8; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 48px; }
-        .demo-card { padding: 28px; position: relative; overflow: hidden; min-height: 240px; display: flex; flex-direction: column; color: var(--lg-text-primary); }
-        .demo-card h3 { color: var(--lg-text-primary); font-size: 17px; margin-bottom: 8px; position: relative; z-index: 2; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .demo-card { padding: 28px; position: relative; overflow: hidden; min-height: 220px; display: flex; flex-direction: column; color: var(--lg-text-primary); }
+        .demo-card h3 { font-size: 17px; margin-bottom: 8px; position: relative; z-index: 2; }
         .demo-card p { color: var(--lg-text-secondary); font-size: 13px; line-height: 1.7; margin-bottom: 16px; position: relative; z-index: 2; flex: 1; }
         .demo-card .tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; position: relative; z-index: 2; }
-        .tag-blur { background: rgba(0, 122, 255, 0.15); color: var(--lg-primary); }
-        .tag-saturate { background: rgba(139, 92, 246, 0.15); color: var(--lg-secondary); }
-        .tag-highlight { background: rgba(255, 159, 10, 0.15); color: var(--lg-warning); }
-        .tag-noise { background: rgba(52, 199, 89, 0.15); color: var(--lg-success); }
+        .tag-liquid { background: rgba(0, 122, 255, 0.15); color: var(--lg-primary); }
+        .tag-frosted { background: rgba(139, 92, 246, 0.15); color: var(--lg-secondary); }
+        .tag-acrylic { background: rgba(52, 199, 89, 0.15); color: var(--lg-success); }
+        .tag-crystal { background: rgba(255, 159, 10, 0.15); color: var(--lg-warning); }
+        .tag-translucent { background: rgba(0, 122, 255, 0.1); color: var(--lg-info); }
+        .props { display: flex; gap: 6px; flex-wrap: wrap; position: relative; z-index: 2; margin-bottom: 12px; }
+        .prop { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: rgba(0,0,0,0.05); color: var(--lg-text-secondary); }
+        @media (prefers-color-scheme: dark) { .prop { background: rgba(255,255,255,0.08); } }
+        .btn-row { display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 2; margin-top: auto; }
         .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; }
         .comparison-table th, .comparison-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--lg-divider); font-size: 14px; color: var(--lg-text-primary); }
         .comparison-table th { font-weight: 700; color: var(--lg-text-tertiary); font-size: 12px; background: var(--lg-table-header-bg); backdrop-filter: blur(10px); text-transform: uppercase; letter-spacing: 0.5px; }
         .comparison-table td code { background: rgba(0, 122, 255, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: var(--lg-primary); }
-        .props { display: flex; gap: 6px; flex-wrap: wrap; position: relative; z-index: 2; }
-        .prop { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: rgba(0,0,0,0.05); color: var(--lg-text-secondary); }
-        @media (prefers-color-scheme: dark) { .prop { background: rgba(255,255,255,0.08); } }
+        .liquid-glass-demo {
+            position: relative; padding: 32px; border-radius: 28px;
+            background: var(--lg-glass-bg);
+            -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+            backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+            border: 1px solid var(--lg-glass-border);
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(255,255,255,0.1);
+            overflow: hidden; isolation: isolate;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .liquid-glass-demo::before {
+            content: ""; position: absolute; inset: 0; border-radius: inherit;
+            background: linear-gradient(135deg, var(--highlight-top) 0%, rgba(255,255,255,0.08) 30%, transparent 60%);
+            pointer-events: none; z-index: 1;
+        }
+        .liquid-glass-demo::after {
+            content: ""; position: absolute; inset: 0; border-radius: inherit;
+            box-shadow:
+                inset 0 1px 1px var(--highlight-edge),
+                inset 0 -1px 1px rgba(255,255,255,0.1),
+                inset 1px 0 1px rgba(255,255,255,0.3),
+                inset -1px 0 1px rgba(255,255,255,0.1);
+            pointer-events: none; z-index: 2;
+        }
+        .liquid-glass-demo:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow:
+                0 4px 8px rgba(0,0,0,0.06), 0 16px 32px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.15);
+        }
+        .liquid-glass-refract-demo {
+            -webkit-backdrop-filter: url(#liquid-glass-filter) blur(24px) saturate(180%) brightness(1.05);
+            backdrop-filter: url(#liquid-glass-filter) blur(24px) saturate(180%) brightness(1.05);
+        }
+        .pill-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; margin-top: 16px; }
+        .note { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 12px; position: relative; z-index: 2; line-height: 1.6; }
         @media (max-width: 768px) { .nav-links { display: none; } .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="nav">
+    <div class="page-nav">
         <div class="nav-brand"><i class="bi bi-droplet-fill"></i> XiaoP Liquid Glass</div>
         <div class="nav-links">
             <a href="components.html" class="nav-link">Components</a>
             <a href="glass-styles.html" class="nav-link active">Glass Styles</a>
-            <a href="select.html">Select</a>
-            <a href="login.html">Login</a>
-            <a href="navigation.html">Navigation</a>
+            <a href="select.html" class="nav-link">Select</a>
+            <a href="login.html" class="nav-link">Login</a>
+            <a href="navigation.html" class="nav-link">Navigation</a>
         </div>
     </div>
 
     <div class="content">
         <div class="section-title glass-entrance"><i class="bi bi-layers"></i> Glass Effect Styles</div>
         <div class="section-desc glass-entrance glass-entrance-delay-1">
-            本设计系统提供 5 种玻璃效果风格，从高透明液态玻璃到低透明毛玻璃，覆盖 Apple iOS 26、macOS、Microsoft Fluent Design 等多种设计语言。每种风格都有独立的 CSS 变量支持，可自由组合使用。
+            本设计系统提供 6 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。毛玻璃仅使用 backdrop-filter 模糊，而液态玻璃还包含边缘折射变形、四边高光和活跃态高透切换。
         </div>
 
         <div class="grid">
-            <div class="demo-card glass-card glass-entrance glass-entrance-delay-1">
-                <h3>Liquid Glass</h3>
-                <p>Apple iOS 26 液态玻璃效果。高饱和度模糊 + 顶部高光 + 折射光线，营造流动通透的液态质感。</p>
+            <div class="liquid-glass-demo glass-entrance glass-entrance-delay-1">
                 <div class="props">
-                    <span class="prop">blur: 24px</span>
-                    <span class="prop">saturate: 180%</span>
-                    <span class="prop">highlight</span>
                     <span class="prop">refraction</span>
+                    <span class="prop">highlight</span>
+                    <span class="prop">active-state</span>
                 </div>
-                <div style="margin-top: 12px;"><span class="tag tag-blur"><i class="bi bi-droplet"></i> .glass-card</span></div>
+                <h3 style="position:relative;z-index:3;">Liquid Glass</h3>
+                <p style="position:relative;z-index:3;">Apple iOS 26 液态玻璃。核心特征：边缘折射变形（SVG feDisplacementMap）+ 四边内高光 + 浮动阴影 + 活跃态切换为高透玻璃（去除模糊）。与 Glassmorphism 的本质区别在于折射和动态变形。</p>
+                <div class="btn-row">
+                    <span class="tag tag-liquid"><i class="bi bi-droplet"></i> .liquid-glass</span>
+                </div>
+                <p class="note">💡 点击下方按钮体验活跃态：模糊 → 高透</p>
+                <div class="pill-row">
+                    <button class="liquid-glass-pill" onclick="this.classList.toggle('active')">Default</button>
+                    <button class="liquid-glass-pill active">Active</button>
+                </div>
             </div>
 
             <div class="demo-card frosted-card glass-entrance glass-entrance-delay-2">
-                <h3>Frosted Glass</h3>
-                <p>macOS 风格毛玻璃效果。中等模糊度 + 低饱和度，呈现磨砂质感的柔和通透感，适合大面积背景区域。</p>
                 <div class="props">
                     <span class="prop">blur: 20px</span>
                     <span class="prop">saturate: 150%</span>
                     <span class="prop">matte</span>
                 </div>
-                <div style="margin-top: 12px;"><span class="tag tag-saturate"><i class="bi bi-cloud-haze2"></i> .frosted-card</span></div>
+                <h3>Frosted Glass</h3>
+                <p>macOS 风格毛玻璃（Glassmorphism）。仅使用 backdrop-filter 模糊 + 半透明背景，无折射变形。这是 2020 年流行的玻璃拟态风格，与液态玻璃的区别在于缺少边缘折射和动态变形。</p>
+                <div style="margin-top: auto;"><span class="tag tag-frosted"><i class="bi bi-cloud-haze2"></i> .frosted-card</span></div>
             </div>
 
             <div class="demo-card acrylic-card glass-entrance glass-entrance-delay-3">
-                <h3>Acrylic</h3>
-                <p>Microsoft Fluent Design 亚克力效果。高模糊 + 噪点纹理 + 色调叠加，模拟真实亚克力材质的颗粒感。</p>
                 <div class="props">
                     <span class="prop">blur: 30px</span>
-                    <span class="prop">saturate: 200%</span>
                     <span class="prop">noise</span>
                     <span class="prop">tint</span>
                 </div>
-                <div style="margin-top: 12px;"><span class="tag tag-noise"><i class="bi bi-brush"></i> .acrylic-card</span></div>
+                <h3>Acrylic</h3>
+                <p>Microsoft Fluent Design 亚克力效果。在毛玻璃基础上增加噪点纹理和色调叠加，模拟真实亚克力材质的颗粒感。属于 Glassmorphism 的增强变体。</p>
+                <div style="margin-top: auto;"><span class="tag tag-acrylic"><i class="bi bi-brush"></i> .acrylic-card</span></div>
             </div>
 
             <div class="demo-card crystal-card glass-entrance glass-entrance-delay-4">
-                <h3>Crystal Glass</h3>
-                <p>水晶玻璃效果。高透明度 + 强高光 + 棱镜折射线，呈现清澈透亮的宝石质感，适合高端展示场景。</p>
                 <div class="props">
                     <span class="prop">blur: 16px</span>
-                    <span class="prop">saturate: 180%</span>
                     <span class="prop">prism</span>
                     <span class="prop">highlight</span>
                 </div>
-                <div style="margin-top: 12px;"><span class="tag tag-highlight"><i class="bi bi-gem"></i> .crystal-card</span></div>
+                <h3>Crystal Glass</h3>
+                <p>水晶玻璃效果。高透明度 + 强高光 + 棱镜折射线，呈现清澈透亮的宝石质感。介于液态玻璃和毛玻璃之间，有高光但无边缘折射变形。</p>
+                <div style="margin-top: auto;"><span class="tag tag-crystal"><i class="bi bi-gem"></i> .crystal-card</span></div>
             </div>
 
             <div class="demo-card translucent-card glass-entrance glass-entrance-delay-5">
-                <h3>Translucent</h3>
-                <p>半透明玻璃效果。极低模糊 + 高透明度，最大程度保留背景内容可见性，适合信息密度高的界面。</p>
                 <div class="props">
                     <span class="prop">blur: 8px</span>
                     <span class="prop">minimal</span>
-                    <span class="prop">lightweight</span>
                 </div>
-                <div style="margin-top: 12px;"><span class="tag tag-blur"><i class="bi bi-window-stack"></i> .translucent-card</span></div>
+                <h3>Translucent</h3>
+                <p>半透明玻璃效果。极低模糊 + 高透明度，最大程度保留背景内容可见性。适合信息密度高的界面，是最轻量的玻璃效果。</p>
+                <div style="margin-top: auto;"><span class="tag tag-translucent"><i class="bi bi-window-stack"></i> .translucent-card</span></div>
+            </div>
+
+            <div class="demo-card glass-card glass-entrance glass-entrance-delay-5">
+                <div class="props">
+                    <span class="prop">blur: 24px</span>
+                    <span class="prop">saturate: 180%</span>
+                    <span class="prop">highlight</span>
+                </div>
+                <h3>Glass Card</h3>
+                <p>标准玻璃拟态卡片（Glassmorphism）。backdrop-filter 模糊 + 半透明背景 + 顶部高光。这是最基础的玻璃效果，也是其他变体的起点。</p>
+                <div style="margin-top: auto;"><span class="tag tag-liquid"><i class="bi bi-card-text"></i> .glass-card</span></div>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="bi bi-lightning"></i> Liquid Glass vs Glassmorphism</div>
+        <div class="section-desc">液态玻璃与毛玻璃的本质区别</div>
+
+        <div class="glass-card glass-entrance" style="overflow: auto; margin-bottom: 48px; padding: 0;">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Liquid Glass</th>
+                        <th>Glassmorphism</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Core Tech</td><td>SVG feDisplacementMap + backdrop-filter</td><td>backdrop-filter only</td></tr>
+                    <tr><td>Edge Refraction</td><td>✅ Edge pixel displacement</td><td>❌ None</td></tr>
+                    <tr><td>Edge Highlight</td><td>✅ 4-side inset box-shadow</td><td>⚠️ Top only (::before)</td></tr>
+                    <tr><td>Active State</td><td>✅ Switch to high-transparency (no blur)</td><td>❌ Same blur always</td></tr>
+                    <tr><td>Visual</td><td>Liquid lens / droplet</td><td>Frosted glass panel</td></tr>
+                    <tr><td>CSS Class</td><td><code>.liquid-glass</code></td><td><code>.glass-card</code> / <code>.frosted-card</code></td></tr>
+                    <tr><td>Refraction</td><td><code>.liquid-glass-refract</code></td><td>N/A</td></tr>
+                    <tr><td>Button</td><td><code>.liquid-glass-btn</code></td><td><code>.glass-button</code></td></tr>
+                    <tr><td>Pill</td><td><code>.liquid-glass-pill</code></td><td>N/A</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-title"><i class="bi bi-box-seam"></i> Liquid Glass Components</div>
+        <div class="section-desc">液态玻璃风格的交互组件演示</div>
+
+        <div class="grid">
+            <div class="liquid-glass-demo glass-entrance">
+                <h3 style="position:relative;z-index:3;">Liquid Glass Buttons</h3>
+                <p style="position:relative;z-index:3;">胶囊形按钮，按下时切换为高透玻璃（去除模糊），松开恢复磨砂。</p>
+                <div class="btn-row" style="margin-top: 16px;">
+                    <button class="liquid-glass-btn"><i class="bi bi-play-fill"></i> Play</button>
+                    <button class="liquid-glass-btn"><i class="bi bi-pause-fill"></i> Pause</button>
+                    <button class="liquid-glass-btn"><i class="bi bi-skip-forward-fill"></i> Next</button>
+                </div>
+            </div>
+
+            <div class="liquid-glass-demo liquid-glass-refract-demo glass-entrance glass-entrance-delay-1">
+                <h3 style="position:relative;z-index:3;">With SVG Refraction</h3>
+                <p style="position:relative;z-index:3;">此卡片启用了 SVG feDisplacementMap 边缘折射滤镜。观察边缘区域的微妙像素位移，这是液态玻璃区别于毛玻璃的核心特征。仅在 Chromium 内核浏览器中可见。</p>
+                <div class="btn-row" style="margin-top: 16px;">
+                    <button class="liquid-glass-pill active">Refract ON</button>
+                    <button class="liquid-glass-pill">Refract OFF</button>
+                </div>
             </div>
         </div>
 
         <div class="section-title"><i class="bi bi-table"></i> Effect Comparison</div>
-        <div class="section-desc">五种玻璃效果的核心参数对比</div>
+        <div class="section-desc">6 种玻璃效果的核心参数对比</div>
 
-        <div class="glass-card glass-entrance" style="overflow: auto; margin-bottom: 48px;">
+        <div class="glass-card glass-entrance" style="overflow: auto; margin-bottom: 48px; padding: 0;">
             <table class="comparison-table">
                 <thead>
                     <tr>
                         <th>Effect</th>
                         <th>CSS Class</th>
                         <th>Blur</th>
-                        <th>Saturate</th>
-                        <th>Background Opacity</th>
+                        <th>Refraction</th>
                         <th>Special</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Liquid Glass</td>
-                        <td><code>.glass-card</code></td>
-                        <td>24px</td>
-                        <td>180%</td>
-                        <td>65%</td>
-                        <td>Highlight + Refraction</td>
-                    </tr>
-                    <tr>
-                        <td>Frosted</td>
-                        <td><code>.frosted-card</code></td>
-                        <td>20px</td>
-                        <td>150%</td>
-                        <td>45%</td>
-                        <td>Matte finish</td>
-                    </tr>
-                    <tr>
-                        <td>Acrylic</td>
-                        <td><code>.acrylic-card</code></td>
-                        <td>30px</td>
-                        <td>200%</td>
-                        <td>55%</td>
-                        <td>Noise texture + Tint</td>
-                    </tr>
-                    <tr>
-                        <td>Crystal</td>
-                        <td><code>.crystal-card</code></td>
-                        <td>16px</td>
-                        <td>180%</td>
-                        <td>75%</td>
-                        <td>Prism refraction</td>
-                    </tr>
-                    <tr>
-                        <td>Translucent</td>
-                        <td><code>.translucent-card</code></td>
-                        <td>8px</td>
-                        <td>100%</td>
-                        <td>20%</td>
-                        <td>Minimal blur</td>
-                    </tr>
+                    <tr><td>Liquid Glass</td><td><code>.liquid-glass</code></td><td>24px</td><td>✅ SVG</td><td>4-side highlight + Active state</td></tr>
+                    <tr><td>Glass Card</td><td><code>.glass-card</code></td><td>24px</td><td>❌</td><td>Top highlight</td></tr>
+                    <tr><td>Frosted</td><td><code>.frosted-card</code></td><td>20px</td><td>❌</td><td>Matte finish</td></tr>
+                    <tr><td>Acrylic</td><td><code>.acrylic-card</code></td><td>30px</td><td>❌</td><td>Noise texture + Tint</td></tr>
+                    <tr><td>Crystal</td><td><code>.crystal-card</code></td><td>16px</td><td>❌</td><td>Prism refraction line</td></tr>
+                    <tr><td>Translucent</td><td><code>.translucent-card</code></td><td>8px</td><td>❌</td><td>Minimal blur</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="section-title"><i class="bi bi-box-seam"></i> 3D Depth Card</div>
-        <div class="section-desc">多层阴影 + 伪元素高光 + 噪点纹理，模拟真实 3D 深度的液态玻璃卡片。灵感来自 lucasromerodb/liquid-glass-effect-macos。</div>
+        <div class="section-title"><i class="bi bi-book"></i> Technical Definitions</div>
+        <div class="section-desc">各类玻璃效果的技术定义与视觉特征</div>
 
-        <div class="grid">
-            <div class="glass3d glass-entrance glass-tilt" style="padding: 0;">
-                <div style="padding: 20px 24px; background: linear-gradient(135deg, rgba(0,122,255,0.3), rgba(139,92,246,0.3)); border-bottom: 1px solid var(--lg-divider);">
-                    <h3 style="color: #fff; margin: 0;">glass3d + glass-tilt</h3>
-                </div>
-                <div style="padding: 20px 24px; position: relative; z-index: 2;">
-                    <p style="color: var(--lg-text-secondary); font-size: 14px; line-height: 1.7;">3D 深度卡片 + 鼠标倾斜交互。多层 box-shadow 营造真实深度，鼠标移动时卡片跟随倾斜，灵感来自知乎/墨迹的液态玻璃教程。</p>
-                </div>
-            </div>
-
-            <div class="glass-card glass-entrance glass-rotating-highlight glass-light-track" style="padding: 0;">
-                <div style="padding: 20px 24px; background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(255,59,48,0.3)); border-bottom: 1px solid var(--lg-divider);">
-                    <h3 style="color: #fff; margin: 0;">Rotating + Light Track</h3>
-                </div>
-                <div style="padding: 20px 24px; position: relative; z-index: 2;">
-                    <p style="color: var(--lg-text-secondary); font-size: 14px; line-height: 1.7;">旋转高光 + 鼠标追光。conic-gradient 8s 循环旋转，鼠标移动时径向渐变跟随，灵感来自 rdev/liquid-glass-react 和 wxperia/liquid-glass-vue。</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-title"><i class="bi bi-palette"></i> CSS Variables</div>
-        <div class="section-desc">每种玻璃效果都有独立的 CSS 变量，支持深浅色自动切换</div>
-
-        <div class="glass-card glass-entrance" style="overflow: auto; margin-bottom: 48px;">
+        <div class="glass-card glass-entrance" style="overflow: auto; margin-bottom: 48px; padding: 0;">
             <table class="comparison-table">
                 <thead>
-                    <tr>
-                        <th>Variable</th>
-                        <th>Light</th>
-                        <th>Dark</th>
-                        <th>Description</th>
-                    </tr>
+                    <tr><th>Effect</th><th>Definition</th><th>Key Visual</th><th>Implementation</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><code>--lg-frosted-bg</code></td><td>rgba(255,255,255,0.45)</td><td>rgba(255,255,255,0.08)</td><td>毛玻璃背景</td></tr>
-                    <tr><td><code>--lg-frosted-border</code></td><td>rgba(255,255,255,0.6)</td><td>rgba(255,255,255,0.15)</td><td>毛玻璃边框</td></tr>
-                    <tr><td><code>--lg-frosted-blur</code></td><td>20px</td><td>24px</td><td>毛玻璃模糊度</td></tr>
-                    <tr><td><code>--lg-acrylic-bg</code></td><td>rgba(255,255,255,0.55)</td><td>rgba(255,255,255,0.1)</td><td>亚克力背景</td></tr>
-                    <tr><td><code>--lg-acrylic-noise-opacity</code></td><td>0.03</td><td>0.04</td><td>噪点纹理透明度</td></tr>
-                    <tr><td><code>--lg-acrylic-tint</code></td><td>rgba(0,122,255,0.05)</td><td>rgba(76,217,100,0.05)</td><td>亚克力色调叠加</td></tr>
-                    <tr><td><code>--lg-crystal-bg</code></td><td>rgba(255,255,255,0.75)</td><td>rgba(255,255,255,0.15)</td><td>水晶玻璃背景</td></tr>
-                    <tr><td><code>--lg-translucent-bg</code></td><td>rgba(255,255,255,0.2)</td><td>rgba(255,255,255,0.05)</td><td>半透明背景</td></tr>
+                    <tr><td><strong>Liquid Glass</strong></td><td>Apple iOS 26 的动态材质，采用「反射+折射+动态变形」复合渲染</td><td>边缘折射变形 + 四边高光 + 活跃态高透</td><td>SVG feDisplacementMap + backdrop-filter + inset box-shadow</td></tr>
+                    <tr><td><strong>Frosted Glass</strong></td><td>macOS 风格磨砂玻璃，Glassmorphism 的标准实现</td><td>均匀模糊 + 低饱和度 + 磨砂质感</td><td>backdrop-filter: blur() saturate()</td></tr>
+                    <tr><td><strong>Acrylic</strong></td><td>Microsoft Fluent Design 亚克力材质</td><td>高模糊 + 噪点纹理 + 色调叠加</td><td>backdrop-filter + SVG noise + tint overlay</td></tr>
+                    <tr><td><strong>Crystal Glass</strong></td><td>高透明水晶/宝石效果</td><td>高透明 + 强高光 + 棱镜折射线</td><td>低模糊 + 强 ::before 高光 + ::after 折射线</td></tr>
+                    <tr><td><strong>Translucent</strong></td><td>极简半透明，最大背景可见性</td><td>极低模糊 + 高透明度</td><td>backdrop-filter: blur(8px) + 低透明度背景</td></tr>
+                    <tr><td><strong>Skeuomorphic Glass</strong></td><td>拟物化玻璃，模拟真实玻璃的物理特性</td><td>真实反射 + 折射 + 阴影 + 高光</td><td>多层伪元素 + 复杂 box-shadow + SVG 滤镜</td></tr>
                 </tbody>
             </table>
         </div>

@@ -68,7 +68,7 @@
             pointer-events: none;
         }
         .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); position: relative; z-index: 1; }
-        .nav-brand i { font-size: 24px; background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-brand i { font-size: 24px; background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .nav-links { display: flex; gap: 4px; position: relative; z-index: 1; }
         .nav-link {
             padding: 8px 16px; border-radius: var(--lg-radius-sm); color: var(--lg-text-secondary);
@@ -114,7 +114,7 @@
         }
         .demo-section h2 i {
             background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px;
         }
         .demo-section > p { color: var(--lg-text-secondary); font-size: 14px; margin-bottom: 20px; line-height: 1.7; }
         .layout-demo {

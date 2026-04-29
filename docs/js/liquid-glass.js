@@ -293,6 +293,92 @@
         }
     }
 
+    function initLiquidGlassFilter() {
+        if (document.getElementById('liquid-glass-svg-filters')) return;
+
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('id', 'liquid-glass-svg-filters');
+        svg.setAttribute('width', '0');
+        svg.setAttribute('height', '0');
+        svg.style.cssText = 'position:absolute;pointer-events:none;';
+
+        var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+
+        var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+        filter.setAttribute('id', 'liquid-glass-filter');
+        filter.setAttribute('filterUnits', 'userSpaceOnUse');
+        filter.setAttribute('colorInterpolationFilters', 'sRGB');
+        filter.setAttribute('x', '-5%');
+        filter.setAttribute('y', '-5%');
+        filter.setAttribute('width', '110%');
+        filter.setAttribute('height', '110%');
+
+        var feTurbulence = document.createElementNS('http://www.w3.org/2000/svg', 'feTurbulence');
+        feTurbulence.setAttribute('type', 'fractalNoise');
+        feTurbulence.setAttribute('baseFrequency', '0.01 0.04');
+        feTurbulence.setAttribute('numOctaves', '2');
+        feTurbulence.setAttribute('seed', '2');
+        feTurbulence.setAttribute('result', 'noise');
+
+        var feComponentTransfer = document.createElementNS('http://www.w3.org/2000/svg', 'feComponentTransfer');
+        feComponentTransfer.setAttribute('in', 'noise');
+        feComponentTransfer.setAttribute('result', 'edgeMap');
+
+        var feFuncR = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncR');
+        feFuncR.setAttribute('type', 'gamma');
+        feFuncR.setAttribute('amplitude', '1');
+        feFuncR.setAttribute('exponent', '8');
+        feFuncR.setAttribute('offset', '0.5');
+
+        var feFuncG = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncG');
+        feFuncG.setAttribute('type', 'gamma');
+        feFuncG.setAttribute('amplitude', '1');
+        feFuncG.setAttribute('exponent', '8');
+        feFuncG.setAttribute('offset', '0.5');
+
+        var feFuncB = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncB');
+        feFuncB.setAttribute('type', 'gamma');
+        feFuncB.setAttribute('amplitude', '0');
+        feFuncB.setAttribute('exponent', '1');
+        feFuncB.setAttribute('offset', '0.5');
+
+        var feFuncA = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncA');
+        feFuncA.setAttribute('type', 'linear');
+        feFuncA.setAttribute('slope', '1');
+
+        feComponentTransfer.appendChild(feFuncR);
+        feComponentTransfer.appendChild(feFuncG);
+        feComponentTransfer.appendChild(feFuncB);
+        feComponentTransfer.appendChild(feFuncA);
+
+        var feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+        feGaussianBlur.setAttribute('in', 'edgeMap');
+        feGaussianBlur.setAttribute('stdDeviation', '4');
+        feGaussianBlur.setAttribute('result', 'softEdge');
+
+        var feDisplacementMap = document.createElementNS('http://www.w3.org/2000/svg', 'feDisplacementMap');
+        feDisplacementMap.setAttribute('in', 'SourceGraphic');
+        feDisplacementMap.setAttribute('in2', 'softEdge');
+        feDisplacementMap.setAttribute('scale', '12');
+        feDisplacementMap.setAttribute('xChannelSelector', 'R');
+        feDisplacementMap.setAttribute('yChannelSelector', 'G');
+
+        filter.appendChild(feTurbulence);
+        filter.appendChild(feComponentTransfer);
+        filter.appendChild(feGaussianBlur);
+        filter.appendChild(feDisplacementMap);
+        defs.appendChild(filter);
+        svg.appendChild(defs);
+        document.body.appendChild(svg);
+    }
+
+    function initLiquidGlassRefraction() {
+        var refractElements = document.querySelectorAll('.liquid-glass-refract');
+        if (refractElements.length > 0) {
+            initLiquidGlassFilter();
+        }
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             initAllSelects();
@@ -302,6 +388,7 @@
             initEntranceAnimations();
             initPageTransition();
             initTiltEffect();
+            initLiquidGlassRefraction();
         });
     } else {
         initAllSelects();
@@ -311,8 +398,10 @@
         initEntranceAnimations();
         initPageTransition();
         initTiltEffect();
+        initLiquidGlassRefraction();
     }
 
     window.initLiquidGlassSelects = initAllSelects;
     window.LiquidGlassSelect = LiquidGlassSelect;
+    window.initLiquidGlassFilter = initLiquidGlassFilter;
 })();

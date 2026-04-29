@@ -12,7 +12,7 @@
 | GitHub地址 | `https://github.com/xiaop-coder/xiaop-liquid-glass` |
 | 本地路径 | `d:\Users\Administrator\Desktop\xiaopdanbao\液态玻璃风格` |
 | 技术栈 | 纯 CSS + 原生 JavaScript（零依赖、零框架） |
-| 设计灵感 | Apple WWDC 2025 iOS 26 Liquid Glass + macOS Frosted Glass + Microsoft Fluent Design Acrylic |
+| 设计灵感 | Apple WWDC 2025 iOS 26 Liquid Glass（SVG边缘折射+四边高光+活跃态切换）+ macOS Frosted Glass + Microsoft Fluent Design Acrylic |
 | 许可证 | MIT License © 2026 XiaoP |
 | npm包名 | `xiaop-liquid-glass` |
 | AI辅助 | GLM-5.1（Trae IDE 集成），辅助CSS组件设计、JS交互效果、代码审查、文档编写 |
@@ -63,12 +63,12 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 ├── LICENSE                    # MIT © XiaoP
 ├── README.md                  # 五语言README（中文在前，然后英日韩俄），含AI辅助说明
 ├── package.json               # npm: xiaop-liquid-glass
-├── index.html                 # 项目演示首页（Hero区 + 5种玻璃效果 + 6个Demo入口）
+├── index.html                 # 项目官网首页（侧边栏+文档布局，整合docs内容，液态玻璃风格）
 ├── dist/                      # 核心分发文件
-│   ├── liquid-glass.css       # CSS设计系统（50+变量、35+组件、5种玻璃效果、深浅色主题）
-│   └── liquid-glass.js        # JS交互效果（6种自动初始化效果）
+│   ├── liquid-glass.css       # CSS设计系统（50+变量、35+组件、6种玻璃效果、液态玻璃组件、深浅色主题）
+│   └── liquid-glass.js        # JS交互效果（7种自动初始化效果，含SVG折射滤镜）
 ├── demos/                     # 演示页面
-│   ├── glass-styles.html      # 玻璃效果对比Demo（5种效果、参数表、3D倾斜）
+│   ├── glass-styles.html      # 玻璃效果对比Demo（6种效果、液态vs毛玻璃技术分析、SVG折射演示）
 │   ├── login.html             # 登录页Demo
 │   ├── register.html          # 注册页Demo
 │   ├── navigation.html        # 导航页Demo（固定导航栏、侧边栏、标签栏）
@@ -108,8 +108,14 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
   - **水晶玻璃变量**：`--lg-crystal-bg` / `--lg-crystal-border` / `--lg-crystal-shadow`
   - **半透明变量**：`--lg-translucent-bg` / `--lg-translucent-border` / `--lg-translucent-blur`
 
-- **5种玻璃效果组件**：
-  - `.glass-card`：液态玻璃（iOS 26，高饱和模糊 + 顶部高光 + 折射光线）
+- **6种玻璃效果组件**：
+  - `.liquid-glass`：液态玻璃（iOS 26，SVG边缘折射 + 四边内高光 + 活跃态高透切换）
+  - `.liquid-glass-refract`：液态玻璃折射（启用SVG feDisplacementMap边缘像素位移）
+  - `.liquid-glass-active`：液态玻璃活跃态（去除模糊，变为高透玻璃）
+  - `.liquid-glass-btn`：液态玻璃按钮（胶囊形，按下切换高透）
+  - `.liquid-glass-pill`：液态玻璃胶囊（小胶囊/切换按钮，活跃态高透）
+  - `.liquid-glass-nav`：液态玻璃导航栏（含折射线和顶部高光）
+  - `.glass-card`：标准玻璃拟态卡片（Glassmorphism，高饱和模糊 + 顶部高光 + 折射光线）
   - `.frosted-card`：毛玻璃（macOS，中等模糊 + 低饱和度磨砂质感）
   - `.acrylic-card`：亚克力（Fluent Design，高模糊 + SVG噪点纹理 + 色调叠加）
   - `.crystal-card`：水晶玻璃（高透明 + 强高光 + 棱镜折射线）

@@ -2,9 +2,9 @@
 
 # 💧 XiaoP Liquid Glass
 
-**小P玻璃设计系统 — iOS 26 Liquid Glass + macOS Frosted Glass + Microsoft Acrylic**
+**小P液态玻璃设计系统 — iOS 26 Liquid Glass (SVG边缘折射) + macOS Frosted Glass + Microsoft Acrylic**
 
-纯 CSS + JS 实现多种玻璃效果的设计系统。零依赖、跨框架、完全响应式，自带深色模式。
+纯 CSS + JS 实现多种玻璃效果的设计系统。液态玻璃核心：SVG feDisplacementMap 边缘折射 + 四边内高光 + 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-zero-green.svg)](package.json)
