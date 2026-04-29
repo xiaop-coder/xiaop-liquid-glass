@@ -1,7 +1,7 @@
 {
   "name": "xiaop-liquid-glass",
-  "version": "1.0.0",
-  "description": "XiaoP Liquid Glass - iOS 26 液态玻璃设计系统，纯 CSS + JS，零依赖，灵感来自 Apple WWDC 2025",
+  "version": "2.0.0",
+  "description": "XiaoP Liquid Glass - 玻璃设计系统，5种玻璃效果（液态玻璃/毛玻璃/亚克力/水晶/半透明），纯 CSS + JS，零依赖",
   "main": "dist/liquid-glass.js",
   "style": "dist/liquid-glass.css",
   "files": [
@@ -16,12 +16,18 @@
     "xiaop",
     "liquid-glass",
     "glassmorphism",
+    "frosted-glass",
+    "acrylic",
+    "crystal",
+    "translucent",
     "ios26",
     "wwdc2025",
+    "fluent-design",
     "design-system",
     "css",
     "backdrop-filter",
     "apple",
+    "microsoft",
     "ui-components",
     "xiaop-liquid-glass"
   ],

@@ -268,6 +268,31 @@
         }
     }
 
+    function initTiltEffect() {
+        var tiltElements = document.querySelectorAll('.glass-tilt');
+        for (var i = 0; i < tiltElements.length; i++) {
+            (function(el) {
+                var maxTilt = 12;
+                var perspective = 600;
+
+                el.addEventListener('mousemove', function(e) {
+                    var rect = el.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    var centerX = rect.width / 2;
+                    var centerY = rect.height / 2;
+                    var rotateY = ((x - centerX) / centerX) * maxTilt;
+                    var rotateX = -((y - centerY) / centerY) * maxTilt;
+                    el.style.transform = 'perspective(' + perspective + 'px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+                });
+
+                el.addEventListener('mouseleave', function() {
+                    el.style.transform = 'perspective(' + perspective + 'px) rotateX(0deg) rotateY(0deg) scale(1)';
+                });
+            })(tiltElements[i]);
+        }
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             initAllSelects();
@@ -276,6 +301,7 @@
             initRippleEffect();
             initEntranceAnimations();
             initPageTransition();
+            initTiltEffect();
         });
     } else {
         initAllSelects();
@@ -284,6 +310,7 @@
         initRippleEffect();
         initEntranceAnimations();
         initPageTransition();
+        initTiltEffect();
     }
 
     window.initLiquidGlassSelects = initAllSelects;

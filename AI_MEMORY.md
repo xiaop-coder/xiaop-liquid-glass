@@ -8,13 +8,14 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 项目名称 | XiaoP Liquid Glass（小P液态玻璃） |
+| 项目名称 | XiaoP Liquid Glass（小P玻璃设计系统） |
 | GitHub地址 | `https://github.com/xiaop-coder/xiaop-liquid-glass` |
 | 本地路径 | `d:\Users\Administrator\Desktop\xiaopdanbao\液态玻璃风格` |
 | 技术栈 | 纯 CSS + 原生 JavaScript（零依赖、零框架） |
-| 设计灵感 | Apple WWDC 2025 iOS 26 Liquid Glass 效果 |
+| 设计灵感 | Apple WWDC 2025 iOS 26 Liquid Glass + macOS Frosted Glass + Microsoft Fluent Design Acrylic |
 | 许可证 | MIT License © 2026 XiaoP |
 | npm包名 | `xiaop-liquid-glass` |
+| AI辅助 | GLM-5.1（Trae IDE 集成），辅助CSS组件设计、JS交互效果、代码审查、文档编写 |
 
 ## 2. GitHub 账号信息
 
@@ -60,13 +61,14 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 液态玻璃风格/
 ├── .gitignore
 ├── LICENSE                    # MIT © XiaoP
-├── README.md                  # 五语言README（中文在前，然后英日韩俄）
+├── README.md                  # 五语言README（中文在前，然后英日韩俄），含AI辅助说明
 ├── package.json               # npm: xiaop-liquid-glass
-├── index.html                 # 项目演示首页（Demo入口）
+├── index.html                 # 项目演示首页（Hero区 + 5种玻璃效果 + 6个Demo入口）
 ├── dist/                      # 核心分发文件
-│   ├── liquid-glass.css       # CSS设计系统（30+变量、25+组件、深浅色主题）
-│   └── liquid-glass.js        # JS交互效果（5种自动初始化效果）
+│   ├── liquid-glass.css       # CSS设计系统（50+变量、35+组件、5种玻璃效果、深浅色主题）
+│   └── liquid-glass.js        # JS交互效果（6种自动初始化效果）
 ├── demos/                     # 演示页面
+│   ├── glass-styles.html      # 玻璃效果对比Demo（5种效果、参数表、3D倾斜）
 │   ├── login.html             # 登录页Demo
 │   ├── register.html          # 注册页Demo
 │   ├── navigation.html        # 导航页Demo（固定导航栏、侧边栏、标签栏）
@@ -74,8 +76,8 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 │   └── components.html        # 全组件展示Demo
 └── docs/                      # 开源文档官网
     ├── index.html             # 文档站首页（侧边栏导航、组件文档、API文档）
-    ├── css/liquid-glass.css   # 文档站CSS副本
-    └── js/liquid-glass.js     # 文档站JS副本
+    ├── css/liquid-glass.css   # 文档站CSS副本（与dist/同步）
+    └── js/liquid-glass.js     # 文档站JS副本（与dist/同步）
 ```
 
 ## 5. 核心文件说明
@@ -84,10 +86,10 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 
 完整的CSS设计系统，包含：
 
-- **CSS变量体系（--lg-\*）**：30+变量，支持 `prefers-color-scheme` 自动切换深浅色
+- **CSS变量体系（--lg-\*）**：50+变量，支持 `prefers-color-scheme` 自动切换深浅色
   - `--lg-bg-gradient-1/2/3/4`：渐变背景色
   - `--lg-card-bg` / `--lg-card-border` / `--lg-card-shadow`：卡片样式
-  - `--lg-glass-bg` / `--lg-glass-border`：玻璃表面
+  - `--lg-glass-bg` / `--lg-glass-border`：液态玻璃表面
   - `--lg-text-primary/secondary/tertiary`：文字颜色
   - `--lg-primary` / `--lg-secondary`：主色调（蓝 #007aff / 紫 #8b5cf6）
   - `--lg-input-bg` / `--lg-input-border` / `--lg-input-focus-border`：输入框
@@ -101,24 +103,32 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
   - `--lg-divider`：分割线
   - `--lg-arrow-color` / `--lg-indicator-color` / `--lg-indicator-glow`：下拉框指示器
   - `--lg-sidebar-bg` / `--lg-sidebar-border`：侧边栏
+  - **毛玻璃变量**：`--lg-frosted-bg` / `--lg-frosted-border` / `--lg-frosted-blur` / `--lg-frosted-shadow`
+  - **亚克力变量**：`--lg-acrylic-bg` / `--lg-acrylic-border` / `--lg-acrylic-blur` / `--lg-acrylic-noise-opacity` / `--lg-acrylic-tint`
+  - **水晶玻璃变量**：`--lg-crystal-bg` / `--lg-crystal-border` / `--lg-crystal-shadow`
+  - **半透明变量**：`--lg-translucent-bg` / `--lg-translucent-border` / `--lg-translucent-blur`
 
-- **组件样式**：
-  - `.glass3d`：3D深度玻璃卡片
-  - `.glass-card`：标准玻璃卡片
+- **5种玻璃效果组件**：
+  - `.glass-card`：液态玻璃（iOS 26，高饱和模糊 + 顶部高光 + 折射光线）
+  - `.frosted-card`：毛玻璃（macOS，中等模糊 + 低饱和度磨砂质感）
+  - `.acrylic-card`：亚克力（Fluent Design，高模糊 + SVG噪点纹理 + 色调叠加）
+  - `.crystal-card`：水晶玻璃（高透明 + 强高光 + 棱镜折射线）
+  - `.translucent-card`：半透明（极低模糊 + 高透明度）
+  - `.glass3d`：3D深度玻璃卡片（多层阴影 + 伪元素高光）
+
+- **基础组件样式**：
   - `.glass-modal` / `.glass-overlay`：弹窗
-  - `.glass-button`：按钮
-  - `.glass-input`：输入框
-  - `.glass-nav`：导航栏
+  - `.glass-button`：按钮（高光覆盖层 + 弹性悬停）
+  - `.glass-input`：输入框（聚焦发光）
+  - `.glass-nav`：导航栏（模糊 + 折射光线）
   - `.glass-badge-*` / `.glass-alert-*`：徽章/警告框
   - `.glass-section`：区块
   - `.glass-tab-bar` / `.glass-tab-item`：标签栏
-  - `.glass-search-box` / `.glass-result-*`：搜索
+  - `.glass-search-box`：搜索
   - `.glass-form-box`：表单
   - `.glass-footer`：页脚
   - `.glass-divider`：分割线
   - `.liquid-glass-dropdown`：液态玻璃下拉框（自动转换select）
-  - `.form-select` / `.form-control`：表单控件
-  - `.settings-section`：设置区块
 
 - **效果类**：
   - `.glass-light-track`：鼠标追光
@@ -131,17 +141,20 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
   - `.glass-pulse-glow`：脉冲发光
   - `.glass-ripple-container` / `.glass-ripple`：涟漪效果
   - `.glass-fade-enter` / `.glass-fade-leave`：淡入淡出
+  - `.glass-tilt`：3D倾斜交互（需JS配合）
 
 - **动画**：
   - `lgGradientShift`：渐变背景动画
   - `lgDropdownIn`：下拉框弹入
+  - `lgRotatingHighlight`：旋转高光
   - `glassFloat`：浮动
   - `glassPulseGlow`：脉冲发光
   - `glassPageIn`：页面入场
+  - `glassRipple`：涟漪
 
 ### 5.2 dist/liquid-glass.js
 
-交互JS，包含5种自动初始化效果：
+交互JS，包含6种自动初始化效果：
 
 | 函数 | 作用 |
 | --- | --- |
@@ -150,6 +163,7 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 | `initScrollBlur()` | 滚动模糊（scroll → 动态 --nav-blur） |
 | `initRippleEffect()` | 点击涟漪（btn/hero-btn/nav-btn → .glass-ripple） |
 | `initEntranceAnimations()` | 入场动画（IntersectionObserver → .glass-visible） |
+| `initTiltEffect()` | 3D倾斜交互（.glass-tilt → perspective + rotateX/Y，灵感来自知乎/墨迹教程） |
 
 **重要API**：
 - `window.initLiquidGlassSelects()`：动态添加select后需手动调用此函数重新初始化
@@ -165,7 +179,8 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 
 | 页面 | 文件 | 展示内容 |
 | --- | --- | --- |
-| 项目首页 | `index.html` | Hero区、特性卡片、Demo入口链接、致谢 |
+| 项目首页 | `index.html` | Hero区、5种玻璃效果展示、6个Demo入口链接、致谢 |
+| 玻璃效果对比 | `demos/glass-styles.html` | 5种玻璃效果卡片、参数对比表、3D倾斜交互、CSS变量表 |
 | 登录页 | `demos/login.html` | 液态玻璃登录卡片、图标输入框、弹性按钮、旋转高光 |
 | 注册页 | `demos/register.html` | 注册表单、液态玻璃下拉框、网格布局、协议勾选 |
 | 导航页 | `demos/navigation.html` | 固定导航栏、侧边栏、标签栏 |
@@ -184,7 +199,11 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 | [rdev/liquid-glass-react](https://github.com/rdev/liquid-glass-react) | 组件化设计、渐变高光、弹性缓动、色差效果 |
 | [wxperia/liquid-glass-vue](https://github.com/wxperia/liquid-glass-vue) | 鼠标追光、暗色模式、变量模糊、涟漪效果 |
 | [liquid-glass.pro](https://www.liquid-glass.pro/) | 设计系统方法论、CSS变量体系、滚动动画 |
+| [JUNGHERZ/GlassKit](https://github.com/JUNGHERZ/GlassKit) | 纯CSS组件库、Design Tokens、深浅色模式 |
+| [crenspire/glass-ui](https://github.com/crenspire/glass-ui) | Glassmorphic组件库、发光/微光/涟漪动画 |
 | [掘金 - CSS3液态水+毛玻璃实战](https://juejin.cn/post/7552755071567675419) | 液态变形、border-radius动画、毛玻璃模式 |
+| [知乎 - 墨迹：液态玻璃登录卡片](https://zhuanlan.zhihu.com/p/1953594596757071482) | 多层叠加、SVG滤镜、3D灵动倾斜交互 |
+| [Josh W Comeau - Next-level frosted glass](https://www.joshwcomeau.com/css/backdrop-filter/) | 渐变遮罩模糊、backdrop-filter深度解析 |
 
 ## 8. 与主站项目的关系
 
@@ -213,6 +232,9 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 - [ ] 添加TypeScript类型声明文件
 - [ ] 文档站添加i18n多语言切换（目前只有按钮，没有实际切换逻辑）
 - [ ] 液态玻璃CSS生成器（类似liquid-glass.pro的Generator功能）
+- [ ] 添加更多亚克力噪点纹理变体
+- [ ] 添加glassmorphism.com风格的组件展示
+- [ ] 添加SVG滤镜液态扭曲效果（参考知乎/墨迹教程的feTurbulence + feDisplacementMap）
 
 ## 10. 注意事项
 
@@ -222,3 +244,5 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 4. **BOM字符**：glass.css曾出现BOM字符问题，需注意
 5. **Cloudflare缓存**：主站线上环境使用Cloudflare CDN，修改CSS/JS后需清缓存
 6. **GitHub Pages**：可在仓库Settings中开启，选择 `docs/` 目录作为源，即可部署文档站
+7. **5种玻璃效果**：每种效果都有独立的CSS变量，深浅色模式全覆盖，可自由组合使用
+8. **3D倾斜**：`.glass-tilt` 类需配合JS `initTiltEffect()` 使用，默认最大倾斜12度
