@@ -160,7 +160,7 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 
 ### 5.2 dist/liquid-glass.js
 
-交互JS，包含6种自动初始化效果：
+交互JS，包含7种自动初始化效果：
 
 | 函数 | 作用 |
 | --- | --- |
@@ -169,11 +169,20 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 | `initScrollBlur()` | 滚动模糊（scroll → 动态 --nav-blur） |
 | `initRippleEffect()` | 点击涟漪（btn/hero-btn/nav-btn → .glass-ripple） |
 | `initEntranceAnimations()` | 入场动画（IntersectionObserver → .glass-visible） |
-| `initTiltEffect()` | 3D倾斜交互（.glass-tilt → perspective + rotateX/Y，灵感来自知乎/墨迹教程） |
+| `initTiltEffect()` | 3D倾斜交互（.glass-tilt → perspective + rotateX/Y） |
+| `initLiquidGlassRefraction()` | SVG折射滤镜（检测.liquid-glass-refract，动态创建SVG filter） |
+| `initLiquidGlassFilter()` | 手动创建SVG滤镜（feTurbulence→feComponentTransfer→feGaussianBlur→feDisplacementMap） |
 
 **重要API**：
 - `window.initLiquidGlassSelects()`：动态添加select后需手动调用此函数重新初始化
+- `window.initLiquidGlassFilter()`：手动创建SVG折射滤镜（feTurbulence→feComponentTransfer→feGaussianBlur→feDisplacementMap）
 - 排除转换：给 `<select>` 添加 `class="no-liquid-glass"`
+
+**SVG折射滤镜管线**：
+1. `feTurbulence`（fractalNoise, baseFrequency 0.01 0.04）→ 生成噪声
+2. `feComponentTransfer`（gamma曲线, exponent 8）→ 创建边缘遮罩
+3. `feGaussianBlur`（stdDeviation 4）→ 柔化边缘
+4. `feDisplacementMap`（scale 12, xChannelSelector R, yChannelSelector G）→ 像素位移折射
 
 **下拉框实现细节**：
 - 使用 inline 模式（`wrapper.appendChild(list)`），非 Portal 模式
@@ -185,8 +194,8 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 
 | 页面 | 文件 | 展示内容 |
 | --- | --- | --- |
-| 项目首页 | `index.html` | Hero区、5种玻璃效果展示、6个Demo入口链接、致谢 |
-| 玻璃效果对比 | `demos/glass-styles.html` | 5种玻璃效果卡片、参数对比表、3D倾斜交互、CSS变量表 |
+| 项目首页 | `index.html` | 侧边栏+文档布局，整合docs内容，液态玻璃风格，中英双语，6种效果+液态组件+技术对比 |
+| 玻璃效果对比 | `demos/glass-styles.html` | 6种玻璃效果卡片、液态vs毛玻璃技术分析、SVG折射演示、技术定义表 |
 | 登录页 | `demos/login.html` | 液态玻璃登录卡片、图标输入框、弹性按钮、旋转高光 |
 | 注册页 | `demos/register.html` | 注册表单、液态玻璃下拉框、网格布局、协议勾选 |
 | 导航页 | `demos/navigation.html` | 固定导航栏、侧边栏、标签栏 |
@@ -207,6 +216,7 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 | [liquid-glass.pro](https://www.liquid-glass.pro/) | 设计系统方法论、CSS变量体系、滚动动画 |
 | [JUNGHERZ/GlassKit](https://github.com/JUNGHERZ/GlassKit) | 纯CSS组件库、Design Tokens、深浅色模式 |
 | [crenspire/glass-ui](https://github.com/crenspire/glass-ui) | Glassmorphic组件库、发光/微光/涟漪动画 |
+| [cnblogs - 液态玻璃效果阐述](https://www.cnblogs.com/moranjl/p/18960018) | 液态玻璃效果阐述、音乐播放器按钮实现、SVG折射分析 |
 | [掘金 - CSS3液态水+毛玻璃实战](https://juejin.cn/post/7552755071567675419) | 液态变形、border-radius动画、毛玻璃模式 |
 | [知乎 - 墨迹：液态玻璃登录卡片](https://zhuanlan.zhihu.com/p/1953594596757071482) | 多层叠加、SVG滤镜、3D灵动倾斜交互 |
 | [Josh W Comeau - Next-level frosted glass](https://www.joshwcomeau.com/css/backdrop-filter/) | 渐变遮罩模糊、backdrop-filter深度解析 |
@@ -231,7 +241,7 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 - [ ] 添加GitHub Pages部署（docs目录可直接部署为文档站）
 - [ ] 添加GitHub Actions CI/CD（自动测试、自动发布）
 - [ ] 添加更多Demo页面（Dashboard、表单、数据表格等）
-- [ ] 添加SVG滤镜折射效果（参考shuding/liquid-glass）
+- [x] 添加SVG滤镜折射效果（参考shuding/liquid-glass）— 已实现 initLiquidGlassFilter() + .liquid-glass-refract
 - [ ] 添加手动深色模式切换开关（目前仅跟随系统）
 - [ ] 添加Web Components版本
 - [ ] 添加React/Vue组件封装
@@ -240,7 +250,7 @@ git remote set-url origin https://github.com/xiaop-coder/xiaop-liquid-glass.git
 - [ ] 液态玻璃CSS生成器（类似liquid-glass.pro的Generator功能）
 - [ ] 添加更多亚克力噪点纹理变体
 - [ ] 添加glassmorphism.com风格的组件展示
-- [ ] 添加SVG滤镜液态扭曲效果（参考知乎/墨迹教程的feTurbulence + feDisplacementMap）
+- [x] 添加SVG滤镜液态扭曲效果（参考知乎/墨迹教程的feTurbulence + feDisplacementMap）— 已实现
 
 ## 10. 注意事项
 

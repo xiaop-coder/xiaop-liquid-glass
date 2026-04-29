@@ -75,43 +75,8 @@
         .comparison-table th, .comparison-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--lg-divider); font-size: 14px; color: var(--lg-text-primary); }
         .comparison-table th { font-weight: 700; color: var(--lg-text-tertiary); font-size: 12px; background: var(--lg-table-header-bg); backdrop-filter: blur(10px); text-transform: uppercase; letter-spacing: 0.5px; }
         .comparison-table td code { background: rgba(0, 122, 255, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: var(--lg-primary); }
-        .liquid-glass-demo {
-            position: relative; padding: 32px; border-radius: 28px;
-            background: var(--lg-glass-bg);
-            -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
-            backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
-            border: 1px solid var(--lg-glass-border);
-            box-shadow:
-                0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.08),
-                inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(255,255,255,0.1);
-            overflow: hidden; isolation: isolate;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .liquid-glass-demo::before {
-            content: ""; position: absolute; inset: 0; border-radius: inherit;
-            background: linear-gradient(135deg, var(--highlight-top) 0%, rgba(255,255,255,0.08) 30%, transparent 60%);
-            pointer-events: none; z-index: 1;
-        }
-        .liquid-glass-demo::after {
-            content: ""; position: absolute; inset: 0; border-radius: inherit;
-            box-shadow:
-                inset 0 1px 1px var(--highlight-edge),
-                inset 0 -1px 1px rgba(255,255,255,0.1),
-                inset 1px 0 1px rgba(255,255,255,0.3),
-                inset -1px 0 1px rgba(255,255,255,0.1);
-            pointer-events: none; z-index: 2;
-        }
-        .liquid-glass-demo:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow:
-                0 4px 8px rgba(0,0,0,0.06), 0 16px 32px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.12),
-                inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.15);
-        }
-        .liquid-glass-refract-demo {
-            -webkit-backdrop-filter: url(#liquid-glass-filter) blur(24px) saturate(180%) brightness(1.05);
-            backdrop-filter: url(#liquid-glass-filter) blur(24px) saturate(180%) brightness(1.05);
-        }
-        .pill-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; margin-top: 16px; }
+        .liquid-glass-demo { padding: 32px; }
+        .pill-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 6; margin-top: 16px; }
         .note { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 12px; position: relative; z-index: 2; line-height: 1.6; }
         @media (max-width: 768px) { .nav-links { display: none; } .grid { grid-template-columns: 1fr; } }
     </style>
@@ -131,18 +96,19 @@
     <div class="content">
         <div class="section-title glass-entrance"><i class="bi bi-layers"></i> Glass Effect Styles</div>
         <div class="section-desc glass-entrance glass-entrance-delay-1">
-            本设计系统提供 6 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。毛玻璃仅使用 backdrop-filter 模糊，而液态玻璃还包含边缘折射变形、四边高光和活跃态高透切换。
+            本设计系统提供 6 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的4层复合渲染机制：outer层（SVG feDisplacementMap 边缘折射 + mask-composite:exclude 仅边缘可见）+ cover层（blur 2px 低模糊）+ sharp层（四边锐利高光）+ reflect层（柔和反射）。与毛玻璃（Glassmorphism）的本质区别在于4层结构和边缘折射。
         </div>
 
         <div class="grid">
-            <div class="liquid-glass-demo glass-entrance glass-entrance-delay-1">
+            <div class="liquid-glass liquid-glass-demo glass-entrance glass-entrance-delay-1">
                 <div class="props">
+                    <span class="prop">4-layer</span>
                     <span class="prop">refraction</span>
                     <span class="prop">highlight</span>
                     <span class="prop">active-state</span>
                 </div>
-                <h3 style="position:relative;z-index:3;">Liquid Glass</h3>
-                <p style="position:relative;z-index:3;">Apple iOS 26 液态玻璃。核心特征：边缘折射变形（SVG feDisplacementMap）+ 四边内高光 + 浮动阴影 + 活跃态切换为高透玻璃（去除模糊）。与 Glassmorphism 的本质区别在于折射和动态变形。</p>
+                <h3>Liquid Glass</h3>
+                <p>Apple iOS 26 液态玻璃。4层结构：outer(SVG feDisplacementMap + mask-composite:exclude 边缘折射) + cover(blur 2px) + sharp(四边高光) + reflect(柔和反射)。JS 自动创建4层子元素。</p>
                 <div class="btn-row">
                     <span class="tag tag-liquid"><i class="bi bi-droplet"></i> .liquid-glass</span>
                 </div>
@@ -221,13 +187,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Core Tech</td><td>SVG feDisplacementMap + backdrop-filter</td><td>backdrop-filter only</td></tr>
-                    <tr><td>Edge Refraction</td><td>✅ Edge pixel displacement</td><td>❌ None</td></tr>
-                    <tr><td>Edge Highlight</td><td>✅ 4-side inset box-shadow</td><td>⚠️ Top only (::before)</td></tr>
-                    <tr><td>Active State</td><td>✅ Switch to high-transparency (no blur)</td><td>❌ Same blur always</td></tr>
+                    <tr><td>Core Tech</td><td>4-layer: outer(SVG filter+mask) + cover(blur 2px) + sharp + reflect</td><td>Single layer: backdrop-filter blur</td></tr>
+                    <tr><td>Edge Refraction</td><td>✅ feDisplacementMap + mask-composite:exclude</td><td>❌ None</td></tr>
+                    <tr><td>Edge Highlight</td><td>✅ sharp层 4-side inset box-shadow</td><td>⚠️ Top only (::before)</td></tr>
+                    <tr><td>Active State</td><td>✅ Cover layer removes blur → high transparency</td><td>❌ Same blur always</td></tr>
                     <tr><td>Visual</td><td>Liquid lens / droplet</td><td>Frosted glass panel</td></tr>
                     <tr><td>CSS Class</td><td><code>.liquid-glass</code></td><td><code>.glass-card</code> / <code>.frosted-card</code></td></tr>
-                    <tr><td>Refraction</td><td><code>.liquid-glass-refract</code></td><td>N/A</td></tr>
+                    <tr><td>Structure</td><td>4-layer (outer/cover/sharp/reflect)</td><td>Single element + ::before/::after</td></tr>
                     <tr><td>Button</td><td><code>.liquid-glass-btn</code></td><td><code>.glass-button</code></td></tr>
                     <tr><td>Pill</td><td><code>.liquid-glass-pill</code></td><td>N/A</td></tr>
                 </tbody>
@@ -238,9 +204,9 @@
         <div class="section-desc">液态玻璃风格的交互组件演示</div>
 
         <div class="grid">
-            <div class="liquid-glass-demo glass-entrance">
-                <h3 style="position:relative;z-index:3;">Liquid Glass Buttons</h3>
-                <p style="position:relative;z-index:3;">胶囊形按钮，按下时切换为高透玻璃（去除模糊），松开恢复磨砂。</p>
+            <div class="liquid-glass liquid-glass-demo glass-entrance">
+                <h3>Liquid Glass Buttons</h3>
+                <p>胶囊形按钮，按下时cover层去除模糊→高透玻璃，松开恢复磨砂。</p>
                 <div class="btn-row" style="margin-top: 16px;">
                     <button class="liquid-glass-btn"><i class="bi bi-play-fill"></i> Play</button>
                     <button class="liquid-glass-btn"><i class="bi bi-pause-fill"></i> Pause</button>
@@ -248,9 +214,9 @@
                 </div>
             </div>
 
-            <div class="liquid-glass-demo liquid-glass-refract-demo glass-entrance glass-entrance-delay-1">
-                <h3 style="position:relative;z-index:3;">With SVG Refraction</h3>
-                <p style="position:relative;z-index:3;">此卡片启用了 SVG feDisplacementMap 边缘折射滤镜。观察边缘区域的微妙像素位移，这是液态玻璃区别于毛玻璃的核心特征。仅在 Chromium 内核浏览器中可见。</p>
+            <div class="liquid-glass liquid-glass-demo glass-entrance glass-entrance-delay-1">
+                <h3>4-Layer Structure</h3>
+                <p>每个 .liquid-glass 元素由 JS 自动创建4层子元素：outer(边缘折射) + cover(低模糊) + sharp(高光) + reflect(反射)。观察边缘的折射变形效果。</p>
                 <div class="btn-row" style="margin-top: 16px;">
                     <button class="liquid-glass-pill active">Refract ON</button>
                     <button class="liquid-glass-pill">Refract OFF</button>
@@ -273,7 +239,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Liquid Glass</td><td><code>.liquid-glass</code></td><td>24px</td><td>✅ SVG</td><td>4-side highlight + Active state</td></tr>
+                    <tr><td>Liquid Glass</td><td><code>.liquid-glass</code></td><td>2px</td><td>✅ SVG+mask</td><td>4-layer: outer/cover/sharp/reflect</td></tr>
                     <tr><td>Glass Card</td><td><code>.glass-card</code></td><td>24px</td><td>❌</td><td>Top highlight</td></tr>
                     <tr><td>Frosted</td><td><code>.frosted-card</code></td><td>20px</td><td>❌</td><td>Matte finish</td></tr>
                     <tr><td>Acrylic</td><td><code>.acrylic-card</code></td><td>30px</td><td>❌</td><td>Noise texture + Tint</td></tr>
@@ -292,7 +258,7 @@
                     <tr><th>Effect</th><th>Definition</th><th>Key Visual</th><th>Implementation</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>Liquid Glass</strong></td><td>Apple iOS 26 的动态材质，采用「反射+折射+动态变形」复合渲染</td><td>边缘折射变形 + 四边高光 + 活跃态高透</td><td>SVG feDisplacementMap + backdrop-filter + inset box-shadow</td></tr>
+                    <tr><td><strong>Liquid Glass</strong></td><td>Apple iOS 26 的动态材质，4层复合渲染：边缘折射+低模糊覆盖+锐利高光+柔和反射</td><td>边缘折射(mask-composite:exclude) + 四边高光 + 活跃态高透</td><td>4-layer: outer(feDisplacementMap+mask) + cover(blur 2px) + sharp(inset shadow) + reflect(inset shadow)</td></tr>
                     <tr><td><strong>Frosted Glass</strong></td><td>macOS 风格磨砂玻璃，Glassmorphism 的标准实现</td><td>均匀模糊 + 低饱和度 + 磨砂质感</td><td>backdrop-filter: blur() saturate()</td></tr>
                     <tr><td><strong>Acrylic</strong></td><td>Microsoft Fluent Design 亚克力材质</td><td>高模糊 + 噪点纹理 + 色调叠加</td><td>backdrop-filter + SVG noise + tint overlay</td></tr>
                     <tr><td><strong>Crystal Glass</strong></td><td>高透明水晶/宝石效果</td><td>高透明 + 强高光 + 棱镜折射线</td><td>低模糊 + 强 ::before 高光 + ::after 折射线</td></tr>

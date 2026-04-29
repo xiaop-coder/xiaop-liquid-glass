@@ -297,85 +297,61 @@
         if (document.getElementById('liquid-glass-svg-filters')) return;
 
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('id', 'liquid-glass-svg-filters');
-        svg.setAttribute('width', '0');
-        svg.setAttribute('height', '0');
-        svg.style.cssText = 'position:absolute;pointer-events:none;';
+        svg.setAttribute('style', 'display:none');
+        svg.id = 'liquid-glass-svg-filters';
 
         var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 
         var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
         filter.setAttribute('id', 'liquid-glass-filter');
-        filter.setAttribute('filterUnits', 'userSpaceOnUse');
-        filter.setAttribute('colorInterpolationFilters', 'sRGB');
-        filter.setAttribute('x', '-5%');
-        filter.setAttribute('y', '-5%');
-        filter.setAttribute('width', '110%');
-        filter.setAttribute('height', '110%');
-
-        var feTurbulence = document.createElementNS('http://www.w3.org/2000/svg', 'feTurbulence');
-        feTurbulence.setAttribute('type', 'fractalNoise');
-        feTurbulence.setAttribute('baseFrequency', '0.01 0.04');
-        feTurbulence.setAttribute('numOctaves', '2');
-        feTurbulence.setAttribute('seed', '2');
-        feTurbulence.setAttribute('result', 'noise');
-
-        var feComponentTransfer = document.createElementNS('http://www.w3.org/2000/svg', 'feComponentTransfer');
-        feComponentTransfer.setAttribute('in', 'noise');
-        feComponentTransfer.setAttribute('result', 'edgeMap');
-
-        var feFuncR = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncR');
-        feFuncR.setAttribute('type', 'gamma');
-        feFuncR.setAttribute('amplitude', '1');
-        feFuncR.setAttribute('exponent', '8');
-        feFuncR.setAttribute('offset', '0.5');
-
-        var feFuncG = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncG');
-        feFuncG.setAttribute('type', 'gamma');
-        feFuncG.setAttribute('amplitude', '1');
-        feFuncG.setAttribute('exponent', '8');
-        feFuncG.setAttribute('offset', '0.5');
-
-        var feFuncB = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncB');
-        feFuncB.setAttribute('type', 'gamma');
-        feFuncB.setAttribute('amplitude', '0');
-        feFuncB.setAttribute('exponent', '1');
-        feFuncB.setAttribute('offset', '0.5');
-
-        var feFuncA = document.createElementNS('http://www.w3.org/2000/svg', 'feFuncA');
-        feFuncA.setAttribute('type', 'linear');
-        feFuncA.setAttribute('slope', '1');
-
-        feComponentTransfer.appendChild(feFuncR);
-        feComponentTransfer.appendChild(feFuncG);
-        feComponentTransfer.appendChild(feFuncB);
-        feComponentTransfer.appendChild(feFuncA);
-
-        var feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-        feGaussianBlur.setAttribute('in', 'edgeMap');
-        feGaussianBlur.setAttribute('stdDeviation', '4');
-        feGaussianBlur.setAttribute('result', 'softEdge');
+        filter.setAttribute('x', '0%');
+        filter.setAttribute('y', '0%');
+        filter.setAttribute('width', '100%');
+        filter.setAttribute('height', '100%');
+        filter.setAttribute('filterUnits', 'objectBoundingBox');
 
         var feDisplacementMap = document.createElementNS('http://www.w3.org/2000/svg', 'feDisplacementMap');
-        feDisplacementMap.setAttribute('in', 'SourceGraphic');
-        feDisplacementMap.setAttribute('in2', 'softEdge');
-        feDisplacementMap.setAttribute('scale', '12');
-        feDisplacementMap.setAttribute('xChannelSelector', 'R');
-        feDisplacementMap.setAttribute('yChannelSelector', 'G');
+        feDisplacementMap.setAttribute('scale', '200');
 
-        filter.appendChild(feTurbulence);
-        filter.appendChild(feComponentTransfer);
-        filter.appendChild(feGaussianBlur);
         filter.appendChild(feDisplacementMap);
         defs.appendChild(filter);
         svg.appendChild(defs);
         document.body.appendChild(svg);
     }
 
-    function initLiquidGlassRefraction() {
-        var refractElements = document.querySelectorAll('.liquid-glass-refract');
-        if (refractElements.length > 0) {
-            initLiquidGlassFilter();
+    function initLiquidGlass() {
+        var elements = document.querySelectorAll('.liquid-glass, .liquid-glass-btn, .liquid-glass-pill, .liquid-glass-nav');
+        if (elements.length === 0) return;
+
+        initLiquidGlassFilter();
+
+        for (var i = 0; i < elements.length; i++) {
+            var el = elements[i];
+            if (el.querySelector('.liquid-glass-outer')) continue;
+
+            var content = document.createElement('div');
+            content.className = 'liquid-glass-content';
+            while (el.firstChild) {
+                content.appendChild(el.firstChild);
+            }
+
+            var outer = document.createElement('div');
+            outer.className = 'liquid-glass-outer';
+
+            var cover = document.createElement('div');
+            cover.className = 'liquid-glass-cover';
+
+            var sharp = document.createElement('div');
+            sharp.className = 'liquid-glass-sharp';
+
+            var reflect = document.createElement('div');
+            reflect.className = 'liquid-glass-reflect';
+
+            el.appendChild(outer);
+            el.appendChild(cover);
+            el.appendChild(sharp);
+            el.appendChild(reflect);
+            el.appendChild(content);
         }
     }
 
@@ -388,7 +364,7 @@
             initEntranceAnimations();
             initPageTransition();
             initTiltEffect();
-            initLiquidGlassRefraction();
+            initLiquidGlass();
         });
     } else {
         initAllSelects();
@@ -398,10 +374,11 @@
         initEntranceAnimations();
         initPageTransition();
         initTiltEffect();
-        initLiquidGlassRefraction();
+        initLiquidGlass();
     }
 
     window.initLiquidGlassSelects = initAllSelects;
     window.LiquidGlassSelect = LiquidGlassSelect;
     window.initLiquidGlassFilter = initLiquidGlassFilter;
+    window.initLiquidGlass = initLiquidGlass;
 })();
