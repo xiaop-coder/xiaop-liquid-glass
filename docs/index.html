@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XiaoP Liquid Glass - 小P液态玻璃设计系统</title>
+    <meta name="description" content="小P液态玻璃设计系统 — 纯 CSS + JS 实现 Apple iOS 26 液态玻璃效果。零依赖、跨框架、完全响应式。">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/liquid-glass.css" rel="stylesheet">
+    <style>
+        :root {
+            --doc-max-width: 1200px;
+            --doc-nav-width: 260px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            min-height: 100vh; color: #fff; line-height: 1.7;
+            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
+            background-attachment: fixed; background-size: 400% 400%;
+            animation: lgGradientShift 20s ease infinite;
+        }
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: var(--lg-header-bg); backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-bottom: 1px solid var(--lg-header-border);
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .top-nav::after {
+            content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: #fff; text-decoration: none; }
+        .nav-brand .icon { font-size: 24px; background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+        .nav-link { padding: 8px 16px; border-radius: 10px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-link.active { background: linear-gradient(135deg, rgba(0,122,255,0.2), rgba(139,92,246,0.2)); color: #fff; }
+        .lang-switch { display: flex; gap: 4px; }
+        .lang-btn { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); transition: all 0.2s; }
+        .lang-btn:hover, .lang-btn.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3); }
+        .layout { display: flex; padding-top: 64px; min-height: 100vh; }
+        .sidebar {
+            position: fixed; top: 64px; left: 0; bottom: 0; width: var(--doc-nav-width);
+            background: rgba(0,0,0,0.2); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 24px 0; overflow-y: auto; z-index: 100;
+        }
+        .sidebar-section { margin-bottom: 24px; }
+        .sidebar-title { padding: 8px 24px; font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; font-weight: 600; }
+        .sidebar-link { display: block; padding: 10px 24px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+        .sidebar-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .sidebar-link.active { color: #fff; background: linear-gradient(90deg, rgba(0,122,255,0.15), transparent); border-left-color: var(--lg-primary); }
+        .main { flex: 1; margin-left: var(--doc-nav-width); padding: 48px 48px 120px; max-width: calc(var(--doc-max-width) - var(--doc-nav-width)); }
+        .hero-section { text-align: center; padding: 80px 0 60px; position: relative; }
+        .hero-section::before {
+            content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,122,255,0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .hero-icon {
+            width: 96px; height: 96px; border-radius: 26px; margin: 0 auto 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08));
+            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center; font-size: 44px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4);
+            animation: glassFloat 6s ease-in-out infinite;
+        }
+        .hero-title { font-size: 52px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; }
+        .hero-title .gradient { background: linear-gradient(135deg, #64a0ff, #a78bfa, #ff6b9d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto 36px; line-height: 1.8; }
+        .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; backdrop-filter: blur(8px); border: 1px solid; }
+        .hero-badge-blue { background: rgba(0,122,255,0.2); border-color: rgba(0,122,255,0.3); color: #64a0ff; }
+        .hero-badge-green { background: rgba(52,199,89,0.2); border-color: rgba(52,199,89,0.3); color: #4cd964; }
+        .hero-badge-purple { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
+        .hero-badge-orange { background: rgba(255,159,10,0.2); border-color: rgba(255,159,10,0.3); color: #ffb340; }
+        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; text-decoration: none; position: relative; overflow: hidden; }
+        .btn-primary { background: var(--lg-btn-primary-bg); color: #fff; border: 1px solid var(--lg-btn-primary-border); backdrop-filter: blur(10px); box-shadow: var(--lg-btn-primary-shadow); }
+        .btn-primary::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent); pointer-events: none; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,122,255,0.4); filter: brightness(1.1); }
+        .btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+        .doc-section { margin-bottom: 64px; scroll-margin-top: 80px; }
+        .doc-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+        .doc-section h2 i { color: var(--lg-primary); font-size: 24px; }
+        .doc-section h3 { font-size: 20px; font-weight: 600; margin: 24px 0 12px; }
+        .doc-section p { color: rgba(255,255,255,0.75); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+        .doc-section ul { margin: 12px 0 16px 24px; color: rgba(255,255,255,0.75); }
+        .doc-section li { margin-bottom: 6px; font-size: 15px; }
+        .code-block { background: rgba(0,0,0,0.35); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 20px 24px; margin: 16px 0; overflow-x: auto; position: relative; }
+        .code-block code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; line-height: 1.7; color: #e0e0e0; }
+        .code-block .tag { color: #ff6b9d; }
+        .code-block .attr { color: #c792ea; }
+        .code-block .val { color: #c3e88d; }
+        .code-block .comment { color: #546e7a; }
+        .code-block .keyword { color: #c792ea; }
+        .code-block .string { color: #c3e88d; }
+        .code-block .func { color: #82aaff; }
+        .copy-btn { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .component-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin: 24px 0; }
+        .component-card { background: var(--lg-card-bg); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-radius: var(--lg-radius-lg); border: 1px solid var(--lg-card-border); box-shadow: var(--lg-card-shadow); padding: 24px; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .component-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent); border-radius: inherit; pointer-events: none; }
+        .component-card:hover { transform: translateY(-4px); box-shadow: var(--lg-card-shadow-hover); }
+        .component-card h4 { font-size: 15px; margin-bottom: 6px; color: var(--lg-text-primary); }
+        .component-card .class-name { font-family: 'SF Mono', monospace; font-size: 12px; color: var(--lg-primary); background: rgba(0,122,255,0.1); padding: 2px 8px; border-radius: 4px; }
+        .component-card p { font-size: 13px; color: var(--lg-text-secondary); margin-top: 8px; }
+        .var-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .var-table th { text-align: left; padding: 12px 16px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); font-weight: 600; }
+        .var-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
+        .var-table code { font-family: 'SF Mono', monospace; font-size: 13px; color: #c3e88d; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; }
+        .credits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 24px 0; }
+        .credit-card { display: flex; gap: 16px; padding: 20px; background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; transition: all 0.3s; text-decoration: none; color: inherit; }
+        .credit-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .credit-card .credit-icon { font-size: 28px; flex-shrink: 0; }
+        .credit-card h4 { font-size: 14px; margin-bottom: 4px; }
+        .credit-card p { font-size: 13px; opacity: 0.7; line-height: 1.5; }
+        .footer { text-align: center; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); font-size: 14px; }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; max-width: 100%; padding: 32px 20px 80px; }
+            .hero-title { font-size: 32px; }
+            .hero-subtitle { font-size: 15px; }
+            .component-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="#" class="nav-brand"><i class="bi bi-droplet-fill icon"></i> XiaoP Liquid Glass</a>
+        <div class="nav-links">
+            <a href="#quick-start" class="nav-link">Quick Start</a>
+            <a href="#components" class="nav-link">Components</a>
+            <a href="#variables" class="nav-link">Variables</a>
+            <a href="#credits" class="nav-link">Credits</a>
+            <div class="lang-switch">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('zh')">中文</button>
+                <button class="lang-btn" onclick="setLang('ja')">日</button>
+                <button class="lang-btn" onclick="setLang('ko')">한</button>
+                <button class="lang-btn" onclick="setLang('ru')">РУ</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Getting Started</div>
+                <a href="#hero" class="sidebar-link active">Introduction</a>
+                <a href="#quick-start" class="sidebar-link">Quick Start</a>
+                <a href="#installation" class="sidebar-link">Installation</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Components</div>
+                <a href="#components" class="sidebar-link">Overview</a>
+                <a href="#cards" class="sidebar-link">Cards</a>
+                <a href="#buttons" class="sidebar-link">Buttons</a>
+                <a href="#inputs" class="sidebar-link">Inputs</a>
+                <a href="#dropdowns" class="sidebar-link">Dropdowns</a>
+                <a href="#badges" class="sidebar-link">Badges & Alerts</a>
+                <a href="#navigation" class="sidebar-link">Navigation</a>
+                <a href="#effects" class="sidebar-link">Effects</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Customization</div>
+                <a href="#variables" class="sidebar-link">CSS Variables</a>
+                <a href="#dark-mode" class="sidebar-link">Dark Mode</a>
+                <a href="#js-api" class="sidebar-link">JavaScript API</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Resources</div>
+                <a href="#demos" class="sidebar-link">Live Demos</a>
+                <a href="#credits" class="sidebar-link">Credits</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="hero-section" id="hero">
+                <div class="hero-icon">💧</div>
+                <h1 class="hero-title"><span class="gradient">XiaoP</span> Liquid Glass</h1>
+                <p class="hero-subtitle" data-i18n="hero_sub">小P液态玻璃设计系统 — 纯 CSS + JS 实现 Apple iOS 26 液态玻璃效果。零依赖、跨框架、完全响应式，自带深色模式。</p>
+                <div class="hero-badges">
+                    <span class="hero-badge hero-badge-blue"><i class="bi bi-palette"></i> 30+ Variables</span>
+                    <span class="hero-badge hero-badge-green"><i class="bi bi-boxes"></i> 25+ Components</span>
+                    <span class="hero-badge hero-badge-purple"><i class="bi bi-cursor"></i> 5 JS Effects</span>
+                    <span class="hero-badge hero-badge-orange"><i class="bi bi-phone"></i> Responsive</span>
+                </div>
+                <div class="hero-actions">
+                    <a href="#quick-start" class="btn btn-primary"><i class="bi bi-rocket"></i> Get Started</a>
+                    <a href="https://github.com/xiaop-coder/xiaop-liquid-glass" class="btn btn-ghost"><i class="bi bi-github"></i> GitHub</a>
+                    <a href="../index.html" class="btn btn-ghost"><i class="bi bi-play-circle"></i> Live Demos</a>
+                </div>
+            </div>
+
+            <div class="doc-section" id="quick-start">
+                <h2><i class="bi bi-rocket-takeoff"></i> Quick Start</h2>
+                <p>Include the CSS and JS files in your HTML. That's it — no build tools, no frameworks, no dependencies.</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code><span class="comment">&lt;!-- In your &lt;head&gt; --&gt;</span><br>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"dist/liquid-glass.css"</span><span class="tag">&gt;</span><br><br>
+<span class="comment">&lt;!-- Before &lt;/body&gt; --&gt;</span><br>
+<span class="tag">&lt;script</span> <span class="attr">src=</span><span class="val">"dist/liquid-glass.js"</span><span class="tag">&gt;&lt;/script&gt;</span></code>
+                </div>
+                <h3>Minimal Example</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"glass-card"</span> <span class="attr">style=</span><span class="val">"padding: 24px; max-width: 400px; margin: 100px auto;"</span><span class="tag">&gt;</span><br>
+&nbsp;&nbsp;<span class="tag">&lt;h2&gt;</span>Hello Liquid Glass!<span class="tag">&lt;/h2&gt;</span><br>
+&nbsp;&nbsp;<span class="tag">&lt;p&gt;</span>This card has the liquid glass effect.<span class="tag">&lt;/p&gt;</span><br>
+&nbsp;&nbsp;<span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"glass-button"</span><span class="tag">&gt;</span>Click Me<span class="tag">&lt;/button&gt;</span><br>
+<span class="tag">&lt;/div&gt;</span></code>
+                </div>
+            </div>
+
+            <div class="doc-section" id="installation">
+                <h2><i class="bi bi-download"></i> Installation</h2>
+                <h3>npm</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code>npm install xiaop-liquid-glass</code>
+                </div>
+                <h3>CDN</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"https://unpkg.com/xiaop-liquid-glass/dist/liquid-glass.css"</span><span class="tag">&gt;</span><br>
+<span class="tag">&lt;script</span> <span class="attr">src=</span><span class="val">"https://unpkg.com/xiaop-liquid-glass/dist/liquid-glass.js"</span><span class="tag">&gt;&lt;/script&gt;</span></code>
+                </div>
+            </div>
+
+            <div class="doc-section" id="components">
+                <h2><i class="bi bi-grid-3x3-gap"></i> Components</h2>
+                <p>All components are built with pure CSS using the <code>--lg-*</code> variable system. They work with any HTML structure and require no JavaScript (except the auto-select transform).</p>
+                <div class="component-grid">
+                    <div class="component-card"><h4>3D Glass Card</h4><span class="class-name">.glass3d</span><p>Multi-layered shadows, pseudo-element highlights, noise texture</p></div>
+                    <div class="component-card"><h4>Glass Card</h4><span class="class-name">.glass-card</span><p>Standard glass morphism card with gradient overlay</p></div>
+                    <div class="component-card"><h4>Glass Modal</h4><span class="class-name">.glass-modal</span><p>Modal dialog with deep blur background</p></div>
+                    <div class="component-card"><h4>Glass Button</h4><span class="class-name">.glass-button</span><p>Button with highlight overlay and elastic hover</p></div>
+                    <div class="component-card"><h4>Glass Input</h4><span class="class-name">.glass-input</span><p>Text input with focus glow effect</p></div>
+                    <div class="component-card"><h4>Glass Nav</h4><span class="class-name">.glass-nav</span><p>Navigation bar with blur and refraction line</p></div>
+                    <div class="component-card"><h4>Glass Badge</h4><span class="class-name">.glass-badge-*</span><p>success / warning / danger / info</p></div>
+                    <div class="component-card"><h4>Glass Alert</h4><span class="class-name">.glass-alert-*</span><p>Notification banners with color variants</p></div>
+                    <div class="component-card"><h4>Glass Section</h4><span class="class-name">.glass-section</span><p>Configurable glass section with hover effect</p></div>
+                    <div class="component-card"><h4>Glass Tab Bar</h4><span class="class-name">.glass-tab-bar</span><p>Segmented tab control with active state</p></div>
+                    <div class="component-card"><h4>Glass Search Box</h4><span class="class-name">.glass-search-box</span><p>Search container with gradient overlay</p></div>
+                    <div class="component-card"><h4>Glass Form Box</h4><span class="class-name">.glass-form-box</span><p>Form container with glass styling</p></div>
+                    <div class="component-card"><h4>Liquid Dropdown</h4><span class="class-name">.liquid-glass-dropdown</span><p>Auto-transformed select with glass panel</p></div>
+                    <div class="component-card"><h4>Glass Footer</h4><span class="class-name">.glass-footer</span><p>Page footer with blur and refraction line</p></div>
+                    <div class="component-card"><h4>Glass Overlay</h4><span class="class-name">.glass-overlay</span><p>Modal overlay with blur</p></div>
+                    <div class="component-card"><h4>Glass Divider</h4><span class="class-name">.glass-divider</span><p>Gradient divider line</p></div>
+                </div>
+            </div>
+
+            <div class="doc-section" id="effects">
+                <h2><i class="bi bi-sparkles"></i> Visual Effects</h2>
+                <div class="component-grid">
+                    <div class="component-card"><h4>Mouse Light Track</h4><span class="class-name">.glass-light-track</span><p>Radial gradient follows mouse position via CSS variables</p></div>
+                    <div class="component-card"><h4>Rotating Highlight</h4><span class="class-name">.glass-rotating-highlight</span><p>Conic-gradient rotation with 8s cycle</p></div>
+                    <div class="component-card"><h4>Variable Blur</h4><span class="class-name">.glass-variable-blur</span><p>Gradient mask blur effect</p></div>
+                    <div class="component-card"><h4>Entrance Animation</h4><span class="class-name">.glass-entrance</span><p>IntersectionObserver fade-in with delay variants</p></div>
+                    <div class="component-card"><h4>Page Transition</h4><span class="class-name">.glass-page-transition</span><p>Scale + blur page switch animation</p></div>
+                    <div class="component-card"><h4>Float Animation</h4><span class="class-name">.glass-float</span><p>Gentle floating motion (6s cycle)</p></div>
+                    <div class="component-card"><h4>Pulse Glow</h4><span class="class-name">.glass-pulse-glow</span><p>Pulsating glow with dual-color shadow</p></div>
+                    <div class="component-card"><h4>Ripple Effect</h4><span class="class-name">.glass-ripple-container</span><p>Click ripple animation on buttons</p></div>
+                </div>
+            </div>
+
+            <div class="doc-section" id="variables">
+                <h2><i class="bi bi-palette"></i> CSS Variables</h2>
+                <p>All variables use the <code>--lg-*</code> prefix and support automatic light/dark mode switching via <code>prefers-color-scheme</code>.</p>
+                <table class="var-table">
+                    <thead><tr><th>Variable</th><th>Default (Dark)</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>--lg-bg-gradient-1</code></td><td>#0c0c1d</td><td>Background gradient color 1</td></tr>
+                        <tr><td><code>--lg-card-bg</code></td><td>rgba(255,255,255,0.1)</td><td>Card background</td></tr>
+                        <tr><td><code>--lg-card-border</code></td><td>rgba(255,255,255,0.18)</td><td>Card border</td></tr>
+                        <tr><td><code>--lg-glass-bg</code></td><td>rgba(255,255,255,0.12)</td><td>Glass surface background</td></tr>
+                        <tr><td><code>--lg-text-primary</code></td><td>#ffffff</td><td>Primary text color</td></tr>
+                        <tr><td><code>--lg-primary</code></td><td>#007aff</td><td>Primary accent color</td></tr>
+                        <tr><td><code>--lg-secondary</code></td><td>#8b5cf6</td><td>Secondary accent color</td></tr>
+                        <tr><td><code>--lg-input-bg</code></td><td>rgba(255,255,255,0.08)</td><td>Input background</td></tr>
+                        <tr><td><code>--lg-radius-md</code></td><td>14px</td><td>Medium border radius</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-section" id="dark-mode">
+                <h2><i class="bi bi-moon-stars"></i> Dark Mode</h2>
+                <p>Dark mode is automatic via <code>prefers-color-scheme</code>. All <code>--lg-*</code> variables are overridden in the light mode media query. You can also manually override any variable:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code><span class="keyword">:root</span> {<br>
+&nbsp;&nbsp;<span class="attr">--lg-primary</span>: <span class="val">#007aff</span>;<br>
+&nbsp;&nbsp;<span class="attr">--lg-card-bg</span>: <span class="val">rgba(255, 255, 255, 0.1)</span>;<br>
+}<br><br>
+<span class="keyword">@media</span> (<span class="attr">prefers-color-scheme</span>: <span class="val">light</span>) {<br>
+&nbsp;&nbsp;<span class="keyword">:root</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">--lg-primary</span>: <span class="val">#0055cc</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">--lg-card-bg</span>: <span class="val">rgba(255, 255, 255, 0.6)</span>;<br>
+&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+            </div>
+
+            <div class="doc-section" id="js-api">
+                <h2><i class="bi bi-code-slash"></i> JavaScript API</h2>
+                <p>All JS effects auto-initialize on <code>DOMContentLoaded</code>. For dynamically added content, call the re-initialization function:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <code><span class="comment">// Auto-initialization (called automatically)</span><br>
+<span class="func">initAllSelects</span>();        <span class="comment">// Transform all &lt;select class="form-select"&gt;</span><br>
+<span class="func">initMouseTracking</span>();     <span class="comment">// Mouse light tracking</span><br>
+<span class="func">initScrollBlur</span>();        <span class="comment">// Navigation scroll blur</span><br>
+<span class="func">initRippleEffect</span>();      <span class="comment">// Click ripple on buttons</span><br>
+<span class="func">initEntranceAnimations</span>(); <span class="comment">// IntersectionObserver entrance</span><br><br>
+<span class="comment">// After adding dynamic content:</span><br>
+<span class="keyword">if</span> (window.initLiquidGlassSelects) <span class="func">window.initLiquidGlassSelects</span>();<br><br>
+<span class="comment">// Exclude select from transformation:</span><br>
+<span class="comment">// Add class "no-liquid-glass" to any &lt;select&gt;</span></code>
+                </div>
+            </div>
+
+            <div class="doc-section" id="demos">
+                <h2><i class="bi bi-play-circle"></i> Live Demos</h2>
+                <div class="component-grid">
+                    <a href="../demos/login.html" class="component-card" style="text-decoration: none; color: inherit;">
+                        <h4><i class="bi bi-box-arrow-in-right" style="color: var(--lg-primary);"></i> Login Page</h4>
+                        <p>Glass morphism login form with icon inputs and elastic animations</p>
+                    </a>
+                    <a href="../demos/register.html" class="component-card" style="text-decoration: none; color: inherit;">
+                        <h4><i class="bi bi-person-plus" style="color: #a78bfa;"></i> Register Page</h4>
+                        <p>Registration form with glass dropdowns and grid layout</p>
+                    </a>
+                    <a href="../demos/navigation.html" class="component-card" style="text-decoration: none; color: inherit;">
+                        <h4><i class="bi bi-list-ul" style="color: #4cd964;"></i> Navigation</h4>
+                        <p>Sticky header, sidebar navigation, and glass tab bar</p>
+                    </a>
+                    <a href="../demos/select.html" class="component-card" style="text-decoration: none; color: inherit;">
+                        <h4><i class="bi bi-chevron-bar-down" style="color: #ffb340;"></i> Select / Dropdown</h4>
+                        <p>Auto-transformed select components with glass panels</p>
+                    </a>
+                    <a href="../demos/components.html" class="component-card" style="text-decoration: none; color: inherit;">
+                        <h4><i class="bi bi-grid-3x3-gap" style="color: #ff6b9d;"></i> All Components</h4>
+                        <p>Buttons, badges, alerts, inputs, progress bars, 3D cards</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="doc-section" id="credits">
+                <h2><i class="bi bi-heart"></i> Credits</h2>
+                <p>This project is a fusion of ideas and techniques from these amazing open-source projects:</p>
+                <div class="credits-grid">
+                    <a href="https://github.com/lucasromerodb/liquid-glass-effect-macos" class="credit-card" target="_blank">
+                        <div class="credit-icon">🧊</div>
+                        <div><h4>lucasromerodb/liquid-glass-effect-macos</h4><p>Multi-layer backdrop-filter, pseudo-element highlights, 3D shadows, rotating highlights</p></div>
+                    </a>
+                    <a href="https://github.com/shuding/liquid-glass" class="credit-card" target="_blank">
+                        <div class="credit-icon">🔮</div>
+                        <div><h4>shuding/liquid-glass</h4><p>SVG filter refraction, real-time mouse position tracking</p></div>
+                    </a>
+                    <a href="https://github.com/rdev/liquid-glass-react" class="credit-card" target="_blank">
+                        <div class="credit-icon">⚛️</div>
+                        <div><h4>rdev/liquid-glass-react</h4><p>Component-based design, gradient highlights, elastic easing, chromatic aberration</p></div>
+                    </a>
+                    <a href="https://github.com/wxperia/liquid-glass-vue" class="credit-card" target="_blank">
+                        <div class="credit-icon">💚</div>
+                        <div><h4>wxperia/liquid-glass-vue</h4><p>Mouse light tracking, dark mode, variable blur, ripple effects</p></div>
+                    </a>
+                    <a href="https://www.liquid-glass.pro/" class="credit-card" target="_blank">
+                        <div class="credit-icon">✨</div>
+                        <div><h4>liquid-glass.pro</h4><p>Design system methodology, CSS variable architecture, scroll animations</p></div>
+                    </a>
+                    <a href="https://juejin.cn/post/7552755071567675419" class="credit-card" target="_blank">
+                        <div class="credit-icon">🌊</div>
+                        <div><h4>CSS3液态水+毛玻璃实战</h4><p>Liquid deformation, border-radius animation, glass morphism patterns</p></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>XiaoP Liquid Glass &copy; 2026 &middot; MIT License &middot; 灵感来自 Apple iOS 26 WWDC 2025</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/liquid-glass.js"></script>
+    <script>
+        function copyCode(btn) {
+            var code = btn.parentElement.querySelector('code');
+            var text = code.innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                btn.textContent = 'Copied!';
+                setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+            });
+        }
+        function setLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+            event.target.classList.add('active');
+        }
+        var sidebarLinks = document.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+                this.classList.add('active');
+            });
+        });
+        window.addEventListener('scroll', function() {
+            var sections = document.querySelectorAll('.doc-section, .hero-section');
+            var current = '';
+            sections.forEach(function(section) {
+                var top = section.offsetTop - 100;
+                if (window.scrollY >= top) current = section.id;
+            });
+            sidebarLinks.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XiaoP Liquid Glass - 下拉选择演示</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../dist/liquid-glass.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh; position: relative; padding: 40px 20px;
+            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
+            background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
+        }
+        .container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .page-title { text-align: center; color: #fff; margin-bottom: 48px; }
+        .page-title h1 { font-size: 32px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .page-title h1 i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-title p { color: rgba(255,255,255,0.7); font-size: 16px; }
+        .demo-section {
+            background: var(--lg-card-bg); backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: var(--lg-radius-xl); border: 1px solid var(--lg-card-border);
+            box-shadow: var(--lg-card-shadow); padding: 32px; margin-bottom: 32px;
+            position: relative; overflow: visible;
+        }
+        .demo-section::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+            border-radius: inherit; pointer-events: none;
+        }
+        .demo-section h2 { color: var(--lg-text-primary); font-size: 18px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+        .demo-section h2 i { color: var(--lg-primary); }
+        .demo-section .desc { color: var(--lg-text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+        .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; margin-bottom: 8px; color: var(--lg-text-primary); font-weight: 600; font-size: 13px; }
+        .form-select {
+            width: 100%; padding: 12px 16px;
+            border: 1px solid var(--lg-input-border); border-radius: var(--lg-radius-sm);
+            font-size: 14px; background: var(--lg-input-bg);
+            backdrop-filter: blur(10px); color: var(--lg-text-primary);
+            transition: var(--lg-transition-fast);
+        }
+        .form-select:focus {
+            outline: none; border-color: var(--lg-input-focus-border);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1), var(--lg-glass-inner-highlight);
+            background: var(--lg-glass-hover);
+        }
+        .code-block {
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 16px 20px; margin-top: 16px; overflow-x: auto;
+        }
+        .code-block code { color: #e0e0e0; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.6; }
+        .code-block .tag { color: #ff6b9d; }
+        .code-block .attr { color: #c792ea; }
+        .code-block .val { color: #c3e88d; }
+        .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+            backdrop-filter: blur(8px); border: 1px solid;
+        }
+        .badge-primary { background: rgba(0,122,255,0.2); border-color: rgba(0,122,255,0.3); color: #64a0ff; }
+        .badge-success { background: rgba(52,199,89,0.2); border-color: rgba(52,199,89,0.3); color: #4cd964; }
+        .badge-warning { background: rgba(255,159,10,0.2); border-color: rgba(255,159,10,0.3); color: #ffb340; }
+        @media (max-width: 600px) {
+            .demo-row { grid-template-columns: 1fr; }
+            .demo-section { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-title glass-entrance">
+            <h1><i class="bi bi-chevron-bar-down"></i> XiaoP Liquid Glass Select</h1>
+            <p>Auto-transformed dropdown components with glass morphism effects</p>
+        </div>
+
+        <div class="demo-section glass-entrance glass-entrance-delay-1">
+            <h2><i class="bi bi-toggle-on"></i> Basic Select</h2>
+            <p class="desc">All &lt;select&gt; elements with class "form-select" are automatically transformed into liquid glass dropdowns by liquid-glass.js. The original select is hidden and a custom glass component is rendered.</p>
+            <div class="demo-row">
+                <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <select class="form-select">
+                        <option value="">Select a country</option>
+                        <option value="cn">China</option>
+                        <option value="us">United States</option>
+                        <option value="jp">Japan</option>
+                        <option value="kr">South Korea</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="de">Germany</option>
+                        <option value="fr">France</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Language</label>
+                    <select class="form-select">
+                        <option value="">Select a language</option>
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ko">Korean</option>
+                        <option value="ru">Russian</option>
+                    </select>
+                </div>
+            </div>
+            <div class="code-block">
+                <code><span class="tag">&lt;select</span> <span class="attr">class=</span><span class="val">"form-select"</span><span class="tag">&gt;</span><br>
+                &nbsp;&nbsp;<span class="tag">&lt;option</span> <span class="attr">value=</span><span class="val">""</span><span class="tag">&gt;</span>Select...<span class="tag">&lt;/option&gt;</span><br>
+                &nbsp;&nbsp;<span class="tag">&lt;option</span> <span class="attr">value=</span><span class="val">"cn"</span><span class="tag">&gt;</span>China<span class="tag">&lt;/option&gt;</span><br>
+                <span class="tag">&lt;/select&gt;</span></code>
+            </div>
+        </div>
+
+        <div class="demo-section glass-entrance glass-entrance-delay-2">
+            <h2><i class="bi bi-palette"></i> Pre-selected Values</h2>
+            <p class="desc">Dropdowns with pre-selected values show the active indicator (glowing dot) next to the selected option.</p>
+            <div class="demo-row">
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active" selected>Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select class="form-select">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section glass-entrance glass-entrance-delay-3">
+            <h2><i class="bi bi-slash-circle"></i> Excluding Auto-transform</h2>
+            <p class="desc">Add class "no-liquid-glass" to any select element to keep the native browser dropdown.</p>
+            <div class="demo-row">
+                <div class="form-group">
+                    <label class="form-label">XiaoP 液态玻璃下拉框</label>
+                    <select class="form-select">
+                        <option value="">Glass effect</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Native Dropdown (no-liquid-glass)</label>
+                    <select class="form-select no-liquid-glass">
+                        <option value="">Native browser</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="code-block">
+                <code><span class="tag">&lt;select</span> <span class="attr">class=</span><span class="val">"form-select no-liquid-glass"</span><span class="tag">&gt;</span><br>
+                &nbsp;&nbsp;<span class="comment" style="color:#546e7a;">&lt;!-- This will NOT be transformed --&gt;</span><br>
+                <span class="tag">&lt;/select&gt;</span></code>
+            </div>
+        </div>
+
+        <div class="demo-section glass-entrance glass-entrance-delay-4">
+            <h2><i class="bi bi-plus-circle"></i> Dynamic Select (Added at Runtime)</h2>
+            <p class="desc">When adding select elements dynamically, call <code>window.initLiquidGlassSelects()</code> to transform them.</p>
+            <div id="dynamicContainer"></div>
+            <button onclick="addDynamicSelect()" style="padding: 10px 20px; background: var(--lg-btn-primary-bg); color: #fff; border: 1px solid var(--lg-btn-primary-border); border-radius: 10px; cursor: pointer; font-weight: 600; backdrop-filter: blur(10px); box-shadow: var(--lg-btn-primary-shadow); transition: all 0.3s; position: relative; overflow: hidden;">
+                <i class="bi bi-plus"></i> Add Select
+            </button>
+            <div class="code-block" style="margin-top: 20px;">
+                <code><span class="comment" style="color:#546e7a;">// After adding a select dynamically:</span><br>
+                container.appendChild(selectElement);<br>
+                <span class="attr">if</span> (window.initLiquidGlassSelects) window.initLiquidGlassSelects();</code>
+            </div>
+        </div>
+
+        <div class="demo-section glass-entrance glass-entrance-delay-5">
+            <h2><i class="bi bi-arrows-fullscreen"></i> Size Variants</h2>
+            <p class="desc">Liquid glass dropdowns support small, default, and large sizes via CSS classes.</p>
+            <div class="form-group">
+                <label class="form-label">Small (.liquid-glass-dropdown.small)</label>
+                <select class="form-select" style="max-width: 200px;">
+                    <option value="">Small</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Default</label>
+                <select class="form-select" style="max-width: 300px;">
+                    <option value="">Default size</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Large (.liquid-glass-dropdown.large)</label>
+                <select class="form-select" style="max-width: 400px;">
+                    <option value="">Large</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px 0;">
+            <div class="badge-row" style="justify-content: center;">
+                <span class="badge badge-primary"><i class="bi bi-code-slash"></i> Pure CSS + JS</span>
+                <span class="badge badge-success"><i class="bi bi-phone"></i> Responsive</span>
+                <span class="badge badge-warning"><i class="bi bi-moon-stars"></i> Dark Mode</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../dist/liquid-glass.js"></script>
+    <script>
+        var selectIndex = 0;
+        function addDynamicSelect() {
+            selectIndex++;
+            var div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = '<label class="form-label">Dynamic Select #' + selectIndex + '</label>' +
+                '<select class="form-select">' +
+                '<option value="">Choose...</option>' +
+                '<option value="a">Option A</option>' +
+                '<option value="b">Option B</option>' +
+                '<option value="c">Option C</option>' +
+                '</select>';
+            document.getElementById('dynamicContainer').appendChild(div);
+            if (window.initLiquidGlassSelects) window.initLiquidGlassSelects();
+        }
+    </script>
+</body>
+</html>

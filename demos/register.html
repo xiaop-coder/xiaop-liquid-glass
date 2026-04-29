@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XiaoP Liquid Glass - 注册页演示</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../dist/liquid-glass.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 20px; position: relative; overflow: hidden;
+        }
+        .page-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
+        .page-bg-color {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
+            background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
+        }
+        .page-bg-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 70% 30%, rgba(139, 92, 246, 0.2), transparent 70%),
+                        radial-gradient(ellipse at 30% 70%, rgba(0, 122, 255, 0.2), transparent 70%);
+        }
+        .register-card {
+            width: 100%; max-width: 520px;
+            background: var(--lg-card-bg); backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: var(--lg-radius-xl); border: 1px solid var(--lg-card-border);
+            box-shadow: var(--lg-card-shadow); overflow: hidden; position: relative; z-index: 1;
+        }
+        .register-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent);
+            border-radius: inherit; pointer-events: none;
+        }
+        .register-header {
+            padding: 30px 32px 20px; text-align: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(0, 122, 255, 0.3));
+            border-bottom: 1px solid var(--lg-divider);
+        }
+        .register-header h1 { font-size: 22px; color: var(--lg-text-primary); margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .register-header p { color: var(--lg-text-secondary); font-size: 14px; }
+        .register-body { padding: 24px 32px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; margin-bottom: 8px; color: var(--lg-text-primary); font-weight: 600; font-size: 13px; }
+        .form-control, .form-select {
+            width: 100%; padding: 12px 16px;
+            border: 1px solid var(--lg-input-border); border-radius: var(--lg-radius-sm);
+            font-size: 14px; background: var(--lg-input-bg);
+            backdrop-filter: blur(10px); color: var(--lg-text-primary);
+            transition: var(--lg-transition-fast);
+        }
+        .form-control:focus, .form-select:focus {
+            outline: none; border-color: var(--lg-input-focus-border);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1), var(--lg-glass-inner-highlight);
+            background: var(--lg-glass-hover);
+        }
+        .form-control::placeholder { color: var(--lg-text-tertiary); }
+        .form-hint { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 4px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 14px 28px; background: var(--lg-btn-primary-bg); backdrop-filter: blur(10px);
+            color: #fff; border: 1px solid var(--lg-btn-primary-border);
+            border-radius: var(--lg-radius-sm); font-size: 15px; font-weight: 600;
+            cursor: pointer; box-shadow: var(--lg-btn-primary-shadow);
+            transition: var(--lg-transition); position: relative; overflow: hidden;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4); filter: brightness(1.1); }
+        .btn::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            border-radius: inherit; pointer-events: none;
+        }
+        .form-actions { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--lg-divider); }
+        .register-footer { text-align: center; padding: 16px 32px 24px; color: var(--lg-text-secondary); font-size: 13px; }
+        .register-footer a { color: var(--lg-primary); text-decoration: none; font-weight: 600; }
+        .register-footer a:hover { text-decoration: underline; }
+        .agreement { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--lg-text-secondary); margin-bottom: 16px; }
+        .agreement input { margin-top: 3px; accent-color: var(--lg-primary); }
+        .agreement a { color: var(--lg-primary); text-decoration: none; }
+        @media (max-width: 560px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .register-body { padding: 20px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-bg">
+        <div class="page-bg-color"></div>
+        <div class="page-bg-overlay"></div>
+    </div>
+
+    <div class="register-card glass-entrance">
+        <div class="register-header">
+            <h1><i class="bi bi-person-plus"></i> Create Account</h1>
+            <p>Fill in your details to get started</p>
+        </div>
+        <div class="register-body">
+            <form onsubmit="event.preventDefault();">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" placeholder="Doe">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="At least 8 characters">
+                    <span class="form-hint">Use a mix of letters, numbers, and symbols</span>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <select class="form-select">
+                            <option value="">Select country</option>
+                            <option value="cn">China</option>
+                            <option value="us">United States</option>
+                            <option value="jp">Japan</option>
+                            <option value="kr">South Korea</option>
+                            <option value="uk">United Kingdom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-select">
+                            <option value="">Select role</option>
+                            <option value="developer">Developer</option>
+                            <option value="designer">Designer</option>
+                            <option value="manager">Manager</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="agreement">
+                    <input type="checkbox" id="agree">
+                    <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn"><i class="bi bi-check-lg"></i> Create Account</button>
+                </div>
+            </form>
+        </div>
+        <div class="register-footer">
+            Already have an account? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+
+    <script src="../dist/liquid-glass.js"></script>
+</body>
+</html>

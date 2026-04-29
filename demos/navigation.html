@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XiaoP Liquid Glass - 导航页演示</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../dist/liquid-glass.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh; position: relative;
+            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
+            background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
+        }
+        .nav-container {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--lg-header-bg);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid var(--lg-header-border);
+            box-shadow: var(--lg-card-shadow);
+            padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+            height: 64px;
+        }
+        .nav-container::after {
+            content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            pointer-events: none;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); }
+        .nav-brand i { font-size: 24px; background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-link {
+            padding: 8px 16px; border-radius: var(--lg-radius-sm); color: var(--lg-text-secondary);
+            text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--lg-transition-fast);
+        }
+        .nav-link:hover, .nav-link.active { background: var(--lg-item-hover); color: var(--lg-text-primary); }
+        .nav-link.active { background: linear-gradient(135deg, rgba(0,122,255,0.15), rgba(139,92,246,0.15)); color: var(--lg-primary); }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .nav-btn {
+            padding: 8px 18px; border-radius: var(--lg-radius-sm); font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: var(--lg-transition); border: none;
+        }
+        .nav-btn-outline {
+            background: var(--lg-btn-ghost-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--lg-btn-ghost-border); color: var(--lg-text-primary);
+        }
+        .nav-btn-outline:hover { background: var(--lg-glass-hover); }
+        .nav-btn-primary {
+            background: var(--lg-btn-primary-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--lg-btn-primary-border); color: #fff;
+            box-shadow: var(--lg-btn-primary-shadow); position: relative; overflow: hidden;
+        }
+        .nav-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,122,255,0.4); }
+        .nav-btn-primary::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            border-radius: inherit; pointer-events: none;
+        }
+        .content { padding: 40px 28px; max-width: 900px; margin: 0 auto; }
+        .demo-section { margin-bottom: 48px; }
+        .demo-section h2 { color: var(--lg-text-primary); font-size: 20px; margin-bottom: 8px; }
+        .demo-section p { color: var(--lg-text-secondary); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+        .sidebar-nav {
+            background: var(--lg-sidebar-bg); backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--lg-sidebar-border); border-radius: var(--lg-radius-lg);
+            padding: 16px 0; max-width: 260px; box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+        }
+        .sidebar-nav .menu-section { padding: 14px 20px 8px; font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; font-weight: 600; }
+        .sidebar-nav .menu-item {
+            display: block; padding: 12px 20px; margin: 2px 12px; color: rgba(255,255,255,0.75);
+            text-decoration: none; transition: var(--lg-transition-fast); border-radius: var(--lg-radius-sm);
+            border-left: 3px solid transparent; font-weight: 500; font-size: 14px;
+        }
+        .sidebar-nav .menu-item:hover, .sidebar-nav .menu-item.active {
+            background: linear-gradient(135deg, rgba(0,122,255,0.18), rgba(139,92,246,0.18));
+            color: #fff; border-left-color: var(--lg-primary); transform: translateX(2px);
+        }
+        .sidebar-nav .menu-item i { margin-right: 12px; width: 20px; text-align: center; font-size: 16px; }
+        .tab-bar {
+            display: flex; gap: 4px; padding: 6px;
+            background: var(--lg-glass-bg); backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--lg-glass-border); border-radius: var(--lg-radius-md);
+            box-shadow: var(--lg-card-shadow);
+        }
+        .tab-item {
+            padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+            color: var(--lg-text-secondary); cursor: pointer; transition: var(--lg-transition-fast);
+            border: none; background: none;
+        }
+        .tab-item:hover { color: var(--lg-text-primary); background: var(--lg-item-hover); }
+        .tab-item.active {
+            background: var(--lg-btn-primary-bg); color: #fff;
+            box-shadow: var(--lg-btn-primary-shadow); position: relative; overflow: hidden;
+        }
+        .tab-item.active::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+            border-radius: inherit; pointer-events: none;
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .sidebar-nav { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <div class="nav-brand"><i class="bi bi-droplet-fill"></i> XiaoP Liquid Glass</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Home</a>
+            <a href="#" class="nav-link">Components</a>
+            <a href="#" class="nav-link">Demos</a>
+            <a href="#" class="nav-link">Docs</a>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn nav-btn-outline"><i class="bi bi-github"></i> GitHub</button>
+            <button class="nav-btn nav-btn-primary">Get Started</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="demo-section">
+            <h2>Sticky Header Navigation</h2>
+            <p>The navigation bar above uses backdrop-filter with blur and saturate for the liquid glass effect. It stays fixed at the top when scrolling, with a subtle light refraction line at the bottom.</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>Sidebar Navigation</h2>
+            <p>A dark-themed sidebar with gradient hover effects and active state indicators, inspired by macOS sidebar design.</p>
+            <div class="sidebar-nav">
+                <div class="menu-section">Main</div>
+                <a href="#" class="menu-item active"><i class="bi bi-house"></i> Dashboard</a>
+                <a href="#" class="menu-item"><i class="bi bi-people"></i> Customers</a>
+                <a href="#" class="menu-item"><i class="bi bi-file-text"></i> Orders</a>
+                <div class="menu-section">System</div>
+                <a href="#" class="menu-item"><i class="bi bi-shield"></i> Blacklist</a>
+                <a href="#" class="menu-item"><i class="bi bi-gear"></i> Settings</a>
+                <a href="#" class="menu-item"><i class="bi bi-clock-history"></i> Logs</a>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Glass Tab Bar</h2>
+            <p>A segmented control / tab bar with liquid glass styling. The active tab uses a gradient background with a highlight overlay.</p>
+            <div class="tab-bar">
+                <button class="tab-item active">All</button>
+                <button class="tab-item">Active</button>
+                <button class="tab-item">Pending</button>
+                <button class="tab-item">Archived</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../dist/liquid-glass.js"></script>
+    <script>
+        document.querySelectorAll('.tab-item').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
