@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XiaoP Liquid Glass - 小P液态玻璃设计系统</title>
+    <meta name="referrer" content="no-referrer">
+    <title>XiaoP Liquid Glass - 液态玻璃设计系统</title>
     <meta name="description" content="小P液态玻璃设计系统 — 纯 CSS + JS 实现 Apple iOS 26 液态玻璃效果。SVG边缘折射 + 四边高光 + 活跃态切换。零依赖、跨框架、完全响应式。">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="dist/liquid-glass.css" rel="stylesheet">
@@ -180,8 +181,6 @@
         .tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; position: relative; z-index: 3; }
         .tag-liquid { background: rgba(0, 122, 255, 0.15); color: var(--lg-primary); }
         .tag-frosted { background: rgba(139, 92, 246, 0.15); color: var(--lg-secondary); }
-        .tag-acrylic { background: rgba(52, 199, 89, 0.15); color: var(--lg-success); }
-        .tag-crystal { background: rgba(255, 159, 10, 0.15); color: var(--lg-warning); }
         .tag-translucent { background: rgba(0, 122, 255, 0.1); color: var(--lg-info); }
         .note { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 12px; position: relative; z-index: 3; line-height: 1.6; }
 
@@ -198,6 +197,32 @@
     </style>
 </head>
 <body>
+    <div class="glass-bg-switcher">
+        <button class="glass-bg-switcher-btn" title="切换背景">🖼</button>
+    </div>
+    <div class="glass-bg-panel">
+        <h4>切换背景</h4>
+        <label>图片 URL</label>
+        <div class="glass-bg-url-row">
+            <input type="text" class="glass-bg-url-input" placeholder="输入图片直链...">
+            <button class="glass-bg-apply-btn">应用</button>
+        </div>
+        <div class="glass-bg-upload-area">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">拖拽图片或点击上传</div>
+            <input type="file" class="glass-bg-file-input" accept="image/*" style="display:none">
+        </div>
+        <label>预设背景</label>
+        <div class="glass-bg-presets">
+            <div class="glass-bg-preset" data-url="https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880" style="background-image:url(https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880)"></div>
+            <div class="glass-bg-preset" data-url="https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=100&auto=format&fit=crop&q=60)"></div>
+        </div>
+        <button class="glass-bg-reset">恢复默认背景</button>
+    </div>
     <nav class="top-nav">
         <a href="#" class="nav-brand"><i class="bi bi-droplet-fill icon"></i> XiaoP Liquid Glass</a>
         <div class="nav-links">
@@ -229,8 +254,7 @@
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-title" data-zh="玻璃效果" data-en="Glass Styles">玻璃效果</div>
-                <a href="#glass-styles" class="sidebar-link" data-zh="6种效果对比" data-en="6 Styles">6种效果对比</a>
-                <a href="#liquid-vs-frosted" class="sidebar-link" data-zh="液态 vs 毛玻璃" data-en="Liquid vs Frosted">液态 vs 毛玻璃</a>
+                <a href="#glass-styles" class="sidebar-link" data-zh="4种效果对比" data-en="4 Styles">4种效果对比</a>
                 <a href="#tech-definitions" class="sidebar-link" data-zh="技术定义" data-en="Definitions">技术定义</a>
             </div>
             <div class="sidebar-section">
@@ -254,7 +278,7 @@
                 <div class="hero-badges">
                     <span class="hero-badge hero-badge-blue"><i class="bi bi-palette"></i> <span data-zh="50+ 变量" data-en="50+ Variables">50+ 变量</span></span>
                     <span class="hero-badge hero-badge-green"><i class="bi bi-boxes"></i> <span data-zh="35+ 组件" data-en="35+ Components">35+ 组件</span></span>
-                    <span class="hero-badge hero-badge-purple"><i class="bi bi-cursor"></i> <span data-zh="7 种 JS 交互" data-en="7 JS Effects">7 种 JS 交互</span></span>
+                    <span class="hero-badge hero-badge-purple"><i class="bi bi-cursor"></i> <span data-zh="13 种 JS 交互" data-en="13 JS Effects">13 种 JS 交互</span></span>
                     <span class="hero-badge hero-badge-orange"><i class="bi bi-phone"></i> <span data-zh="响应式" data-en="Responsive">响应式</span></span>
                 </div>
                 <div class="hero-actions">
@@ -401,12 +425,17 @@
                     <div class="component-card liquid-glass glass-entrance glass-entrance-delay-1"><h4>Pulse Glow</h4><span class="class-name">.glass-pulse-glow</span><p data-zh="双色阴影脉冲发光" data-en="Pulsating glow with dual-color shadow">双色阴影脉冲发光</p></div>
                     <div class="component-card liquid-glass glass-entrance glass-entrance-delay-2"><h4>Ripple Effect</h4><span class="class-name">.glass-ripple-container</span><p data-zh="点击涟漪动画" data-en="Click ripple animation on buttons">点击涟漪动画</p></div>
                     <div class="component-card liquid-glass glass-entrance glass-entrance-delay-3"><h4>3D Tilt</h4><span class="class-name">.glass-tilt</span><p data-zh="鼠标跟随3D倾斜效果" data-en="Mouse-following 3D tilt effect">鼠标跟随3D倾斜效果</p></div>
+                    <div class="component-card liquid-glass glass-entrance glass-entrance-delay-4"><h4>Elastic Mouse</h4><span class="class-name">.glass-elastic</span><p data-zh="鼠标靠近时卡片弹性拉伸跟随，方向性缩放" data-en="Elastic stretch following mouse proximity, directional scaling">鼠标靠近时卡片弹性拉伸跟随，方向性缩放</p></div>
+                    <div class="component-card liquid-glass glass-entrance"><h4>Chromatic Aberration</h4><span class="class-name">.glass-chromatic</span><p data-zh="悬停时RGB通道分离色差效果" data-en="RGB channel separation chromatic aberration on hover">悬停时RGB通道分离色差效果</p></div>
+                    <div class="component-card liquid-glass glass-entrance glass-entrance-delay-1"><h4>Mouse Glow</h4><span class="class-name">.glass-mouse-glow</span><p data-zh="鼠标悬停时径向光晕跟随" data-en="Radial glow following mouse on hover">鼠标悬停时径向光晕跟随</p></div>
+                    <div class="component-card liquid-glass glass-entrance glass-entrance-delay-2"><h4>Click Bounce</h4><span class="class-name">.glass-click-bounce</span><p data-zh="点击时弹性缩放反馈" data-en="Elastic scale feedback on click">点击时弹性缩放反馈</p></div>
+                    <div class="component-card liquid-glass glass-entrance glass-entrance-delay-3"><h4>Scrolling Background</h4><span class="class-name">.glass-scrolling-bg</span><p data-zh="背景图片持续滚动，液态玻璃下可见流动效果" data-en="Background image continuously scrolling, visible flow under liquid glass">背景图片持续滚动，液态玻璃下可见流动效果</p></div>
                 </div>
             </div>
 
             <div class="doc-section" id="glass-styles">
-                <h2><i class="bi bi-layers"></i> <span data-zh="6 种玻璃效果风格" data-en="6 Glass Effect Styles">6 种玻璃效果风格</span></h2>
-                <p data-zh="本设计系统提供 6 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。" data-en="This design system provides 6 glass effect styles. Liquid Glass is the core effect, using Apple iOS 26's composite rendering of reflection + refraction + dynamic deformation, fundamentally different from traditional Glassmorphism.">本设计系统提供 6 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。</p>
+                <h2><i class="bi bi-layers"></i> <span data-zh="4 种玻璃效果风格" data-en="4 Glass Effect Styles">4 种玻璃效果风格</span></h2>
+                <p data-zh="本设计系统提供 4 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。" data-en="This design system provides 4 glass effect styles. Liquid Glass is the core effect, using Apple iOS 26's composite rendering of reflection + refraction + dynamic deformation, fundamentally different from traditional Glassmorphism.">本设计系统提供 4 种玻璃效果风格。液态玻璃（Liquid Glass）是核心效果，采用 Apple iOS 26 的「反射+折射+动态变形」复合渲染机制，与传统的毛玻璃（Glassmorphism）有本质区别。</p>
 
                 <div class="component-grid">
                     <div class="component-card liquid-glass glass-entrance">
@@ -421,18 +450,7 @@
                         <span class="tag tag-frosted"><i class="bi bi-cloud-haze2"></i> .frosted-card</span>
                         <p data-zh="macOS 风格毛玻璃，仅 backdrop-filter 模糊" data-en="macOS Frosted Glass, backdrop-filter blur only">macOS 风格毛玻璃，仅 backdrop-filter 模糊</p>
                     </div>
-                    <div class="component-card acrylic-card glass-entrance glass-entrance-delay-2">
-                        <div class="props"><span class="prop">blur: 30px</span><span class="prop">noise</span><span class="prop">tint</span></div>
-                        <h4>Acrylic</h4>
-                        <span class="tag tag-acrylic"><i class="bi bi-brush"></i> .acrylic-card</span>
-                        <p data-zh="Fluent Design 亚克力，毛玻璃 + 噪点 + 色调叠加" data-en="Fluent Design Acrylic, frosted glass + noise + tint overlay">Fluent Design 亚克力，毛玻璃 + 噪点 + 色调叠加</p>
-                    </div>
-                    <div class="component-card crystal-card glass-entrance glass-entrance-delay-3">
-                        <div class="props"><span class="prop">blur: 16px</span><span class="prop">prism</span><span class="prop">highlight</span></div>
-                        <h4>Crystal Glass</h4>
-                        <span class="tag tag-crystal"><i class="bi bi-gem"></i> .crystal-card</span>
-                        <p data-zh="水晶棱镜效果，高透明 + 强高光 + 折射线" data-en="Crystal prism effect, high transparency + strong highlights + refraction line">水晶棱镜效果，高透明 + 强高光 + 折射线</p>
-                    </div>
+
                     <div class="component-card translucent-card glass-entrance glass-entrance-delay-4">
                         <div class="props"><span class="prop">blur: 8px</span><span class="prop">minimal</span></div>
                         <h4>Translucent</h4>
@@ -448,56 +466,6 @@
                 </div>
             </div>
 
-            <div class="doc-section" id="liquid-vs-frosted">
-                <h2><i class="bi bi-lightning"></i> <span data-zh="液态玻璃 vs 毛玻璃" data-en="Liquid Glass vs Glassmorphism">液态玻璃 vs 毛玻璃</span></h2>
-                <p data-zh="液态玻璃与毛玻璃的本质区别" data-en="The fundamental difference between Liquid Glass and Glassmorphism">液态玻璃与毛玻璃的本质区别</p>
-
-                <div class="liquid-glass glass-entrance" style="margin-bottom: 48px;">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Liquid Glass</th>
-                                <th>Glassmorphism</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Core Tech</td><td>4-layer: outer(SVG filter+mask) + cover(blur 2px) + sharp + reflect</td><td>Single layer: backdrop-filter blur</td></tr>
-                            <tr><td data-zh="边缘折射" data-en="Edge Refraction">边缘折射</td><td>✅ <span data-zh="feDisplacementMap + mask-composite:exclude" data-en="feDisplacementMap + mask-composite:exclude">feDisplacementMap + mask-composite:exclude</span></td><td>❌ None</td></tr>
-                            <tr><td data-zh="边缘高光" data-en="Edge Highlight">边缘高光</td><td>✅ sharp层 4-side inset box-shadow</td><td>⚠️ Top only (::before)</td></tr>
-                            <tr><td data-zh="活跃态" data-en="Active State">活跃态</td><td>✅ <span data-zh="cover层去除模糊→高透" data-en="Cover layer removes blur → high transparency">cover层去除模糊→高透</span></td><td>❌ <span data-zh="始终相同模糊" data-en="Same blur always">始终相同模糊</span></td></tr>
-                            <tr><td data-zh="视觉效果" data-en="Visual">视觉效果</td><td data-zh="液态透镜 / 水滴" data-en="Liquid lens / droplet">液态透镜 / 水滴</td><td data-zh="磨砂玻璃面板" data-en="Frosted glass panel">磨砂玻璃面板</td></tr>
-                            <tr><td>CSS Class</td><td><code>.liquid-glass</code></td><td><code>.glass-card</code> / <code>.frosted-card</code></td></tr>
-                            <tr><td>Structure</td><td>4-layer (outer/cover/sharp/reflect)</td><td>Single element + ::before/::after</td></tr>
-                            <tr><td>Button</td><td><code>.liquid-glass-btn</code></td><td><code>.glass-button</code></td></tr>
-                            <tr><td>Pill</td><td><code>.liquid-glass-pill</code></td><td>N/A</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 data-zh="效果参数对比" data-en="Effect Parameter Comparison">效果参数对比</h3>
-                <div class="liquid-glass glass-entrance" style="margin-bottom: 48px;">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Effect</th>
-                                <th>CSS Class</th>
-                                <th>Blur</th>
-                                <th>Refraction</th>
-                                <th>Special</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Liquid Glass</td><td><code>.liquid-glass</code></td><td>2px</td><td>✅ SVG+mask</td><td>4-layer: outer/cover/sharp/reflect</td></tr>
-                            <tr><td>Glass Card</td><td><code>.glass-card</code></td><td>24px</td><td>❌</td><td>Top highlight</td></tr>
-                            <tr><td>Frosted</td><td><code>.frosted-card</code></td><td>20px</td><td>❌</td><td>Matte finish</td></tr>
-                            <tr><td>Acrylic</td><td><code>.acrylic-card</code></td><td>30px</td><td>❌</td><td>Noise texture + Tint</td></tr>
-                            <tr><td>Crystal</td><td><code>.crystal-card</code></td><td>16px</td><td>❌</td><td>Prism refraction line</td></tr>
-                            <tr><td>Translucent</td><td><code>.translucent-card</code></td><td>8px</td><td>❌</td><td>Minimal blur</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
             <div class="doc-section" id="tech-definitions">
                 <h2><i class="bi bi-book"></i> <span data-zh="技术定义" data-en="Technical Definitions">技术定义</span></h2>
@@ -511,8 +479,6 @@
                         <tbody>
                             <tr><td><strong>Liquid Glass</strong></td><td data-zh="Apple iOS 26 动态材质，4层复合渲染：边缘折射+低模糊覆盖+锐利高光+柔和反射" data-en="Apple iOS 26 dynamic material, 4-layer composite: edge refraction + low blur cover + sharp highlights + soft reflections">Apple iOS 26 动态材质，4层复合渲染：边缘折射+低模糊覆盖+锐利高光+柔和反射</td><td data-zh="边缘折射(mask-composite:exclude) + 四边高光 + 活跃态高透" data-en="Edge refraction (mask-composite:exclude) + 4-side highlights + active state high-transparency">边缘折射(mask-composite:exclude) + 四边高光 + 活跃态高透</td><td>4-layer: outer(feDisplacementMap+mask) + cover(blur 2px) + sharp(inset shadow) + reflect(inset shadow)</td></tr>
                             <tr><td><strong>Frosted Glass</strong></td><td data-zh="macOS 磨砂玻璃，Glassmorphism 标准实现" data-en="macOS Frosted Glass, standard Glassmorphism implementation">macOS 磨砂玻璃，Glassmorphism 标准实现</td><td data-zh="均匀模糊 + 低饱和度 + 磨砂质感" data-en="Uniform blur + low saturation + matte texture">均匀模糊 + 低饱和度 + 磨砂质感</td><td>backdrop-filter: blur() saturate()</td></tr>
-                            <tr><td><strong>Acrylic</strong></td><td data-zh="Microsoft Fluent Design 亚克力材质" data-en="Microsoft Fluent Design Acrylic material">Microsoft Fluent Design 亚克力材质</td><td data-zh="高模糊 + 噪点纹理 + 色调叠加" data-en="High blur + noise texture + tint overlay">高模糊 + 噪点纹理 + 色调叠加</td><td>backdrop-filter + SVG noise + tint overlay</td></tr>
-                            <tr><td><strong>Crystal Glass</strong></td><td data-zh="高透明水晶/宝石效果" data-en="High-transparency crystal/gem effect">高透明水晶/宝石效果</td><td data-zh="高透明 + 强高光 + 棱镜折射线" data-en="High transparency + strong highlights + prism refraction line">高透明 + 强高光 + 棱镜折射线</td><td>低模糊 + 强 ::before 高光 + ::after 折射线</td></tr>
                             <tr><td><strong>Translucent</strong></td><td data-zh="极简半透明，最大背景可见性" data-en="Minimal translucent, maximum background visibility">极简半透明，最大背景可见性</td><td data-zh="极低模糊 + 高透明度" data-en="Minimal blur + high transparency">极低模糊 + 高透明度</td><td>backdrop-filter: blur(8px) + 低透明度背景</td></tr>
                             <tr><td><strong>Skeuomorphic</strong></td><td data-zh="拟物化玻璃，模拟真实玻璃物理特性" data-en="Skeuomorphic glass, simulating real glass physical properties">拟物化玻璃，模拟真实玻璃物理特性</td><td data-zh="真实反射 + 折射 + 阴影 + 高光" data-en="Realistic reflection + refraction + shadows + highlights">真实反射 + 折射 + 阴影 + 高光</td><td>多层伪元素 + 复杂 box-shadow + SVG 滤镜</td></tr>
                         </tbody>
@@ -537,7 +503,6 @@
                             <tr><td><code>--lg-input-bg</code></td><td>rgba(255,255,255,0.6)</td><td data-zh="输入框背景" data-en="Input background">输入框背景</td></tr>
                             <tr><td><code>--lg-radius-md</code></td><td>14px</td><td data-zh="中等圆角" data-en="Medium border radius">中等圆角</td></tr>
                             <tr><td><code>--lg-frosted-blur</code></td><td>20px</td><td data-zh="毛玻璃模糊值" data-en="Frosted glass blur value">毛玻璃模糊值</td></tr>
-                            <tr><td><code>--lg-acrylic-blur</code></td><td>30px</td><td data-zh="亚克力模糊值" data-en="Acrylic blur value">亚克力模糊值</td></tr>
                             <tr><td><code>--lg-translucent-blur</code></td><td>8px</td><td data-zh="半透明模糊值" data-en="Translucent blur value">半透明模糊值</td></tr>
                         </tbody>
                     </table>
@@ -617,30 +582,30 @@
                 <h2><i class="bi bi-heart"></i> <span data-zh="致谢" data-en="Credits">致谢</span></h2>
                 <p data-zh="本项目融合了以下优秀开源项目的设计理念和技术实现：" data-en="This project is a fusion of ideas and techniques from these amazing open-source projects:">本项目融合了以下优秀开源项目的设计理念和技术实现：</p>
                 <div class="credits-grid">
-                    <a href="https://github.com/lucasromerodb/liquid-glass-effect-macos" class="credit-card" target="_blank">
+                    <div class="credit-card">
                         <div class="credit-icon">🧊</div>
-                        <div><h4>lucasromerodb/liquid-glass-effect-macos</h4><p data-zh="多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光" data-en="Multi-layer backdrop-filter, pseudo-element highlights, 3D shadows, rotating highlights">多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光</p></div>
-                    </a>
-                    <a href="https://github.com/shuding/liquid-glass" class="credit-card" target="_blank">
+                        <div><h4>lucasromerodb/liquid-glass-effect-macos</h4><p data-zh="多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光、滚动背景动画" data-en="Multi-layer backdrop-filter, pseudo-element highlights, 3D shadows, rotating highlights, scrolling background animation">多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光、滚动背景动画</p></div>
+                    </div>
+                    <div class="credit-card">
                         <div class="credit-icon">🔮</div>
-                        <div><h4>shuding/liquid-glass</h4><p data-zh="SVG 滤镜折射、实时鼠标位置追踪" data-en="SVG filter refraction, real-time mouse position tracking">SVG 滤镜折射、实时鼠标位置追踪</p></div>
-                    </a>
-                    <a href="https://github.com/rdev/liquid-glass-react" class="credit-card" target="_blank">
+                        <div><h4>shuding/liquid-glass</h4><p data-zh="Canvas 位移贴图、roundedRectSDF、SVG feImage+feDisplacementMap" data-en="Canvas displacement map, roundedRectSDF, SVG feImage+feDisplacementMap">Canvas 位移贴图、roundedRectSDF、SVG feImage+feDisplacementMap</p></div>
+                    </div>
+                    <div class="credit-card">
                         <div class="credit-icon">⚛️</div>
-                        <div><h4>rdev/liquid-glass-react</h4><p data-zh="组件化设计、渐变高光、弹性缓动、色差效果" data-en="Component-based design, gradient highlights, elastic easing, chromatic aberration">组件化设计、渐变高光、弹性缓动、色差效果</p></div>
-                    </a>
-                    <a href="https://github.com/wxperia/liquid-glass-vue" class="credit-card" target="_blank">
+                        <div><h4>rdev/liquid-glass-react</h4><p data-zh="色差效果、弹性鼠标跟随、方向性缩放拉伸、渐变边框" data-en="Chromatic aberration, elastic mouse following, directional stretch, gradient border">色差效果、弹性鼠标跟随、方向性缩放拉伸、渐变边框</p></div>
+                    </div>
+                    <div class="credit-card">
                         <div class="credit-icon">💚</div>
-                        <div><h4>wxperia/liquid-glass-vue</h4><p data-zh="鼠标追光、深色模式、可变模糊、涟漪效果" data-en="Mouse light tracking, dark mode, variable blur, ripple effects">鼠标追光、深色模式、可变模糊、涟漪效果</p></div>
-                    </a>
-                    <a href="https://www.liquid-glass.pro/" class="credit-card" target="_blank">
+                        <div><h4>wxperia/liquid-glass-vue</h4><p data-zh="6种着色器效果、滚动 overLight 检测、深浅色主题切换" data-en="6 shader effects, scroll overLight detection, dark/light theme switching">6种着色器效果、滚动 overLight 检测、深浅色主题切换</p></div>
+                    </div>
+                    <div class="credit-card">
                         <div class="credit-icon">✨</div>
                         <div><h4>liquid-glass.pro</h4><p data-zh="设计系统方法论、CSS 变量架构、滚动动画" data-en="Design system methodology, CSS variable architecture, scroll animations">设计系统方法论、CSS 变量架构、滚动动画</p></div>
-                    </a>
-                    <a href="https://www.cnblogs.com/moranjl/p/18960018" class="credit-card" target="_blank">
+                    </div>
+                    <div class="credit-card">
                         <div class="credit-icon">🌊</div>
-                        <div><h4 data-zh="液态玻璃技术博客" data-en="Liquid Glass Tech Blog">液态玻璃技术博客</h4><p data-zh="液态玻璃效果阐述、音乐播放器按钮实现、SVG 折射分析" data-en="Liquid Glass effect explanation, music player button implementation, SVG refraction analysis">液态玻璃效果阐述、音乐播放器按钮实现、SVG 折射分析</p></div>
-                    </a>
+                        <div><h4 data-zh="液态玻璃技术博客" data-en="Liquid Glass Tech Blog">液态玻璃技术博客</h4><p data-zh="4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射" data-en="4-layer liquid glass structure, music player button, mask-composite:exclude edge refraction">4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射</p></div>
+                    </div>
                 </div>
             </div>
 

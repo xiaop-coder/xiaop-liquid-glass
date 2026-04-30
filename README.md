@@ -2,9 +2,9 @@
 
 # 💧 XiaoP Liquid Glass
 
-**小P液态玻璃设计系统 — iOS 26 Liquid Glass (SVG边缘折射) + macOS Frosted Glass + Microsoft Acrylic**
+**小P液态玻璃设计系统 — Apple iOS 26 Liquid Glass (Canvas位移贴图+SVG边缘折射+4层渲染)**
 
-纯 CSS + JS 实现多种玻璃效果的设计系统。液态玻璃核心：SVG feDisplacementMap 边缘折射 + 四边内高光 + 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
+纯 CSS + JS 实现的液态玻璃设计系统。核心技术：Canvas 生成位移贴图 → SVG feImage+feDisplacementMap 边缘折射 → mask-composite:exclude 仅边缘可见 → 4层结构(outer/cover/sharp/reflect) → 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-zero-green.svg)](package.json)
@@ -13,7 +13,7 @@
 
 [中文](#中文) · [English](#english) · [日本語](#日本語) · [한국어](#한국어) · [Русский](#русский)
 
-[🎮 在线演示](#-演示) · [🚀 快速开始](#-快速开始) · [🔮 玻璃效果](#-玻璃效果风格) · [📦 组件列表](#-组件列表) · [🎨 CSS变量](#-css变量) · [🙏 致谢](#致谢)
+[🎮 在线演示](#-演示) · [🚀 快速开始](#-快速开始) · [🔮 玻璃效果](#-玻璃效果风格) · [📦 组件列表](#-组件列表) · [✨ 交互效果](#-交互效果) · [🙏 致谢](#致谢)
 
 </div>
 
@@ -25,13 +25,14 @@
 
 ### ✨ 特性
 
-- **6 种玻璃效果风格** — 液态玻璃（SVG折射）、毛玻璃、亚克力、水晶玻璃、半透明、标准玻璃卡片
-- **50+ CSS 变量** — 完整的 `--lg-*` 设计令牌系统，每种效果独立变量
+- **4 种玻璃效果风格** — 液态玻璃（Canvas位移+SVG折射）、毛玻璃、半透明、标准玻璃卡片
+- **50+ CSS 变量** — 完整的 `--lg-*` 设计令牌系统
 - **35+ 组件** — 卡片、按钮、输入框、徽章、警告框、下拉框、弹窗、导航等
-- **7 种 JS 交互效果** — 鼠标追光、滚动模糊、点击涟漪、入场动画、页面切换、3D 倾斜、SVG折射滤镜
-- **液态玻璃 vs 毛玻璃** — 液态玻璃 = 边缘折射(SVG feDisplacementMap) + 四边高光 + 活跃态高透切换；毛玻璃 = 仅 backdrop-filter 模糊
+- **13 种 JS 交互效果** — 弹性鼠标跟随、色差效果、3D倾斜、鼠标追光、点击涟漪、入场动画、滚动背景、点击弹跳、鼠标光晕、SVG折射滤镜等
+- **4层液态玻璃结构** — outer(SVG折射+mask边缘) + cover(模糊覆盖) + sharp(四边高光) + reflect(柔和反射)
+- **Canvas 位移贴图** — roundedRectSDF + smoothStep 生成真实折射贴图，通过 feImage 注入 SVG 滤镜
 - **自动深色模式** — 跟随 `prefers-color-scheme`，支持变量覆盖
-- **自动转换下拉框** — 所有 `<select class="form-select">` 自动转为液态玻璃下拉组件
+- **背景切换器** — 每个演示页均可切换背景（URL/上传/预设），体验不同背景下的玻璃效果
 - **零依赖** — 纯 CSS + 原生 JavaScript，无需任何框架
 - **完全响应式** — 移动端优先设计
 
@@ -39,11 +40,8 @@
 
 | 风格 | CSS 类名 | 灵感来源 | 特点 |
 |------|----------|----------|------|
-| 液态玻璃 | `.liquid-glass` | Apple iOS 26 | SVG边缘折射 + 四边内高光 + 活跃态高透切换 |
-| 液态玻璃折射 | `.liquid-glass-refract` | Apple iOS 26 | 启用SVG feDisplacementMap边缘像素位移 |
+| 液态玻璃 | `.liquid-glass` | Apple iOS 26 | Canvas位移贴图+SVG边缘折射+4层结构+活跃态高透切换 |
 | 毛玻璃 | `.frosted-card` | macOS | 中等模糊 + 低饱和度，磨砂质感（Glassmorphism） |
-| 亚克力 | `.acrylic-card` | Microsoft Fluent Design | 高模糊 + 噪点纹理 + 色调叠加 |
-| 水晶玻璃 | `.crystal-card` | 高端展示场景 | 高透明 + 强高光 + 棱镜折射线 |
 | 半透明 | `.translucent-card` | 信息密集界面 | 极低模糊 + 高透明度 |
 | 标准玻璃 | `.glass-card` | Glassmorphism | backdrop-filter模糊 + 顶部高光 |
 | 3D 深度 | `.glass3d` | macOS 液态玻璃 | 多层阴影 + 伪元素高光 + 噪点纹理 |
@@ -52,12 +50,13 @@
 
 | 演示 | 说明 |
 |------|------|
-| [玻璃效果对比](demos/glass-styles.html) | 6种玻璃效果对比展示、液态vs毛玻璃技术分析、SVG折射演示 |
-| [登录页](demos/login.html) | 液态玻璃登录表单，带图标输入框和弹性动画 |
-| [注册页](demos/register.html) | 注册表单，带液态玻璃下拉框和网格布局 |
-| [导航页](demos/navigation.html) | 固定导航栏、侧边栏、标签栏组件 |
+| [玻璃效果对比](demos/glass-styles.html) | 4种玻璃效果对比展示、技术定义 |
+| [登录页](demos/login.html) | 液态玻璃登录表单，3D倾斜+背景切换 |
+| [注册页](demos/register.html) | 液态玻璃注册表单，3D倾斜+点击弹跳 |
+| [导航页](demos/navigation.html) | 液态玻璃导航栏、侧边栏、标签栏、弹性鼠标跟随 |
 | [下拉选择](demos/select.html) | 自动转换的选择组件，含动态添加演示 |
 | [全部组件](demos/components.html) | 按钮、徽章、警告框、输入框、进度条、3D卡片 |
+| [音乐播放器](demos/liquid-glass-player.html) | 4层液态玻璃结构音乐播放器 |
 
 ### 🚀 快速开始
 
@@ -74,11 +73,6 @@
 npm install xiaop-liquid-glass
 ```
 
-```html
-<link rel="stylesheet" href="node_modules/xiaop-liquid-glass/dist/liquid-glass.css">
-<script src="node_modules/xiaop-liquid-glass/dist/liquid-glass.js"></script>
-```
-
 #### 最小示例
 
 ```html
@@ -88,23 +82,15 @@ npm install xiaop-liquid-glass
   <link rel="stylesheet" href="dist/liquid-glass.css">
 </head>
 <body>
-  <!-- 液态玻璃卡片 -->
   <div class="liquid-glass" style="padding: 24px; max-width: 400px; margin: 100px auto;">
     <h2>你好，液态玻璃！</h2>
-    <p>边缘折射 + 四边高光 + 活跃态切换。</p>
+    <p>Canvas位移贴图 + SVG边缘折射 + 4层结构</p>
     <button class="liquid-glass-btn">点击体验</button>
   </div>
 
-  <!-- 毛玻璃卡片 -->
   <div class="frosted-card" style="padding: 24px; max-width: 400px; margin: 20px auto;">
     <h2>毛玻璃效果</h2>
     <p>macOS 风格的磨砂玻璃质感。</p>
-  </div>
-
-  <!-- 亚克力卡片 -->
-  <div class="acrylic-card" style="padding: 24px; max-width: 400px; margin: 20px auto;">
-    <h2>亚克力效果</h2>
-    <p>Microsoft Fluent Design 风格，带噪点纹理。</p>
   </div>
 
   <script src="dist/liquid-glass.js"></script>
@@ -117,17 +103,13 @@ npm install xiaop-liquid-glass
 | 组件 | CSS 类名 | 说明 |
 |------|----------|------|
 | **液态玻璃组件** | | |
-| 液态玻璃容器 | `.liquid-glass` | SVG边缘折射 + 四边高光 + 活跃态切换 |
-| 液态玻璃折射 | `.liquid-glass-refract` | 启用SVG feDisplacementMap边缘像素位移 |
-| 液态玻璃活跃态 | `.liquid-glass-active` | 去除模糊，变为高透玻璃 |
+| 液态玻璃容器 | `.liquid-glass` | Canvas位移+SVG边缘折射+4层结构+活跃态切换 |
 | 液态玻璃按钮 | `.liquid-glass-btn` | 胶囊形按钮，按下切换高透 |
 | 液态玻璃胶囊 | `.liquid-glass-pill` | 小胶囊/切换按钮，活跃态高透 |
 | 液态玻璃导航 | `.liquid-glass-nav` | 导航栏，含折射线和顶部高光 |
 | **玻璃效果卡片** | | |
-| 液态玻璃卡片 | `.glass-card` | Glassmorphism，高光 + 折射 |
+| 标准玻璃卡片 | `.glass-card` | Glassmorphism，高光 + 折射 |
 | 毛玻璃卡片 | `.frosted-card` | macOS 磨砂质感 |
-| 亚克力卡片 | `.acrylic-card` | Fluent Design，噪点 + 色调 |
-| 水晶玻璃卡片 | `.crystal-card` | 高透明 + 棱镜折射线 |
 | 半透明卡片 | `.translucent-card` | 极简半透明 |
 | 3D 玻璃卡片 | `.glass3d` | 多层阴影 + 伪元素高光 |
 | **基础组件** | | |
@@ -136,91 +118,48 @@ npm install xiaop-liquid-glass
 | 玻璃导航栏 | `.glass-nav` | 模糊 + 折射光线 |
 | 玻璃徽章 | `.glass-badge-*` | success / warning / danger / info |
 | 玻璃警告框 | `.glass-alert-*` | 颜色变体通知横幅 |
-| 玻璃区块 | `.glass-section` | 可配置玻璃区块 |
-| 玻璃标签栏 | `.glass-tab-bar` / `.glass-tab-item` | 分段标签控件 |
-| 玻璃搜索框 | `.glass-search-box` | 搜索容器 |
-| 玻璃表单框 | `.glass-form-box` | 表单容器 |
-| 玻璃页脚 | `.glass-footer` | 页脚 |
-| 玻璃遮罩 | `.glass-overlay` | 弹窗遮罩 |
-| 玻璃弹窗 | `.glass-modal` | 深度模糊弹窗 |
-| 玻璃分割线 | `.glass-divider` | 渐变分割线 |
 | 液态下拉框 | `.liquid-glass-dropdown` | 自动转换的 select |
-| **效果类** | | |
+
+### ✨ 交互效果
+
+| 效果 | CSS 类名 | 说明 |
+|------|----------|------|
+| 弹性鼠标跟随 | `.glass-elastic` | 鼠标靠近时卡片弹性拉伸跟随，方向性缩放 |
+| 色差效果 | `.glass-chromatic` | 悬停时RGB通道分离色差效果 |
+| 鼠标光晕 | `.glass-mouse-glow` | 鼠标悬停时径向光晕跟随 |
+| 点击弹跳 | `.glass-click-bounce` | 点击时弹性缩放反馈 |
+| 3D 倾斜 | `.glass-tilt` | 鼠标跟随 3D 倾斜交互 |
 | 鼠标追光 | `.glass-light-track` | 鼠标跟随径向渐变 |
 | 旋转高光 | `.glass-rotating-highlight` | 圆锥渐变旋转（8秒循环） |
-| 渐变模糊 | `.glass-variable-blur` | 渐变遮罩模糊 |
+| 滚动背景 | `.glass-scrolling-bg` | 背景图片持续滚动 |
 | 入场动画 | `.glass-entrance` | IntersectionObserver 淡入 |
 | 入场延迟 | `.glass-entrance-delay-1~5` | 入场延迟 |
-| 页面切换 | `.glass-page-transition` | 缩放 + 模糊切换动画 |
 | 浮动动画 | `.glass-float` | 轻柔浮动（6秒循环） |
 | 脉冲发光 | `.glass-pulse-glow` | 双色阴影脉冲 |
 | 涟漪效果 | `.glass-ripple-container` | 点击涟漪动画 |
-| 淡入淡出 | `.glass-fade-enter` / `.glass-fade-leave` | 淡入淡出 |
-| 3D 倾斜 | `.glass-tilt` | 鼠标跟随 3D 倾斜交互 |
-
-### 🎨 CSS变量
-
-所有变量使用 `--lg-*` 前缀，自动支持深色/浅色模式切换：
-
-```css
-:root {
-  /* 液态玻璃 */
-  --lg-glass-bg: rgba(255, 255, 255, 0.65);
-  --lg-glass-border: rgba(255, 255, 255, 0.8);
-
-  /* 毛玻璃 */
-  --lg-frosted-bg: rgba(255, 255, 255, 0.45);
-  --lg-frosted-blur: 20px;
-
-  /* 亚克力 */
-  --lg-acrylic-bg: rgba(255, 255, 255, 0.55);
-  --lg-acrylic-blur: 30px;
-  --lg-acrylic-noise-opacity: 0.03;
-  --lg-acrylic-tint: rgba(0, 122, 255, 0.05);
-
-  /* 水晶玻璃 */
-  --lg-crystal-bg: rgba(255, 255, 255, 0.75);
-  --lg-crystal-border: rgba(255, 255, 255, 0.9);
-
-  /* 半透明 */
-  --lg-translucent-bg: rgba(255, 255, 255, 0.2);
-  --lg-translucent-blur: 8px;
-
-  /* 主题色 */
-  --lg-primary: #007aff;
-  --lg-secondary: #8b5cf6;
-  /* ... 50+ more variables */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --lg-glass-bg: rgba(255, 255, 255, 0.1);
-    --lg-frosted-bg: rgba(255, 255, 255, 0.08);
-    --lg-acrylic-bg: rgba(255, 255, 255, 0.1);
-    --lg-primary: #4cd964;
-    /* ... all variables auto-switch */
-  }
-}
-```
 
 ### 🛠 JavaScript API
 
 ```javascript
+// 自动初始化（DOMContentLoaded 时自动调用）
+initLiquidGlass();        // 为 .liquid-glass 元素自动创建4层子元素
 initAllSelects();         // 转换所有 <select class="form-select">
 initMouseTracking();      // 鼠标追光
 initScrollBlur();         // 导航栏滚动模糊
 initRippleEffect();       // 按钮点击涟漪
 initEntranceAnimations(); // IntersectionObserver 入场动画
-initTiltEffect();         // 3D 倾斜交互（.glass-tilt）
-initLiquidGlassRefraction(); // SVG feDisplacementMap 折射（.liquid-glass-refract）
+initTiltEffect();         // 3D 倾斜交互
+initElasticMouse();       // 弹性鼠标跟随
+initChromaticEffect();    // 色差效果
+initMouseGlow();          // 鼠标光晕
+initClickBounce();        // 点击弹跳
+initBackgroundSwitcher(); // 背景切换器
+initScrollingBackground();// 滚动背景
 
-// 动态添加内容后重新初始化：
+// 手动调用
 if (window.initLiquidGlassSelects) window.initLiquidGlassSelects();
-
-// 手动创建SVG折射滤镜：
 if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
-
-// 排除特定 select 不被转换：添加 class "no-liquid-glass"
+if (window.initLiquidGlass) window.initLiquidGlass();
 ```
 
 ---
@@ -231,65 +170,22 @@ if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
 
 ### ✨ Features
 
-- **6 Glass Effect Styles** — Liquid Glass (SVG refraction), Frosted Glass, Acrylic, Crystal Glass, Translucent, Standard Glass
-- **50+ CSS Variables** — Complete `--lg-*` design token system with per-style variables
-- **35+ Components** — Cards, buttons, inputs, badges, alerts, dropdowns, modals, navigation, and more
-- **7 JS Effects** — Mouse tracking, scroll blur, ripple, entrance animations, page transitions, 3D tilt, SVG refraction filter
-- **Liquid Glass vs Glassmorphism** — Liquid Glass = edge refraction (SVG feDisplacementMap) + 4-side highlights + active state high-transparency; Glassmorphism = backdrop-filter blur only
-- **Auto Dark Mode** — Follows `prefers-color-scheme` with full variable override support
-- **Auto Select Transform** — All `<select class="form-select">` elements are automatically converted
-- **Zero Dependencies** — Pure CSS + vanilla JavaScript, no framework required
-- **Fully Responsive** — Mobile-first design with adaptive layouts
-
-### 🔮 Glass Effect Styles
-
-| Style | CSS Class | Inspired By | Key Feature |
-|-------|-----------|-------------|-------------|
-| Liquid Glass | `.liquid-glass` | Apple iOS 26 | SVG edge refraction + 4-side highlights + active state |
-| Liquid Refract | `.liquid-glass-refract` | Apple iOS 26 | SVG feDisplacementMap edge pixel displacement |
-| Frosted Glass | `.frosted-card` | macOS | Medium blur + low saturation, matte finish (Glassmorphism) |
-| Acrylic | `.acrylic-card` | Microsoft Fluent Design | High blur + noise texture + color tint |
-| Crystal Glass | `.crystal-card` | Premium showcases | High transparency + strong highlight + prism line |
-| Translucent | `.translucent-card` | Info-dense UIs | Minimal blur + high transparency |
-| Standard Glass | `.glass-card` | Glassmorphism | backdrop-filter blur + top highlight |
-| 3D Depth | `.glass3d` | macOS Liquid Glass | Multi-layer shadows + pseudo-element highlights |
-
-### 🎮 Demos
-
-| Demo | Description |
-|------|-------------|
-| [Glass Styles](demos/glass-styles.html) | 6 glass effects comparison, Liquid vs Glassmorphism analysis, SVG refraction demo |
-| [Login Page](demos/login.html) | Glass morphism login form with icon inputs and elastic animations |
-| [Register Page](demos/register.html) | Registration form with glass dropdowns and grid layout |
-| [Navigation](demos/navigation.html) | Sticky header, sidebar navigation, and glass tab bar |
-| [Select / Dropdown](demos/select.html) | Auto-transformed select components with dynamic add demo |
-| [All Components](demos/components.html) | Buttons, badges, alerts, inputs, progress bars, 3D cards |
+- **4 Glass Effect Styles** — Liquid Glass (Canvas displacement + SVG refraction), Frosted Glass, Translucent, Standard Glass
+- **50+ CSS Variables** — Complete `--lg-*` design token system
+- **35+ Components** — Cards, buttons, inputs, badges, alerts, dropdowns, modals, navigation
+- **13 JS Effects** — Elastic mouse following, chromatic aberration, 3D tilt, mouse glow, click bounce, scrolling background, ripple, entrance animations, and more
+- **4-Layer Liquid Glass Structure** — outer (SVG refraction + mask edge) + cover (blur overlay) + sharp (4-side highlights) + reflect (soft reflections)
+- **Canvas Displacement Map** — roundedRectSDF + smoothStep generates real refraction map, injected via feImage into SVG filter
+- **Auto Dark Mode** — Follows `prefers-color-scheme`
+- **Background Switcher** — Every demo page can switch backgrounds (URL/upload/presets)
+- **Zero Dependencies** — Pure CSS + vanilla JavaScript
+- **Fully Responsive** — Mobile-first design
 
 ### 🚀 Quick Start
 
 ```html
 <link rel="stylesheet" href="dist/liquid-glass.css">
 <script src="dist/liquid-glass.js"></script>
-```
-
-### 🛠 JavaScript API
-
-```javascript
-initAllSelects();         // Transform all <select class="form-select">
-initMouseTracking();      // Mouse light tracking
-initScrollBlur();         // Navigation scroll blur
-initRippleEffect();       // Click ripple on buttons
-initEntranceAnimations(); // IntersectionObserver entrance
-initTiltEffect();         // 3D tilt interaction (.glass-tilt)
-initLiquidGlassRefraction(); // SVG feDisplacementMap refraction (.liquid-glass-refract)
-
-// After adding dynamic content:
-if (window.initLiquidGlassSelects) window.initLiquidGlassSelects();
-
-// Manually create SVG filter for refraction:
-if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
-
-// Exclude select: add class "no-liquid-glass"
 ```
 
 ---
@@ -300,13 +196,13 @@ if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
 
 ### ✨ 特徴
 
-- **5つのガラスエフェクト** — リキッドグラス、フロストグラス、アクリル、クリスタルグラス、半透明
-- **50以上のCSS変数** — `--lg-*`プレフィックスによる完全なデザイントークンシステム
+- **4つのガラスエフェクト** — リキッドグラス（Canvas変位+SVG屈折）、フロストグラス、半透明、スタンダードグラス
+- **50以上のCSS変数** — `--lg-*`デザイントークンシステム
 - **35以上のコンポーネント** — カード、ボタン、入力、バッジ、アラート、ドロップダウンなど
-- **6つのJSエフェクト** — マウストラッキング、スクロールブラー、リップル、エントランスアニメーション、ページ遷移、3Dチルト
+- **13のJSエフェクト** — 弾性マウス追従、色収差、3Dチルト、マウスグロー、クリックバウンスなど
+- **4層リキッドグラス構造** — outer + cover + sharp + reflect
 - **自動ダークモード** — `prefers-color-scheme`に追従
 - **依存関係ゼロ** — 純粋なCSS + バニラJavaScript
-- **完全レスポンシブ** — モバイルファーストデザイン
 
 ### 🚀 クイックスタート
 
@@ -323,13 +219,13 @@ if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
 
 ### ✨ 특징
 
-- **5가지 글래스 효과** — 리퀴드 글래스, 프로스티드 글래스, 아크릴, 크리스탈 글래스, 반투명
-- **50개 이상의 CSS 변수** — `--lg-*` 접두사를 사용한 완전한 디자인 토큰 시스템
+- **4가지 글래스 효과** — 리퀴드 글래스(Canvas 변위+SVG 굴절), 프로스티드 글래스, 반투명, 스탠다드 글래스
+- **50개 이상의 CSS 변수** — `--lg-*` 디자인 토큰 시스템
 - **35개 이상의 컴포넌트** — 카드, 버튼, 입력, 배지, 알림, 드롭다운 등
-- **6가지 JS 효과** — 마우스 추적, 스크롤 블러, 리플, 입장 애니메이션, 페이지 전환, 3D 틸트
+- **13가지 JS 효과** — 탄성 마우스 추적, 색수차, 3D 틸트, 마우스 글로우, 클릭 바운스 등
+- **4층 리퀴드 글래스 구조** — outer + cover + sharp + reflect
 - **자동 다크 모드** — `prefers-color-scheme` 따르기
 - **종속성 없음** — 순수 CSS + 바닐라 JavaScript
-- **완전 반응형** — 모바일 우선 디자인
 
 ### 🚀 빠른 시작
 
@@ -346,13 +242,13 @@ if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
 
 ### ✨ Особенности
 
-- **5 стилей стеклянных эффектов** — Жидкое стекло, матовое стекло, акрил, хрусталь, полупрозрачность
-- **50+ CSS-переменных** — Полная система дизайн-токенов с префиксом `--lg-*`
-- **35+ компонентов** — Карточки, кнопки, поля ввода, значки, уведомления, выпадающие списки и др.
-- **6 JS-эффектов** — Отслеживание мыши, размытие при прокрутке, волна, анимация появления, переходы страниц, 3D-наклон
+- **4 стиля стеклянных эффектов** — Жидкое стекло (Canvas смещение+SVG преломление), матовое стекло, полупрозрачность, стандартное стекло
+- **50+ CSS-переменных** — Система дизайн-токенов `--lg-*`
+- **35+ компонентов** — Карточки, кнопки, поля ввода, значки, уведомления, выпадающие списки
+- **13 JS-эффектов** — Упругое следование мышью, хроматическая аберрация, 3D-наклон, свечение мыши, отскок при клике и др.
+- **4-слойная структура** — outer + cover + sharp + reflect
 - **Автоматический тёмный режим** — Следует `prefers-color-scheme`
 - **Нулевые зависимости** — Чистый CSS + ванильный JavaScript
-- **Полная адаптивность** — Дизайн с приоритетом мобильных устройств
 
 ### 🚀 Быстрый старт
 
@@ -367,25 +263,18 @@ if (window.initLiquidGlassFilter) window.initLiquidGlassFilter();
 
 ## 🙏 致谢 / Credits
 
-本项目融合了以下优秀开源项目和资源的设计理念：
+本项目融合了以下优秀开源项目的设计理念和技术实现：
 
-| 项目 | 贡献 |
-|------|------|
-| [lucasromerodb/liquid-glass-effect-macos](https://github.com/lucasromerodb/liquid-glass-effect-macos) | 多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光 |
-| [shuding/liquid-glass](https://github.com/shuding/liquid-glass) | SVG 滤镜折射、实时鼠标位置追踪 |
-| [rdev/liquid-glass-react](https://github.com/rdev/liquid-glass-react) | 组件化设计、渐变高光、弹性缓动、色差效果 |
-| [wxperia/liquid-glass-vue](https://github.com/wxperia/liquid-glass-vue) | 鼠标追光、暗色模式、变量模糊、涟漪效果 |
-| [liquid-glass.pro](https://www.liquid-glass.pro/) | 设计系统方法论、CSS 变量体系、滚动动画 |
-| [JUNGHERZ/GlassKit](https://github.com/JUNGHERZ/GlassKit) | 纯 CSS 组件库、Design Tokens、深浅色模式 |
-| [crenspire/glass-ui](https://github.com/crenspire/glass-ui) | Glassmorphic 组件库、发光/微光/涟漪动画 |
-| [掘金 - CSS3液态水+毛玻璃实战](https://juejin.cn/post/7552755071567675419) | 液态变形、border-radius 动画、毛玻璃模式 |
-| [cnblogs - 液态玻璃效果阐述](https://www.cnblogs.com/moranjl/p/18960018) | 液态玻璃效果阐述、音乐播放器按钮实现、SVG折射分析 |
-| [知乎 - 墨迹：液态玻璃登录卡片](https://zhuanlan.zhihu.com/p/1953594596757071482) | 多层叠加、SVG 滤镜、3D 灵动倾斜交互 |
-| [Josh W Comeau - Next-level frosted glass](https://www.joshwcomeau.com/css/backdrop-filter/) | 渐变遮罩模糊、backdrop-filter 深度解析 |
+| 项目 | 学到的技术 |
+|------|-----------|
+| [lucasromerodb/liquid-glass-effect-macos](https://github.com/lucasromerodb/liquid-glass-effect-macos) | 多层 backdrop-filter、伪元素高光、3D 阴影、旋转高光、滚动背景动画 |
+| [shuding/liquid-glass](https://github.com/shuding/liquid-glass) | Canvas 位移贴图、roundedRectSDF、SVG feImage+feDisplacementMap |
+| [rdev/liquid-glass-react](https://github.com/rdev/liquid-glass-react) | 色差效果、弹性鼠标跟随、方向性缩放拉伸、渐变边框 |
+| [wxperia/liquid-glass-vue](https://github.com/wxperia/liquid-glass-vue) | 6种着色器效果、滚动 overLight 检测、深浅色主题切换 |
+| [liquid-glass.pro](https://www.liquid-glass.pro/) | 设计系统方法论、CSS 变量架构、滚动动画 |
+| [cnblogs 液态玻璃技术博客](https://www.cnblogs.com/moranjl/p/18960018) | 4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射 |
 
 ## 🤖 AI 辅助开发 / AI Assisted
-
-本项目在开发过程中使用了 AI 辅助工具：
 
 - **AI 模型**：GLM-5.1（由 Trae IDE 集成）
 - **辅助范围**：CSS 组件设计、JS 交互效果实现、代码审查与优化、文档编写

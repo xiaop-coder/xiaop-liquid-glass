@@ -3,34 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>XiaoP Liquid Glass - 导航页演示</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../dist/liquid-glass.css" rel="stylesheet">
     <style>
-        :root {
-            --nav-highlight: rgba(255,255,255,0.08);
-            --nav-refraction: rgba(255,255,255,0.5);
-            --sidebar-highlight: rgba(255,255,255,0.06);
-            --sidebar-refraction: rgba(255,255,255,0.2);
-            --card-highlight: rgba(255,255,255,0.1);
-            --card-highlight-diagonal: rgba(255,255,255,0.1);
-            --btn-highlight: rgba(255,255,255,0.15);
-            --tab-highlight: rgba(255,255,255,0.06);
-            --content-highlight: rgba(255,255,255,0.06);
-        }
-        @media (prefers-color-scheme: light) {
-            :root {
-                --nav-highlight: rgba(255,255,255,0.6);
-                --nav-refraction: rgba(0,0,0,0.08);
-                --sidebar-highlight: rgba(255,255,255,0.7);
-                --sidebar-refraction: rgba(0,0,0,0.06);
-                --card-highlight: rgba(255,255,255,0.8);
-                --card-highlight-diagonal: rgba(255,255,255,0.5);
-                --btn-highlight: rgba(255,255,255,0.4);
-                --tab-highlight: rgba(255,255,255,0.5);
-                --content-highlight: rgba(255,255,255,0.5);
-            }
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -43,105 +20,40 @@
             content: ""; position: fixed; inset: 0; z-index: -1;
             background:
                 radial-gradient(ellipse at 20% 20%, rgba(0,122,255,0.15), transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.15), transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(255,107,157,0.08), transparent 60%);
+                radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.15), transparent 50%);
             pointer-events: none;
         }
         .nav-container {
             position: sticky; top: 0; z-index: 100;
-            background: var(--lg-header-bg);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid var(--lg-header-border);
-            box-shadow: 0 4px 30px var(--lg-glass-shadow), var(--lg-glass-inner-highlight);
             padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
             height: 64px; overflow: hidden;
         }
-        .nav-container::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--nav-highlight), transparent);
-            pointer-events: none;
-        }
-        .nav-container::after {
-            content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--nav-refraction), transparent);
-            pointer-events: none;
-        }
-        .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); position: relative; z-index: 1; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); position: relative; z-index: 5; }
         .nav-brand i { font-size: 24px; background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: flex; gap: 4px; position: relative; z-index: 1; }
+        .nav-links { display: flex; gap: 4px; position: relative; z-index: 5; }
         .nav-link {
             padding: 8px 16px; border-radius: var(--lg-radius-sm); color: var(--lg-text-secondary);
             text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--lg-transition-fast);
-            position: relative;
         }
-        .nav-link:hover { background: var(--lg-item-hover); color: var(--lg-text-primary); }
-        .nav-link.active {
-            background: linear-gradient(135deg, rgba(0,122,255,0.15), rgba(139,92,246,0.15));
-            color: var(--lg-primary);
-        }
-        .nav-link.active::after {
-            content: ""; position: absolute; bottom: 0; left: 25%; right: 25%; height: 2px;
-            background: linear-gradient(90deg, var(--lg-primary), var(--lg-secondary));
-            border-radius: 1px;
-        }
-        .nav-actions { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: var(--lg-text-primary); }
+        .nav-link.active { background: linear-gradient(135deg, rgba(0,122,255,0.2), rgba(139,92,246,0.2)); color: var(--lg-primary); }
+        .nav-actions { display: flex; align-items: center; gap: 12px; position: relative; z-index: 5; }
         .nav-btn {
             padding: 8px 18px; border-radius: var(--lg-radius-sm); font-size: 13px; font-weight: 600;
             cursor: pointer; transition: var(--lg-transition); border: none; position: relative; overflow: hidden;
         }
-        .nav-btn-outline {
-            background: var(--lg-btn-ghost-bg); backdrop-filter: blur(10px);
-            border: 1px solid var(--lg-btn-ghost-border); color: var(--lg-text-primary);
-        }
-        .nav-btn-outline:hover { background: var(--lg-glass-hover); transform: translateY(-1px); }
-        .nav-btn-primary {
-            background: var(--lg-btn-primary-bg); backdrop-filter: blur(10px);
-            border: 1px solid var(--lg-btn-primary-border); color: #fff;
-            box-shadow: var(--lg-btn-primary-shadow);
-        }
+        .nav-btn-outline { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--lg-text-primary); }
+        .nav-btn-outline:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .nav-btn-primary { background: linear-gradient(135deg, rgba(0,122,255,0.5), rgba(139,92,246,0.5)); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
         .nav-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,122,255,0.4); }
-        .nav-btn-primary::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--btn-highlight), transparent);
-            border-radius: inherit; pointer-events: none;
-        }
         .content { padding: 40px 28px; max-width: 1100px; margin: 0 auto; }
         .demo-section { margin-bottom: 48px; }
-        .demo-section h2 {
-            color: var(--lg-text-primary); font-size: 20px; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .demo-section h2 i {
-            background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary));
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px;
-        }
+        .demo-section h2 { color: var(--lg-text-primary); font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .demo-section h2 i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px; }
         .demo-section > p { color: var(--lg-text-secondary); font-size: 14px; margin-bottom: 20px; line-height: 1.7; }
-        .layout-demo {
-            display: flex; gap: 24px; min-height: 420px;
-        }
-        .sidebar-nav {
-            background: var(--lg-sidebar-bg); backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border: 1px solid var(--lg-sidebar-border); border-radius: var(--lg-radius-xl);
-            padding: 16px 0; width: 260px; min-width: 260px;
-            box-shadow: 4px 0 24px rgba(0,0,0,0.15), var(--lg-glass-inner-highlight);
-            overflow: hidden; position: relative;
-        }
-        .sidebar-nav::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--sidebar-highlight), transparent);
-            pointer-events: none; border-radius: inherit;
-        }
-        .sidebar-nav::after {
-            content: ""; position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--sidebar-refraction), transparent);
-            pointer-events: none;
-        }
-        .sidebar-profile {
-            padding: 20px 20px 16px; display: flex; align-items: center; gap: 12px;
-            border-bottom: 1px solid var(--lg-divider); margin-bottom: 8px;
-        }
+        .layout-demo { display: flex; gap: 24px; min-height: 420px; }
+        .sidebar-nav { padding: 16px 0; width: 260px; min-width: 260px; overflow: hidden; position: relative; border-radius: var(--lg-radius-xl); }
+        .sidebar-profile { padding: 20px 20px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px; position: relative; z-index: 5; }
         .sidebar-avatar {
             width: 40px; height: 40px; border-radius: 12px;
             background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary));
@@ -152,124 +64,47 @@
         .sidebar-profile-info { flex: 1; }
         .sidebar-profile-name { font-size: 14px; font-weight: 600; color: var(--lg-text-primary); }
         .sidebar-profile-role { font-size: 11px; color: var(--lg-text-tertiary); }
-        .sidebar-nav .menu-section {
-            padding: 14px 20px 8px; font-size: 11px; text-transform: uppercase;
-            color: var(--lg-text-tertiary); letter-spacing: 1.5px; font-weight: 600;
-        }
+        .sidebar-nav .menu-section { padding: 14px 20px 8px; font-size: 11px; text-transform: uppercase; color: var(--lg-text-tertiary); letter-spacing: 1.5px; font-weight: 600; position: relative; z-index: 5; }
         .sidebar-nav .menu-item {
             display: flex; align-items: center; padding: 11px 20px; margin: 2px 10px;
             color: var(--lg-text-secondary); text-decoration: none;
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border-radius: var(--lg-radius-sm); border-left: 3px solid transparent;
-            font-weight: 500; font-size: 14px; position: relative;
+            font-weight: 500; font-size: 14px; position: relative; z-index: 5;
         }
-        .sidebar-nav .menu-item:hover {
-            background: var(--lg-item-hover); color: var(--lg-text-primary);
-            transform: translateX(4px);
-        }
-        .sidebar-nav .menu-item.active {
-            background: linear-gradient(135deg, rgba(0,122,255,0.15), rgba(139,92,246,0.15));
-            color: var(--lg-primary); border-left-color: var(--lg-primary);
-            box-shadow: 0 2px 8px rgba(0,122,255,0.1);
-        }
-        .sidebar-nav .menu-item.active::after {
-            content: ""; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--lg-primary); box-shadow: 0 0 8px var(--lg-indicator-glow);
-        }
+        .sidebar-nav .menu-item:hover { background: rgba(255,255,255,0.1); color: var(--lg-text-primary); transform: translateX(4px); }
+        .sidebar-nav .menu-item.active { background: linear-gradient(135deg, rgba(0,122,255,0.15), rgba(139,92,246,0.15)); color: var(--lg-primary); border-left-color: var(--lg-primary); }
         .sidebar-nav .menu-item i { margin-right: 12px; width: 20px; text-align: center; font-size: 16px; }
-        .sidebar-nav .menu-badge {
-            margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
-            background: rgba(255,59,48,0.15); color: var(--lg-danger);
-        }
-        .main-content {
-            flex: 1; display: flex; flex-direction: column; gap: 20px;
-        }
-        .content-header {
-            background: var(--lg-glass-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--lg-glass-border); border-radius: var(--lg-radius-lg);
-            padding: 24px; box-shadow: var(--lg-card-shadow), var(--lg-glass-inner-highlight);
-            overflow: hidden; position: relative;
-        }
-        .content-header::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--card-highlight), transparent);
-            pointer-events: none; border-radius: inherit;
-        }
-        .content-header h3 { font-size: 18px; font-weight: 700; color: var(--lg-text-primary); margin-bottom: 4px; position: relative; z-index: 1; }
-        .content-header p { font-size: 13px; color: var(--lg-text-secondary); position: relative; z-index: 1; }
+        .sidebar-nav .menu-badge { margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: rgba(255,59,48,0.15); color: var(--lg-danger); }
+        .main-content { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .content-header { padding: 24px; overflow: hidden; position: relative; border-radius: var(--lg-radius-lg); }
+        .content-header h3 { font-size: 18px; font-weight: 700; color: var(--lg-text-primary); margin-bottom: 4px; position: relative; z-index: 5; }
+        .content-header p { font-size: 13px; color: var(--lg-text-secondary); position: relative; z-index: 5; }
         .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .stat-card {
-            background: var(--lg-glass-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--lg-glass-border); border-radius: var(--lg-radius-lg);
-            padding: 20px; box-shadow: var(--lg-card-shadow), var(--lg-glass-inner-highlight);
-            overflow: hidden; position: relative;
+            padding: 20px; overflow: hidden; position: relative; border-radius: var(--lg-radius-lg);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .stat-card::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(135deg, var(--card-highlight-diagonal) 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
-            pointer-events: none; border-radius: inherit;
-        }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--lg-card-shadow-hover); }
-        .stat-card .stat-icon {
-            width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; margin-bottom: 12px; position: relative; z-index: 1;
-        }
+        .stat-card:hover { transform: translateY(-4px); }
+        .stat-card .stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; position: relative; z-index: 5; }
         .stat-icon-blue { background: rgba(0,122,255,0.15); color: var(--lg-primary); }
         .stat-icon-purple { background: rgba(139,92,246,0.15); color: var(--lg-secondary); }
         .stat-icon-green { background: rgba(52,199,89,0.15); color: var(--lg-success); }
-        .stat-card .stat-value { font-size: 24px; font-weight: 800; color: var(--lg-text-primary); position: relative; z-index: 1; }
-        .stat-card .stat-label { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 2px; position: relative; z-index: 1; }
-        .tab-bar {
-            display: flex; gap: 4px; padding: 6px;
-            background: var(--lg-glass-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--lg-glass-border); border-radius: var(--lg-radius-md);
-            box-shadow: var(--lg-card-shadow), var(--lg-glass-inner-highlight);
-            overflow: hidden; position: relative;
-        }
-        .tab-bar::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--tab-highlight), transparent);
-            pointer-events: none; border-radius: inherit;
-        }
+        .stat-card .stat-value { font-size: 24px; font-weight: 800; color: var(--lg-text-primary); position: relative; z-index: 5; }
+        .stat-card .stat-label { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 2px; position: relative; z-index: 5; }
+        .tab-bar { display: flex; gap: 4px; padding: 6px; overflow: hidden; position: relative; border-radius: var(--lg-radius-md); }
         .tab-item {
             padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
             color: var(--lg-text-secondary); cursor: pointer; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: none; background: none; position: relative; z-index: 1;
+            border: none; background: none; position: relative; z-index: 5;
         }
-        .tab-item:hover { color: var(--lg-text-primary); background: var(--lg-item-hover); }
-        .tab-item.active {
-            background: var(--lg-btn-primary-bg); color: #fff;
-            box-shadow: var(--lg-btn-primary-shadow); overflow: hidden;
-        }
-        .tab-item.active::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--btn-highlight), transparent);
-            border-radius: inherit; pointer-events: none;
-        }
-        .tab-content-area {
-            background: var(--lg-glass-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--lg-glass-border); border-radius: var(--lg-radius-lg);
-            padding: 24px; box-shadow: var(--lg-card-shadow);
-            min-height: 120px; position: relative; overflow: hidden;
-        }
-        .tab-content-area::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, var(--content-highlight), transparent);
-            pointer-events: none; border-radius: inherit;
-        }
-        .tab-content-area p { color: var(--lg-text-secondary); font-size: 14px; line-height: 1.7; position: relative; z-index: 1; }
+        .tab-item:hover { color: var(--lg-text-primary); background: rgba(255,255,255,0.1); }
+        .tab-item.active { background: linear-gradient(135deg, rgba(0,122,255,0.4), rgba(139,92,246,0.4)); color: #fff; }
+        .tab-content-area { padding: 24px; min-height: 120px; position: relative; overflow: hidden; border-radius: var(--lg-radius-lg); }
+        .tab-content-area p { color: var(--lg-text-secondary); font-size: 14px; line-height: 1.7; position: relative; z-index: 5; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
-        .breadcrumb-bar {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
-            font-size: 13px; color: var(--lg-text-tertiary);
-        }
+        .breadcrumb-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 13px; color: var(--lg-text-tertiary); }
         .breadcrumb-bar a { color: var(--lg-text-secondary); text-decoration: none; transition: color 0.2s; }
         .breadcrumb-bar a:hover { color: var(--lg-primary); }
         .breadcrumb-bar .separator { opacity: 0.4; }
@@ -282,7 +117,34 @@
     </style>
 </head>
 <body>
-    <div class="nav-container">
+    <div class="glass-bg-switcher">
+        <button class="glass-bg-switcher-btn" title="切换背景">🖼</button>
+    </div>
+    <div class="glass-bg-panel">
+        <h4>切换背景</h4>
+        <label>图片 URL</label>
+        <div class="glass-bg-url-row">
+            <input type="text" class="glass-bg-url-input" placeholder="输入图片直链...">
+            <button class="glass-bg-apply-btn">应用</button>
+        </div>
+        <div class="glass-bg-upload-area">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">拖拽图片或点击上传</div>
+            <input type="file" class="glass-bg-file-input" accept="image/*" style="display:none">
+        </div>
+        <label>预设背景</label>
+        <div class="glass-bg-presets">
+            <div class="glass-bg-preset" data-url="https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880" style="background-image:url(https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880)"></div>
+            <div class="glass-bg-preset" data-url="https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=100&auto=format&fit=crop&q=60)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920&auto=format&fit=crop&q=60" style="background-image:url(https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=100&auto=format&fit=crop&q=60)"></div>
+        </div>
+        <button class="glass-bg-reset">恢复默认背景</button>
+    </div>
+
+    <div class="nav-container liquid-glass-nav">
         <div class="nav-brand"><i class="bi bi-droplet-fill"></i> XiaoP Liquid Glass</div>
         <div class="nav-links">
             <a href="#" class="nav-link active">Home</a>
@@ -299,10 +161,10 @@
     <div class="content">
         <div class="demo-section glass-entrance">
             <h2><i class="bi bi-layout-sidebar"></i> Dashboard Layout</h2>
-            <p>完整的液态玻璃风格仪表盘布局，包含侧边栏导航、内容区域、统计卡片和标签栏。所有元素均使用 backdrop-filter 实现半透明磨砂效果，伪元素叠加高光和折射线。</p>
+            <p>完整的液态玻璃风格仪表盘布局，包含侧边栏导航、内容区域、统计卡片和标签栏。所有元素均使用4层液态玻璃结构（outer折射 + cover覆盖 + sharp高光 + reflect反射）。</p>
 
             <div class="layout-demo">
-                <div class="sidebar-nav glass-entrance glass-entrance-delay-1">
+                <div class="sidebar-nav liquid-glass glass-entrance glass-entrance-delay-1">
                     <div class="sidebar-profile">
                         <div class="sidebar-avatar">X</div>
                         <div class="sidebar-profile-info">
@@ -328,23 +190,23 @@
                         <span>Dashboard</span>
                     </div>
 
-                    <div class="content-header glass-entrance glass-entrance-delay-2">
+                    <div class="content-header liquid-glass glass-entrance glass-entrance-delay-2">
                         <h3>Welcome back, XiaoP 👋</h3>
                         <p>Here's what's happening with your projects today.</p>
                     </div>
 
                     <div class="stats-row">
-                        <div class="stat-card glass-entrance glass-entrance-delay-3">
+                        <div class="stat-card liquid-glass glass-elastic glass-entrance glass-entrance-delay-3">
                             <div class="stat-icon stat-icon-blue"><i class="bi bi-people"></i></div>
                             <div class="stat-value">2,847</div>
                             <div class="stat-label">Total Users</div>
                         </div>
-                        <div class="stat-card glass-entrance glass-entrance-delay-4">
+                        <div class="stat-card liquid-glass glass-elastic glass-entrance glass-entrance-delay-4">
                             <div class="stat-icon stat-icon-purple"><i class="bi bi-cart3"></i></div>
                             <div class="stat-value">1,234</div>
                             <div class="stat-label">Orders</div>
                         </div>
-                        <div class="stat-card glass-entrance glass-entrance-delay-5">
+                        <div class="stat-card liquid-glass glass-elastic glass-entrance glass-entrance-delay-5">
                             <div class="stat-icon stat-icon-green"><i class="bi bi-currency-dollar"></i></div>
                             <div class="stat-value">$48.5K</div>
                             <div class="stat-label">Revenue</div>
@@ -356,22 +218,22 @@
 
         <div class="demo-section glass-entrance">
             <h2><i class="bi bi-segmented-nav"></i> Glass Tab Bar</h2>
-            <p>液态玻璃分段控件，活跃标签使用渐变背景 + 高光覆盖层，切换时带有弹性缓动动画。</p>
-            <div class="tab-bar glass-entrance glass-entrance-delay-1" id="tabBar">
+            <p>液态玻璃分段控件，活跃标签使用渐变背景，切换时带有弹性缓动动画。</p>
+            <div class="tab-bar liquid-glass glass-entrance glass-entrance-delay-1" id="tabBar">
                 <button class="tab-item active" data-tab="overview">Overview</button>
                 <button class="tab-item" data-tab="analytics">Analytics</button>
                 <button class="tab-item" data-tab="reports">Reports</button>
                 <button class="tab-item" data-tab="settings">Settings</button>
             </div>
-            <div class="tab-content-area glass-entrance glass-entrance-delay-2" style="margin-top: 16px;">
+            <div class="tab-content-area liquid-glass glass-entrance glass-entrance-delay-2" style="margin-top: 16px;">
                 <div class="tab-pane active" id="tab-overview">
-                    <p><strong style="color: var(--lg-text-primary);">Overview</strong> — This is the overview panel. The tab bar above uses liquid glass styling with backdrop-filter blur and saturate. The active tab features a gradient background with a highlight overlay created by a ::before pseudo-element, and transitions use cubic-bezier elastic easing for a spring-like feel.</p>
+                    <p><strong style="color: var(--lg-text-primary);">Overview</strong> — This is the overview panel. The tab bar above uses liquid glass styling with the 4-layer structure: outer (edge refraction via SVG feDisplacementMap + mask-composite:exclude), cover (blur 2px + tint), sharp (4-side inset highlights), and reflect (soft inner reflections).</p>
                 </div>
                 <div class="tab-pane" id="tab-analytics">
-                    <p><strong style="color: var(--lg-text-primary);">Analytics</strong> — Analytics dashboard with real-time data visualization. All cards use the glass-card pattern: semi-transparent background + backdrop-filter blur + border highlight + inner shadow for depth. Hover effects include translateY lift and enhanced shadow.</p>
+                    <p><strong style="color: var(--lg-text-primary);">Analytics</strong> — Analytics dashboard with real-time data visualization. All cards use the liquid-glass class which auto-creates 4 child layers via JavaScript. The stat cards also have the glass-elastic class for elastic mouse-following stretch effect.</p>
                 </div>
                 <div class="tab-pane" id="tab-reports">
-                    <p><strong style="color: var(--lg-text-primary);">Reports</strong> — Generated reports with export options. The glass effect is achieved through multiple layers: a blurred background layer, a tinted overlay, and a shine layer with inset box-shadow for the highlight line at the top edge.</p>
+                    <p><strong style="color: var(--lg-text-primary);">Reports</strong> — Generated reports with export options. The liquid glass effect achieves edge-only refraction through mask-composite: exclude on the outer layer, making the SVG displacement map visible only at the 5px border area.</p>
                 </div>
                 <div class="tab-pane" id="tab-settings">
                     <p><strong style="color: var(--lg-text-primary);">Settings</strong> — Application settings and preferences. Each glass component follows the design token system with --lg-* CSS variables, ensuring consistent theming across light and dark modes via prefers-color-scheme.</p>
@@ -388,9 +250,7 @@
                 bar.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
                 this.classList.add('active');
                 var targetId = 'tab-' + this.dataset.tab;
-                document.querySelectorAll('.tab-pane').forEach(function(pane) {
-                    pane.classList.remove('active');
-                });
+                document.querySelectorAll('.tab-pane').forEach(function(pane) { pane.classList.remove('active'); });
                 var target = document.getElementById(targetId);
                 if (target) target.classList.add('active');
             });

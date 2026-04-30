@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>XiaoP Liquid Glass - 注册页演示</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../dist/liquid-glass.css" rel="stylesheet">
@@ -26,62 +27,55 @@
         }
         .register-card {
             width: 100%; max-width: 520px;
-            background: var(--lg-card-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-radius: var(--lg-radius-xl); border: 1px solid var(--lg-card-border);
-            box-shadow: var(--lg-card-shadow); overflow: hidden; position: relative; z-index: 1;
-        }
-        .register-card::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent);
-            border-radius: inherit; pointer-events: none;
+            border-radius: var(--lg-radius-xl); overflow: hidden; position: relative; z-index: 1;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.6);
+            cursor: default; will-change: transform;
         }
         .register-header {
             padding: 30px 32px 20px; text-align: center;
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(0, 122, 255, 0.3));
-            border-bottom: 1px solid var(--lg-divider);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative; z-index: 5;
         }
-        .register-header h1 { font-size: 22px; color: var(--lg-text-primary); margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .register-header p { color: var(--lg-text-secondary); font-size: 14px; }
-        .register-body { padding: 24px 32px; }
+        .register-header h1 { font-size: 22px; color: #fff; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .register-header p { color: rgba(255,255,255,0.7); font-size: 14px; }
+        .register-body { padding: 24px 32px; position: relative; z-index: 5; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { margin-bottom: 16px; }
-        .form-label { display: block; margin-bottom: 8px; color: var(--lg-text-primary); font-weight: 600; font-size: 13px; }
+        .form-label { display: block; margin-bottom: 8px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13px; }
         .form-control, .form-select {
             width: 100%; padding: 12px 16px;
-            border: 1px solid var(--lg-input-border); border-radius: var(--lg-radius-sm);
-            font-size: 14px; background: var(--lg-input-bg);
-            backdrop-filter: blur(10px); color: var(--lg-text-primary);
-            transition: var(--lg-transition-fast);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+            font-size: 14px; background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            color: #fff; transition: all 0.3s ease; outline: none;
         }
+        .form-control::placeholder { color: rgba(255,255,255,0.5); }
         .form-control:focus, .form-select:focus {
-            outline: none; border-color: var(--lg-input-focus-border);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1), var(--lg-glass-inner-highlight);
-            background: var(--lg-glass-hover);
+            background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
-        .form-control::placeholder { color: var(--lg-text-tertiary); }
-        .form-hint { font-size: 12px; color: var(--lg-text-tertiary); margin-top: 4px; }
+        .form-select option { background: rgba(0,0,0,0.8); color: #fff; }
+        .form-hint { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 14px 28px; background: var(--lg-btn-primary-bg); backdrop-filter: blur(10px);
-            color: #fff; border: 1px solid var(--lg-btn-primary-border);
-            border-radius: var(--lg-radius-sm); font-size: 15px; font-weight: 600;
-            cursor: pointer; box-shadow: var(--lg-btn-primary-shadow);
-            transition: var(--lg-transition); position: relative; overflow: hidden;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.5), rgba(139, 92, 246, 0.5));
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4); filter: brightness(1.1); }
-        .btn::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
-            border-radius: inherit; pointer-events: none;
-        }
-        .form-actions { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--lg-divider); }
-        .register-footer { text-align: center; padding: 16px 32px 24px; color: var(--lg-text-secondary); font-size: 13px; }
-        .register-footer a { color: var(--lg-primary); text-decoration: none; font-weight: 600; }
-        .register-footer a:hover { text-decoration: underline; }
-        .agreement { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--lg-text-secondary); margin-bottom: 16px; }
-        .agreement input { margin-top: 3px; accent-color: var(--lg-primary); }
-        .agreement a { color: var(--lg-primary); text-decoration: none; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3); }
+        .btn:active { transform: translateY(0); }
+        .form-actions { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .register-footer { text-align: center; padding: 16px 32px 24px; color: rgba(255,255,255,0.6); font-size: 13px; position: relative; z-index: 5; }
+        .register-footer a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; }
+        .register-footer a:hover { color: #fff; text-decoration: underline; }
+        .agreement { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+        .agreement input { margin-top: 3px; accent-color: #007aff; }
+        .agreement a { color: rgba(255,255,255,0.9); text-decoration: none; }
         @media (max-width: 560px) {
             .form-grid { grid-template-columns: 1fr; }
             .register-body { padding: 20px 24px; }
@@ -89,12 +83,37 @@
     </style>
 </head>
 <body>
+    <div class="glass-bg-switcher">
+        <button class="glass-bg-switcher-btn" title="切换背景">🖼</button>
+    </div>
+    <div class="glass-bg-panel">
+        <h4>切换背景</h4>
+        <label>图片 URL</label>
+        <div class="glass-bg-url-row">
+            <input type="text" class="glass-bg-url-input" placeholder="输入图片直链...">
+            <button class="glass-bg-apply-btn">应用</button>
+        </div>
+        <div class="glass-bg-upload-area">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">拖拽图片或点击上传</div>
+            <input type="file" class="glass-bg-file-input" accept="image/*" style="display:none">
+        </div>
+        <label>预设背景</label>
+        <div class="glass-bg-presets">
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920" style="background-image:url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=100)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=100)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920" style="background-image:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=100)"></div>
+            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920" style="background-image:url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100)"></div>
+        </div>
+        <button class="glass-bg-reset">恢复默认背景</button>
+    </div>
+
     <div class="page-bg">
         <div class="page-bg-color"></div>
         <div class="page-bg-overlay"></div>
     </div>
 
-    <div class="register-card glass-entrance">
+    <div class="register-card liquid-glass glass-tilt glass-entrance">
         <div class="register-header">
             <h1><i class="bi bi-person-plus"></i> Create Account</h1>
             <p>Fill in your details to get started</p>
@@ -147,7 +166,7 @@
                     <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn"><i class="bi bi-check-lg"></i> Create Account</button>
+                    <button type="submit" class="btn glass-click-bounce"><i class="bi bi-check-lg"></i> Create Account</button>
                 </div>
             </form>
         </div>
