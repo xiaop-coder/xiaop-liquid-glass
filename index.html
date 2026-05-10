@@ -230,6 +230,7 @@
             <a href="#components" class="nav-link" data-zh="组件" data-en="Components">组件</a>
             <a href="#glass-styles" class="nav-link" data-zh="玻璃效果" data-en="Glass Styles">玻璃效果</a>
             <a href="#variables" class="nav-link" data-zh="变量" data-en="Variables">变量</a>
+            <a href="#refraction-modes" class="nav-link" data-zh="折射与色调" data-en="Modes & Tints">折射与色调</a>
             <a href="#credits" class="nav-link" data-zh="致谢" data-en="Credits">致谢</a>
             <div class="lang-switch">
                 <button class="lang-btn active" data-lang="zh">中文</button>
@@ -285,6 +286,7 @@
                     <a href="#quick-start" class="liquid-glass-btn"><i class="bi bi-rocket-takeoff"></i> <span data-zh="快速开始" data-en="Get Started">快速开始</span></a>
                     <a href="https://github.com/xiaop-coder/xiaop-liquid-glass" target="_blank" class="liquid-glass-btn"><i class="bi bi-github"></i> GitHub</a>
                     <a href="demos/glass-styles.html" class="liquid-glass-btn"><i class="bi bi-play-circle"></i> <span data-zh="效果演示" data-en="Live Demo">效果演示</span></a>
+                    <a href="demos/generator.html" class="liquid-glass-btn"><i class="bi bi-magic"></i> <span data-zh="在线生成器" data-en="Generator">在线生成器</span></a>
                 </div>
             </div>
 
@@ -311,16 +313,18 @@
 
             <div class="doc-section" id="installation">
                 <h2><i class="bi bi-download"></i> <span data-zh="安装" data-en="Installation">安装</span></h2>
-                <h3>npm</h3>
+                <h3><span data-zh="方法一：直接下载" data-en="Method 1: Download">方法一：直接下载</span></h3>
+                <p data-zh="从 GitHub Releases 下载 dist/liquid-glass.css 和 dist/liquid-glass.js 两个文件，放入你的项目目录即可。" data-en="Download dist/liquid-glass.css and dist/liquid-glass.js from GitHub Releases, place them in your project directory.">从 GitHub Releases 下载 dist/liquid-glass.css 和 dist/liquid-glass.js 两个文件，放入你的项目目录即可。</p>
+                <h3><span data-zh="方法二：克隆仓库" data-en="Method 2: Clone Repo">方法二：克隆仓库</span></h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)" data-zh="复制" data-en="Copy">复制</button>
+                    <code>git clone https://github.com/xiaop-coder/xiaop-liquid-glass.git</code>
+                </div>
+                <h3>npm <span data-zh="（即将发布）" data-en="(Coming Soon)">（即将发布）</span></h3>
+                <p data-zh="npm 包即将发布。届时可按下方方式安装：" data-en="The npm package is coming soon. You will be able to install it with:">npm 包即将发布。届时可按下方方式安装：</p>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)" data-zh="复制" data-en="Copy">复制</button>
                     <code>npm install xiaop-liquid-glass</code>
-                </div>
-                <h3>CDN</h3>
-                <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)" data-zh="复制" data-en="Copy">复制</button>
-                    <code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"https://unpkg.com/xiaop-liquid-glass/dist/liquid-glass.css"</span><span class="tag">&gt;</span><br>
-<span class="tag">&lt;script</span> <span class="attr">src=</span><span class="val">"https://unpkg.com/xiaop-liquid-glass/dist/liquid-glass.js"</span><span class="tag">&gt;&lt;/script&gt;</span></code>
                 </div>
             </div>
 
@@ -349,7 +353,7 @@
 
             <div class="doc-section" id="liquid-glass-components">
                 <h2><i class="bi bi-droplet"></i> <span data-zh="液态玻璃组件" data-en="Liquid Glass Components">液态玻璃组件</span></h2>
-                <p data-zh="液态玻璃（Liquid Glass）是 Apple iOS 26 的核心视觉语言。与 Glassmorphism（毛玻璃）的本质区别：液态玻璃采用4层结构——outer层使用 SVG feDisplacementMap 边缘折射（mask-composite: exclude 仅边缘可见）+ cover层极低模糊 + sharp层四边锐利高光 + reflect层柔和反射。JS 自动为 .liquid-glass 元素创建4层子元素。" data-en="Liquid Glass is Apple iOS 26's core visual language. Key difference from Glassmorphism: Liquid Glass uses a 4-layer structure — outer layer with SVG feDisplacementMap edge refraction (mask-composite: exclude, edge-only visible) + cover layer with minimal blur + sharp layer with 4-side inset highlights + reflect layer with soft reflections. JS auto-creates 4 child layers for .liquid-glass elements.">液态玻璃（Liquid Glass）是 Apple iOS 26 的核心视觉语言。与 Glassmorphism（毛玻璃）的本质区别：液态玻璃采用4层结构——outer层使用 SVG feDisplacementMap 边缘折射（mask-composite: exclude 仅边缘可见）+ cover层极低模糊 + sharp层四边锐利高光 + reflect层柔和反射。JS 自动为 .liquid-glass 元素创建4层子元素。</p>
+                <p data-zh="液态玻璃（Liquid Glass）是 Apple iOS 26 的核心视觉语言。与 Glassmorphism（毛玻璃）的本质区别：液态玻璃采用4层结构——outer层使用 SDF 边缘折射（Canvas位移贴图+SVG feDisplacementMap，仅边缘可见）+ cover层极低模糊 + sharp层四边锐利高光 + reflect层柔和反射。JS 自动为 .liquid-glass 元素创建4层子元素。" data-en="Liquid Glass is Apple iOS 26's core visual language. Key difference from Glassmorphism: Liquid Glass uses a 4-layer structure — outer layer with SDF edge refraction (Canvas displacement map + SVG feDisplacementMap, edge-only visible) + cover layer with minimal blur + sharp layer with 4-side inset highlights + reflect layer with soft reflections. JS auto-creates 4 child layers for .liquid-glass elements.">液态玻璃（Liquid Glass）是 Apple iOS 26 的核心视觉语言。与 Glassmorphism（毛玻璃）的本质区别：液态玻璃采用4层结构——outer层使用 SDF 边缘折射（Canvas位移贴图+SVG feDisplacementMap，仅边缘可见）+ cover层极低模糊 + sharp层四边锐利高光 + reflect层柔和反射。JS 自动为 .liquid-glass 元素创建4层子元素。</p>
 
                 <div class="component-grid">
                     <div class="component-card liquid-glass glass-entrance">
@@ -370,7 +374,7 @@
                     <div class="component-card liquid-glass glass-entrance glass-entrance-delay-1">
                         <div class="props">
                             <span class="prop">SVG filter</span>
-                            <span class="prop">mask-composite</span>
+                            <span class="prop">SDF</span>
                             <span class="prop">edge-only</span>
                         </div>
                         <h4>4-Layer Structure</h4>
@@ -477,10 +481,10 @@
                             <tr><th>Effect</th><th data-zh="定义" data-en="Definition">定义</th><th data-zh="核心视觉" data-en="Key Visual">核心视觉</th><th data-zh="实现方式" data-en="Implementation">实现方式</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td><strong>Liquid Glass</strong></td><td data-zh="Apple iOS 26 动态材质，4层复合渲染：边缘折射+低模糊覆盖+锐利高光+柔和反射" data-en="Apple iOS 26 dynamic material, 4-layer composite: edge refraction + low blur cover + sharp highlights + soft reflections">Apple iOS 26 动态材质，4层复合渲染：边缘折射+低模糊覆盖+锐利高光+柔和反射</td><td data-zh="边缘折射(mask-composite:exclude) + 四边高光 + 活跃态高透" data-en="Edge refraction (mask-composite:exclude) + 4-side highlights + active state high-transparency">边缘折射(mask-composite:exclude) + 四边高光 + 活跃态高透</td><td>4-layer: outer(feDisplacementMap+mask) + cover(blur 2px) + sharp(inset shadow) + reflect(inset shadow)</td></tr>
+                            <tr><td><strong>Liquid Glass</strong></td><td data-zh="Apple iOS 26 动态材质，4层复合渲染：SDF边缘折射+低模糊覆盖+锐利高光+柔和反射" data-en="Apple iOS 26 dynamic material, 4-layer composite: SDF edge refraction + low blur cover + sharp highlights + soft reflections">Apple iOS 26 动态材质，4层复合渲染：SDF边缘折射+低模糊覆盖+锐利高光+柔和反射</td><td data-zh="SDF 原生边缘折射 + 四边高光 + 活跃态高透 + 4种折射模式" data-en="SDF native edge refraction + 4-side highlights + active state high-transparency + 4 refraction modes">SDF 原生边缘折射 + 四边高光 + 活跃态高透 + 4种折射模式</td><td>4-layer: outer(feDisplacementMap+SDF canvas) + cover(blur 2px saturate) + sharp(inset shadow) + reflect(inset shadow)</td></tr>
                             <tr><td><strong>Frosted Glass</strong></td><td data-zh="macOS 磨砂玻璃，Glassmorphism 标准实现" data-en="macOS Frosted Glass, standard Glassmorphism implementation">macOS 磨砂玻璃，Glassmorphism 标准实现</td><td data-zh="均匀模糊 + 低饱和度 + 磨砂质感" data-en="Uniform blur + low saturation + matte texture">均匀模糊 + 低饱和度 + 磨砂质感</td><td>backdrop-filter: blur() saturate()</td></tr>
                             <tr><td><strong>Translucent</strong></td><td data-zh="极简半透明，最大背景可见性" data-en="Minimal translucent, maximum background visibility">极简半透明，最大背景可见性</td><td data-zh="极低模糊 + 高透明度" data-en="Minimal blur + high transparency">极低模糊 + 高透明度</td><td>backdrop-filter: blur(8px) + 低透明度背景</td></tr>
-                            <tr><td><strong>Skeuomorphic</strong></td><td data-zh="拟物化玻璃，模拟真实玻璃物理特性" data-en="Skeuomorphic glass, simulating real glass physical properties">拟物化玻璃，模拟真实玻璃物理特性</td><td data-zh="真实反射 + 折射 + 阴影 + 高光" data-en="Realistic reflection + refraction + shadows + highlights">真实反射 + 折射 + 阴影 + 高光</td><td>多层伪元素 + 复杂 box-shadow + SVG 滤镜</td></tr>
+                            <tr><td><strong>3D Glass</strong></td><td data-zh="拟物化玻璃，模拟真实玻璃物理特性" data-en="3D skeuomorphic glass, simulating real glass physical properties">拟物化玻璃，模拟真实玻璃物理特性</td><td data-zh="真实反射 + 多层阴影 + 高光" data-en="Realistic reflection + layered shadows + highlights">真实反射 + 多层阴影 + 高光</td><td>.glass3d 多层伪元素 + 复杂 box-shadow + 噪点纹理</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -502,6 +506,7 @@
                             <tr><td><code>--lg-secondary</code></td><td>#8b5cf6</td><td data-zh="次强调色" data-en="Secondary accent color">次强调色</td></tr>
                             <tr><td><code>--lg-input-bg</code></td><td>rgba(255,255,255,0.6)</td><td data-zh="输入框背景" data-en="Input background">输入框背景</td></tr>
                             <tr><td><code>--lg-radius-md</code></td><td>14px</td><td data-zh="中等圆角" data-en="Medium border radius">中等圆角</td></tr>
+                            <tr><td><code>--lg-saturation</code></td><td>120%</td><td data-zh="玻璃色彩饱和度" data-en="Glass color saturation">玻璃色彩饱和度</td></tr>
                             <tr><td><code>--lg-frosted-blur</code></td><td>20px</td><td data-zh="毛玻璃模糊值" data-en="Frosted glass blur value">毛玻璃模糊值</td></tr>
                             <tr><td><code>--lg-translucent-blur</code></td><td>8px</td><td data-zh="半透明模糊值" data-en="Translucent blur value">半透明模糊值</td></tr>
                         </tbody>
@@ -533,13 +538,20 @@
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)" data-zh="复制" data-en="Copy">复制</button>
                     <code><span class="comment">// Auto-initialization (called automatically)</span><br>
-<span class="func">initLiquidGlass</span>();          <span class="comment">// Auto-create 4-layer structure + SVG filter for .liquid-glass elements</span><br><br>
+<span class="func">initLiquidGlass</span>();          <span class="comment">// Auto-create 4-layer structure + multi-mode SVG filters</span><br><br>
 <span class="comment">// After adding dynamic content:</span><br>
 <span class="keyword">if</span> (window.initLiquidGlassSelects) <span class="func">window.initLiquidGlassSelects</span>();<br>
 <span class="keyword">if</span> (window.initLiquidGlass) <span class="func">window.initLiquidGlass</span>();<br><br>
-<span class="comment">// 4-layer structure (auto-created by JS):</span><br>
-<span class="comment">// .liquid-glass-outer  → backdrop-filter: url(#liquid-glass-filter) + mask-composite: exclude (edge refraction)</span><br>
-<span class="comment">// .liquid-glass-cover  → backdrop-filter: blur(2px) + rgba(0,0,0,0.12) (glass cover)</span><br>
+<span class="comment">// DATA ATTRIBUTES (new):</span><br>
+<span class="comment">// data-liquid-glass        → auto-activate 4-layer structure</span><br>
+<span class="comment">// data-liquid-glass="btn"  → apply as button style</span><br>
+<span class="comment">// data-liquid-glass="card" → apply as card style</span><br>
+<span class="comment">// data-refraction-mode     → "standard" | "polar" | "prominent" | "frosted"</span><br>
+<span class="comment">// data-chromatic           → enable chromatic aberration</span><br>
+<span class="comment">// data-mouse-container     → "#containerId" for mouse tracking</span><br><br>
+<span class="comment">// 4-layer structure (auto-created by JS, SDF-native edge refraction):</span><br>
+<span class="comment">// .liquid-glass-outer  → filter: url(#lg-rf-standard) + SDF canvas (edge refraction)</span><br>
+<span class="comment">// .liquid-glass-cover  → backdrop-filter: blur(2px) saturate(120%) (glass cover)</span><br>
 <span class="comment">// .liquid-glass-sharp  → inset box-shadow (sharp edge highlights)</span><br>
 <span class="comment">// .liquid-glass-reflect → inset box-shadow (soft inner reflections)</span><br>
 <span class="comment">// .liquid-glass-content → z-index: 5 (actual content)</span><br><br>
@@ -553,7 +565,7 @@
                 <div class="component-grid">
                     <a href="demos/glass-styles.html" class="component-card liquid-glass glass-entrance" style="text-decoration: none; color: inherit;">
                         <h4><i class="bi bi-layers" style="color: var(--lg-primary);"></i> <span data-zh="玻璃效果对比" data-en="Glass Styles">玻璃效果对比</span></h4>
-                        <p data-zh="6 种玻璃效果对比展示，含液态玻璃 vs 毛玻璃技术分析" data-en="6 glass effects comparison with Liquid Glass vs Glassmorphism technical analysis">6 种玻璃效果对比展示，含液态玻璃 vs 毛玻璃技术分析</p>
+                        <p data-zh="4 种玻璃效果对比展示，含液态玻璃 vs 毛玻璃技术分析" data-en="4 glass effects comparison with Liquid Glass vs Glassmorphism technical analysis">4 种玻璃效果对比展示，含液态玻璃 vs 毛玻璃技术分析</p>
                     </a>
                     <a href="demos/login.html" class="component-card liquid-glass glass-entrance glass-entrance-delay-1" style="text-decoration: none; color: inherit;">
                         <h4><i class="bi bi-box-arrow-in-right" style="color: var(--lg-primary);"></i> <span data-zh="登录页" data-en="Login Page">登录页</span></h4>
@@ -575,6 +587,27 @@
                         <h4><i class="bi bi-grid-3x3-gap" style="color: var(--lg-danger);"></i> <span data-zh="全部组件" data-en="All Components">全部组件</span></h4>
                         <p data-zh="按钮、徽章、警告框、输入框、进度条、3D 卡片" data-en="Buttons, badges, alerts, inputs, progress bars, and 3D cards">按钮、徽章、警告框、输入框、进度条、3D 卡片</p>
                     </a>
+                </div>
+            </div>
+
+            <div class="doc-section" id="refraction-modes">
+                <h2><i class="bi bi-droplet"></i> <span data-zh="折射模式与色调" data-en="Refraction Modes & Tints">折射模式与色调</span></h2>
+                <p data-zh="4 种折射模式 + 6 种玻璃色调预设，通过 CSS 类或 data 属性使用：" data-en="4 refraction modes + 6 glass tint presets, via CSS classes or data attributes:">4 种折射模式 + 6 种玻璃色调预设，通过 CSS 类或 data 属性使用：</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)" data-zh="复制" data-en="Copy">复制</button>
+                    <code><span class="comment">&lt;!-- Refraction Modes --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass"</span> <span class="attr">data-refraction-mode</span>=<span class="val">"standard"</span>&gt;  <span class="comment">&lt;!-- SDF 边缘折射 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass"</span> <span class="attr">data-refraction-mode</span>=<span class="val">"polar"</span>&gt;    <span class="comment">&lt;!-- 极坐标折射，适合圆形 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass"</span> <span class="attr">data-refraction-mode</span>=<span class="val">"prominent"</span>&gt; <span class="comment">&lt;!-- 强化边缘折射 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass"</span> <span class="attr">data-refraction-mode</span>=<span class="val">"frosted"</span>&gt;  <span class="comment">&lt;!-- 仅模糊，无折射 --&gt;</span><br><br>
+<span class="comment">&lt;!-- Glass Tint Presets --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-blue"</span>&gt;   <span class="comment">&lt;!-- 蓝色 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-purple"</span>&gt; <span class="comment">&lt;!-- 紫色 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-amber"</span>&gt;  <span class="comment">&lt;!-- 琥珀色 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-rose"</span>&gt;   <span class="comment">&lt;!-- 粉色 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-mint"</span>&gt;   <span class="comment">&lt;!-- 薄荷色 --&gt;</span><br>
+&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="val">"liquid-glass lg-tint-sky"</span>&gt;    <span class="comment">&lt;!-- 天蓝色 --&gt;</span><br><br>
+<span class="comment">&lt;!-- Saturation: --lg-saturation CSS variable (50% - 300%) --&gt;</span></code>
                 </div>
             </div>
 
@@ -604,7 +637,7 @@
                     </div>
                     <div class="credit-card">
                         <div class="credit-icon">🌊</div>
-                        <div><h4 data-zh="液态玻璃技术博客" data-en="Liquid Glass Tech Blog">液态玻璃技术博客</h4><p data-zh="4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射" data-en="4-layer liquid glass structure, music player button, mask-composite:exclude edge refraction">4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射</p></div>
+                        <div><h4 data-zh="液态玻璃技术博客" data-en="Liquid Glass Tech Blog">液态玻璃技术博客</h4><p data-zh="4层液态玻璃结构、音乐播放器按钮实现、SDF 边缘折射技术" data-en="4-layer liquid glass structure, music player button, SDF edge refraction technique">4层液态玻璃结构、音乐播放器按钮实现、SDF 边缘折射技术</p></div>
                     </div>
                 </div>
             </div>

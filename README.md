@@ -4,7 +4,7 @@
 
 **小P液态玻璃设计系统 — Apple iOS 26 Liquid Glass (Canvas位移贴图+SVG边缘折射+4层渲染)**
 
-纯 CSS + JS 实现的液态玻璃设计系统。核心技术：Canvas 生成位移贴图 → SVG feImage+feDisplacementMap 边缘折射 → mask-composite:exclude 仅边缘可见 → 4层结构(outer/cover/sharp/reflect) → 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
+纯 CSS + JS 实现的液态玻璃设计系统。核心技术：Canvas 生成位移贴图 → SDF 边缘折射（SVG feImage+feDisplacementMap）→ 4层结构(outer/cover/sharp/reflect) → 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-zero-green.svg)](package.json)
@@ -67,11 +67,12 @@
 <script src="dist/liquid-glass.js"></script>
 ```
 
-#### 方式二：npm 安装
+#### 方式二：npm 安装（即将发布）
 
 ```bash
 npm install xiaop-liquid-glass
 ```
+> ⚠️ 目前 npm 包尚未发布，请使用方式一（直接下载 dist/ 文件）或 `git clone https://github.com/xiaop-coder/xiaop-liquid-glass.git`
 
 #### 最小示例
 
@@ -272,7 +273,7 @@ if (window.initLiquidGlass) window.initLiquidGlass();
 | [rdev/liquid-glass-react](https://github.com/rdev/liquid-glass-react) | 色差效果、弹性鼠标跟随、方向性缩放拉伸、渐变边框 |
 | [wxperia/liquid-glass-vue](https://github.com/wxperia/liquid-glass-vue) | 6种着色器效果、滚动 overLight 检测、深浅色主题切换 |
 | [liquid-glass.pro](https://www.liquid-glass.pro/) | 设计系统方法论、CSS 变量架构、滚动动画 |
-| [cnblogs 液态玻璃技术博客](https://www.cnblogs.com/moranjl/p/18960018) | 4层液态玻璃结构、音乐播放器按钮实现、mask-composite:exclude 边缘折射 |
+| [cnblogs 液态玻璃技术博客](https://www.cnblogs.com/moranjl/p/18960018) | 4层液态玻璃结构、音乐播放器按钮实现、SDF 边缘折射技术 |
 
 ## 🤖 AI 辅助开发 / AI Assisted
 
