@@ -1,8 +1,31 @@
+# Dependencies
 node_modules/
-.DS_Store
+package-lock.json
+
+# Build outputs
 *.log
-.env
-*.txt.html
-AI_MEMORY.md
-(2025-09-22)*.md
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*-old.*
+
+# Test files
+test-permission.txt
+
+# Reference projects (keep local only)
 reference-projects/
+xuexi/
+
+# Old project folder
+xiaop-liquid-glass/
