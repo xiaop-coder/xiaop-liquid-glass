@@ -2,6 +2,8 @@
 
 **终极液态玻璃设计系统 - 融合所有最佳实践**
 
+> ⚠️ **声明：** 这是一个个人使用AI辅助开发的娱乐项目，仅供学习和交流使用。项目灵感来源于多个优秀的开源液态玻璃效果实现，通过AI工具整合和优化而成。
+
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-zero-green.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue.svg)]()
