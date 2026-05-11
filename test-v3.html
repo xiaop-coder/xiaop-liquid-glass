@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XiaoP Liquid Glass v3.0 - 快速测试</title>
+  <link rel="stylesheet" href="dist/liquid-glass.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .test-card {
+      min-height: 180px;
+      cursor: pointer;
+    }
+
+    .test-card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+    }
+
+    .test-card p {
+      margin: 0;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .mode-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      margin: 0.5rem;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .status {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌊 XiaoP Liquid Glass v3.0</h1>
+    <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem;">
+      快速功能测试 - 8种SDF模式 + 交互效果
+    </p>
+
+    <div class="controls">
+      <button class="btn" onclick="testAllModes()">🔄 循环测试所有模式</button>
+      <button class="btn" onclick="testEffects()">✨ 测试交互效果</button>
+      <button class="btn" onclick="resetAll()">🔁 重置</button>
+    </div>
+
+    <div class="test-grid">
+      <div class="liquid-glass test-card" data-mode="standard">
+        <h3>Standard 标准</h3>
+        <p>圆角矩形SDF，经典液态玻璃效果</p>
+        <span class="mode-badge">roundedRectSDF</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="polar">
+        <h3>Polar 极坐标</h3>
+        <p>圆形SDF，径向折射效果</p>
+        <span class="mode-badge">polarCircleSDF</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="prominent">
+        <h3>Prominent 强化</h3>
+        <p>增强边缘折射，更明显的液态感</p>
+        <span class="mode-badge">enhanced</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="frosted">
+        <h3>Frosted 磨砂</h3>
+        <p>纯模糊无折射，macOS风格</p>
+        <span class="mode-badge">no refraction</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="diamond">
+        <h3>Diamond 菱形</h3>
+        <p>菱形SDF，几何折射效果</p>
+        <span class="mode-badge">diamondSDF</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="hexagon">
+        <h3>Hexagon 六边形</h3>
+        <p>六边形SDF，蜂窝折射效果</p>
+        <span class="mode-badge">hexagonSDF</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="wave">
+        <h3>Wave 波浪</h3>
+        <p>波浪形SDF，动态折射效果</p>
+        <span class="mode-badge">waveSDF</span>
+      </div>
+
+      <div class="liquid-glass test-card" data-mode="standard">
+        <h3>Custom 自定义</h3>
+        <p>支持自定义SDF函数</p>
+        <span class="mode-badge">customSDF</span>
+      </div>
+    </div>
+
+    <div class="status">
+      <p id="status-text">✅ 系统就绪 - 点击卡片或使用控制按钮测试</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import LiquidGlass from './dist/liquid-glass.esm.js';
+
+    // 初始化
+    const instances = LiquidGlass.init({
+      effects: true,
+      animations: true,
+      mouseEffects: {
+        elasticFollow: true,
+        tilt3D: true,
+        glow: true,
+        ripple: true
+      }
+    });
+
+    console.log('✅ LiquidGlass v3.0 初始化成功');
+    console.log('📦 实例数量:', instances.length);
+    console.log('🎨 SDF模式:', ['standard', 'polar', 'prominent', 'frosted', 'diamond', 'hexagon', 'wave', 'custom']);
+
+    // 全局函数
+    window.instances = instances;
+    window.currentModeIndex = 0;
+    window.modes = ['standard', 'polar', 'prominent', 'frosted', 'diamond', 'hexagon', 'wave'];
+
+    window.testAllModes = function() {
+      const mode = window.modes[window.currentModeIndex];
+      document.getElementById('status-text').textContent = `🔄 切换到模式: ${mode}`;
+      
+      instances.forEach(instance => {
+        instance.update({ mode });
+      });
+
+      window.currentModeIndex = (window.currentModeIndex + 1) % window.modes.length;
+      
+      if (window.currentModeIndex !== 0) {
+        setTimeout(window.testAllModes, 2000);
+      } else {
+        setTimeout(() => {
+          document.getElementById('status-text').textContent = '✅ 所有模式测试完成！';
+        }, 2000);
+      }
+    };
+
+    window.testEffects = function() {
+      document.getElementById('status-text').textContent = '✨ 交互效果已启用 - 移动鼠标体验';
+      console.log('✨ 交互效果:', {
+        elasticFollow: '弹性跟随',
+        tilt3D: '3D倾斜',
+        glow: '光晕效果',
+        ripple: '涟漪效果'
+      });
+    };
+
+    window.resetAll = function() {
+      instances.forEach(instance => {
+        const originalMode = instance.element.dataset.mode || 'standard';
+        instance.update({ mode: originalMode });
+      });
+      window.currentModeIndex = 0;
+      document.getElementById('status-text').textContent = '🔁 已重置到初始状态';
+    };
+
+    // 点击卡片显示信息
+    document.querySelectorAll('.test-card').forEach((card, index) => {
+      card.addEventListener('click', () => {
+        const mode = card.dataset.mode;
+        document.getElementById('status-text').textContent = 
+          `🎯 卡片 #${index + 1} - 模式: ${mode}`;
+      });
+    });
+  </script>
+</body>
+</html>
