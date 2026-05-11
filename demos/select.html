@@ -8,194 +8,289 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
             position: relative; overflow-x: hidden; padding: 60px 20px;
         }
         .animated-background {
-            width: 100%; height: 100%;
-            background-image: url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
+          width: 100%; height: 100%;
+          background-image: url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880');
+         background-size: cover; background-position: center; background-repeat: no-repeat;
             position: fixed; top: 0; left: 0; z-index: -1;
         }
-        .container { max-width: 1100px; width: 100%; position: relative; z-index: 1; }
+    .container { max-width: 1100px; width: 100%; position: relative; z-index: 1; }
         .page-header { text-align: center; margin-bottom: 56px; }
-      .page-header h1 {
+        .page-header h1 {
             font-size: 48px; color: #fff; margin-bottom: 16px;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
-          display: flex; align-items: center; justify-content: center; gap: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 20px;
         }
         .page-header h1 i {
-            background: linear-gradient(135deg, #007aff, #8b5cf6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 52px;
+          background: linear-gradient(135deg, #007aff, #8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 52px;
         }
-     .page-header p { color: rgba(255,255,255,0.85); font-size: 20px; }
+        .page-header p { color: rgba(255,255,0.85); font-size: 20px; }
         .cards-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;
         }
         .demo-card {
             position: relative; border-radius: 24px; overflow: hidden;
-       box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.08);
             background: transparent; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .demo-card:hover { transform: translateY(-6px); }
         .glass-effect {
             position: absolute; inset: 0; z-index: 0;
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            filter: url(#glass-distortion); isolation: isolate; border-radius: 24px;
+       filter: url(#glass-distortion); isolation: isolate; border-radius: 24px;
         }
         .glass-tint {
-            position: absolute; inset: 0; z-index: 1;
+         position: absolute; inset: 0; z-index: 1;
             background: rgba(0, 0, 0, 0.15); border-radius: 24px;
         }
         .glass-shine {
-          position: absolute; inset: 0; z-index: 2;
+            position: absolute; inset: 0; z-index: 2;
             border: 1px solid rgba(255, 255, 255, 0.13); border-radius: 24px;
-            box-shadow: inset 1px 1px 8px 0 rgba(255, 255, 0.18),
-                   inset -1px -1px 8px 0 rgba(255, 255, 255, 0.08);
-            pointer-events: none;
+          box-shadow: inset 1px 1px 8px 0 rgba(255, 255, 255, 0.18),
+              inset -1px -1px 8px 0 rgba(255, 255, 255, 0.08);
+        pointer-events: none;
         }
         .glass-content { position: relative; z-index: 3; color: white; padding: 36px 32px; }
         .card-title {
-          font-size: 22px; color: #fff; margin-bottom: 8px;
+         font-size: 22px; color: #fff; margin-bottom: 8px;
             display: flex; align-items: center; gap: 12px;
         }
         .card-title i {
-         background: linear-gradient(135deg, #007aff, #8b5cf6);
-         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #007aff, #8b5cf6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .card-desc {
             color: rgba(255,255,255,0.7); font-size: 14px;
             margin-bottom: 28px; line-height: 1.6;
         }
-        .select-group { margin-bottom: 24px; position: relative; }
-      .select-group:last-child { margin-bottom: 0; }
+     .select-group { margin-bottom: 24px; position: relative; }
+        .select-group:last-child { margin-bottom: 0; }
         .select-label {
             display: block; margin-bottom: 10px;
             color: rgba(255,255,255,0.9); font-weight: 600; font-size: 14px;
-        }
+      }
 
         /* 自定义下拉框容器 */
         .custom-select {
-            position: relative; width: 100%;
-     }
-
-        /* 隐藏原生select */
-        .custom-select select {
-          position: absolute; opacity: 0; width: 100%; height: 100%;
-            cursor: pointer; z-index: 10;
+         position: relative; width: 100%;
         }
 
-        /* 自定义显示框 */
-        .select-display {
-            position: relative; width: 100%; min-height: 48px;
-            padding: 12px 48px 12px 16px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1.5px solid rgba(255, 255, 0.2);
+        /* 触发器 - 保持液态玻璃效果 */
+        .select-trigger {
+        position: relative; width: 100%; min-height: 48px;
+          padding: 12px 48px 12px 16px;
+        background: rgba(255, 255, 255, 0.12);
+         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.15);
             color: #fff; font-size: 15px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; align-items: center;
           cursor: pointer;
+            user-select: none;
         }
 
-        .select-display:hover {
+        .select-trigger:hover {
             background: rgba(255, 255, 255, 0.18);
             border-color: rgba(255, 255, 255, 0.3);
-         box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          transform: translateY(-1px);
         }
 
-        .custom-select select:focus + .select-display {
-            border-color: rgba(0, 122, 255, 0.6);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+        .custom-select.active .select-trigger {
+         border-color: rgba(0, 122, 255, 0.6);
+          box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
             background: rgba(255, 255, 255, 0.18);
         }
 
-        /* 箭头图标 */
+        .select-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* CSS三角形箭头 */
         .select-arrow {
-            position: absolute; right: 16px; top: 50%;
-            transform: translateY(-50%);
-         width: 20px; height: 20px;
-            color: rgba(255, 255, 255, 0.6);
-          transition: all 0.3s ease;
+         position: absolute; right: 16px; top: 50%;
+        transform: translateY(-50%);
+            width: 0; height: 0;
+          border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #6366f1;
+            transition: transform 0.3s ease;
             pointer-events: none;
-        }
-
-        .select-display:hover .select-arrow {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .custom-select select:focus + .select-display .select-arrow {
-        color: #64a0ff;
-         transform: translateY(-50%) rotate(180deg);
-        }
-
-        /* 原生select样式优化 - 参考效果图的浅色设计 */
-        select {
-         font-family: inherit;
-            font-size: 15px;
-        }
-
-        select option {
-          background: rgba(255, 255, 255, 0.98);
-            color: #333;
-            padding: 12px 16px;
-        }
-
-        select option:checked {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
-            color: #6366f1;
-       font-weight: 600;
-        }
-
-        select option:hover {
-        background: rgba(99, 102, 241, 0.08);
       }
 
-        /* 尺寸变体 */
-        .select-sm .select-display {
-            min-height: 40px; padding: 10px 44px 10px 14px; font-size: 14px;
+        .custom-select.active .select-arrow {
+          transform: translateY(-50%) rotate(180deg);
         }
 
-        .select-lg .select-display {
-            min-height: 56px; padding: 16px 52px 16px 18px; font-size: 17px;
+        /* 下拉面板 - 浅色背景 */
+    .select-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+         backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(0, 0, 0.08);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            max-height: 280px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+
+     .custom-select.active .select-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* 选项样式 */
+        .select-option {
+            padding: 12px 16px 12px 40px;
+         color: #333;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+         background: white;
+        }
+
+        .select-option:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .select-option:last-child {
+        border-radius: 0 0 12px 12px;
+        }
+
+        .select-option:hover {
+            background: rgba(99, 102, 241, 0.08);
+            transform: translateX(4px);
+            padding-left: 44px;
+        }
+
+    .select-option.selected {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+         font-weight: 600;
+        }
+
+        .select-option.selected:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        /* 对勾图标 */
+        .select-option.selected::before {
+            content: '✓';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6366f1;
+        font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* 滚动条样式 */
+        .select-dropdown::-webkit-scrollbar {
+            width: 6px;
+      }
+
+     .select-dropdown::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 14px 14px 0;
+        }
+
+        .select-dropdown::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 3px;
+        }
+
+        .select-dropdown::-webkit-scrollbar-thumb:hover {
+          background: rgba(99, 102, 241, 0.5);
+        }
+        /* 尺寸变体 */
+        .select-sm .select-trigger {
+          min-height: 40px; padding: 10px 44px 10px 14px; font-size: 14px;
+        }
+
+        .select-sm .select-option {
+            padding: 10px 14px 10px 36px; font-size: 14px;
+        }
+
+        .select-sm .select-option:hover {
+            padding-left: 40px;
+        }
+
+        .select-sm .select-option.selected::before {
+        left: 14px;
+            font-size: 14px;
+        }
+
+        .select-lg .select-trigger {
+         min-height: 56px; padding: 16px 52px 16px 18px; font-size: 17px;
+        }
+
+        .select-lg .select-option {
+            padding: 14px 18px 14px 44px; font-size: 17px;
+        }
+
+        .select-lg .select-option:hover {
+            padding-left: 48px;
+        }
+
+        .select-lg .select-option.selected::before {
+            left: 18px;
+            font-size: 18px;
         }
 
         /* 背景切换器 */
         .bg-switcher { position: fixed; top: 16px; right: 16px; z-index: 1000; }
         .bg-switcher-btn {
-            width: 40px; height: 40px; border-radius: 12px;
+         width: 40px; height: 40px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.25);
-       backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer;
+            backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-        transition: all 0.25s ease;
-        }
-        .bg-switcher-btn:hover { background: rgba(255,0.2); transform: scale(1.08); }
+            transition: all 0.25s ease;
+    }
+        .bg-switcher-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.08); }
         .bg-panel {
-            position: fixed; top: 68px; right: 16px; z-index: 999;
-        width: 320px; padding: 20px; border-radius: 18px;
-          background: rgba(0,0,0,0.35); backdrop-filter: blur(20px);
+          position: fixed; top: 68px; right: 16px; z-index: 999;
+          width: 320px; padding: 20px; border-radius: 18px;
+            background: rgba(0,0,0,0.35); backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             color: #fff; display: none;
         }
         .bg-panel.show { display: block; }
-        .bg-panel h4 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+    .bg-panel h4 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
         .bg-panel label { font-size: 12px; opacity: 0.7; display: block; margin-bottom: 6px; }
         .bg-url-row { display: flex; gap: 8px; margin-bottom: 14px; }
         .bg-url-input {
             flex: 1; padding: 8px 12px; border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,0.1);
             color: #fff; font-size: 13px; outline: none;
         }
         .bg-apply-btn {
-        padding: 8px 14px; border-radius: 10px; border: none;
-        background: rgba(255,255,255,0.2); color: #fff;
+            padding: 8px 14px; border-radius: 10px; border: none;
+            background: rgba(255,255,255,0.2); color: #fff;
             font-size: 13px; font-weight: 600; cursor: pointer;
-        }
+      }
         .bg-upload-area {
             border: 2px dashed rgba(255,255,255,0.25); border-radius: 12px;
             padding: 20px; text-align: center; cursor: pointer; margin-bottom: 14px;
@@ -205,23 +300,23 @@
         .bg-presets { display: flex; gap: 8px; flex-wrap: wrap; }
         .bg-preset {
             width: 52px; height: 36px; border-radius: 8px;
-       border: 2px solid transparent; cursor: pointer;
+        border: 2px solid transparent; cursor: pointer;
             background-size: cover; background-position: center;
-      }
+        }
         .bg-preset:hover { transform: scale(1.1); border-color: rgba(255,255,255,0.5); }
         .bg-preset.active { border-color: #64a0ff; }
-    .bg-reset {
+        .bg-reset {
             margin-top: 12px; padding: 6px 12px; border-radius: 8px;
-         border: 1px solid rgba(255,255,255,0.2); background: transparent;
-            color: rgba(255,255,0.7); font-size: 12px; cursor: pointer; width: 100%;
+            border: 1px solid rgba(255,255,255,0.2); background: transparent;
+            color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer; width: 100%;
         }
         #bgFileInput { display: none; }
 
         @media (max-width: 768px) {
             .page-header h1 { font-size: 36px; }
-        .cards-grid { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
             .glass-content { padding: 28px 24px; }
-      }
+        }
     </style>
 </head>
 <body>
@@ -236,7 +331,7 @@
             <button class="bg-apply-btn" id="bgApplyBtn">应用</button>
         </div>
         <label>上传本地图片</label>
-      <div class="bg-upload-area" id="bgUploadArea">
+        <div class="bg-upload-area" id="bgUploadArea">
             <div class="upload-icon">📁</div>
             <div class="upload-text">点击或拖拽图片到此处</div>
         </div>
@@ -249,114 +344,114 @@
     <div class="animated-background"></div>
 
     <svg style="display: none">
-        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+     <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
             <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence" />
-          <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
             <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
 
     <div class="container">
         <div class="page-header">
-          <h1><i class="bi bi-menu-button-wide-fill"></i>现代化下拉选择</h1>
+            <h1><i class="bi bi-menu-button-wide-fill"></i>现代化下拉选择</h1>
             <p>Modern Dropdown with Liquid Glass Effect</p>
         </div>
 
-        <div class="cards-grid">
-      <div class="demo-card">
-             <div class="glass-effect"></div>
-              <div class="glass-tint"></div>
-              <div class="glass-shine"></div>
+      <div class="cards-grid">
+            <div class="demo-card">
+                <div class="glass-effect"></div>
+           <div class="glass-tint"></div>
+                <div class="glass-shine"></div>
                 <div class="glass-content">
-               <h2 class="card-title"><i class="bi bi-translate"></i>选择语言</h2>
-                <p class="card-desc">流畅的动画效果，悬停时箭头旋转，选项滑入</p>
-                    <div class="select-group">
-                        <label class="select-label">Language / 语言</label>
-                   <div class="custom-select">
-                      <select id="lang-select">
-            <option value="">请选择...</option>
-                             <option value="zh">简体中文 - Chinese</option>
-                   <option value="en">English - 英语</option>
-                 <option value="ja">日本語 - Japanese</option>
-                             <option value="ko">한국어 - Korean</option>
-                     <option value="fr">Français - French</option>
-                 </select>
-              <div class="select-display">
-                         <span class="select-text">请选择...</span>
-                                <i class="bi bi-chevron-down select-arrow"></i>
+                    <h2 class="card-title"><i class="bi bi-translate"></i>选择语言</h2>
+                    <p class="card-desc">流畅的动画效果，悬停时箭头旋转，选项滑入</p>
+               <div class="select-group">
+               <label class="select-label">Language / 语言</label>
+                 <div class="custom-select">
+                  <div class="select-trigger">
+                     <span class="select-text">请选择...</span>
+                    <div class="select-arrow"></div>
+                      </div>
+                        <div class="select-dropdown">
+                          <div class="select-option selected" data-value="">请选择...</div>
+                       <div class="select-option" data-value="zh">简体中文 - Chinese</div>
+                              <div class="select-option" data-value="en">English - 英语</div>
+                         <div class="select-option" data-value="ja">日本語 - Japanese</div>
+                      <div class="select-option" data-value="ko">한국어 - Korean</div>
+                       <div class="select-option" data-value="fr">Français - French</div>
                             </div>
-          </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+          </div>
 
             <div class="demo-card">
                 <div class="glass-effect"></div>
                 <div class="glass-tint"></div>
-             <div class="glass-shine"></div>
-                <div class="glass-content">
-                 <h2 class="card-title"><i class="bi bi-globe"></i>选择国家</h2>
-                  <p class="card-desc">支持emoji图标，选中项带有对勾标记</p>
-                    <div class="select-group">
-                 <label class="select-label">Country / Region</label>
-                     <div class="custom-select">
-                            <select id="country-select">
-               <option value="">请选择...</option>
-                      <option value="cn">🇨🇳 中国 China</option>
-                          <option value="us">🇺🇸 美国 United States</option>
-                         <option value="jp">🇯🇵 日本 Japan</option>
-                             <option value="kr">🇰🇷 韩国 South Korea</option>
-                         <option value="uk">🇬🇧 英国 United Kingdom</option>
-                                <option value="de">🇩🇪 德国 Germany</option>
-                         <option value="fr">🇫🇷 法国 France</option>
-                    <option value="ca">🇨🇦 加拿大 Canada</option>
-                  </select>
-                       <div class="select-display">
-                  <span class="select-text">请选择...</span>
-                   <i class="bi bi-chevron-down select-arrow"></i>
-                        </div>
-            </div>
-               </div>
-                </div>
-            </div>
-
-            <div class="demo-card">
-           <div class="glass-effect"></div>
-                <div class="glass-tint"></div>
                 <div class="glass-shine"></div>
                 <div class="glass-content">
-                    <h2 class="card-title"><i class="bi bi-palette"></i>不同尺寸</h2>
-                    <p class="card-desc">提供小、中、大三种尺寸选择</p>
-                <div class="select-group">
-                      <label class="select-label">小尺寸 Small</label>
-                 <div class="custom-select select-sm">
-                       <select id="color-select">
-                       <option value="red">🔴 红色 Red</option>
-                              <option value="blue">🔵 蓝色 Blue</option>
-                    <option value="green">🟢 绿色 Green</option>
-                                <option value="yellow">🟡 黄色 Yellow</option>
-                         </select>
-               <div class="select-display">
-                 <span class="select-text">🔴 红色 Red</span>
-                          <i class="bi bi-chevron-down select-arrow"></i>
-                      </div>
-                   </div>
-                    </div>
-                    <div class="select-group">
-                  <label class="select-label">大尺寸 Large</label>
-                 <div class="custom-select select-lg">
-                  <select id="job-select">
-                             <option value="developer">💻 开发工程师</option>
-                        <option value="designer">🎨 UI/UX 设计师</option>
-                  <option value="manager">📊 产品经理</option>
-                           <option value="student">📚 学生</option>
-                            </select>
-                      <div class="select-display">
-                       <span class="select-text">💻 开发工程师</span>
-                      <i class="bi bi-chevron-down select-arrow"></i>
-                   </div>
+                <h2 class="card-title"><i class="bi bi-globe"></i>选择国家</h2>
+                 <p class="card-desc">支持emoji图标，选中项带有对勾标记</p>
+                  <div class="select-group">
+                    <label class="select-label">Country / Region</label>
+                   <div class="custom-select">
+                        <div class="select-trigger">
+                       <span class="select-text">请选择...</span>
+                       <div class="select-arrow"></div>
+                          </div>
+                        <div class="select-dropdown">
+                          <div class="select-option selected" data-value="">请选择...</div>
+                          <div class="select-option" data-value="cn">🇨🇳 中国 China</div>
+                 <div class="select-option" data-value="us">🇺🇸 美国 United States</div>
+                     <div class="select-option" data-value="jp">🇯🇵 日本 Japan</div>
+                                <div class="select-option" data-value="kr">🇰🇷 韩国 South Korea</div>
+                         <div class="select-option" data-value="uk">🇬🇧 英国 United Kingdom</div>
+             <div class="select-option" data-value="de">🇩🇪 德国 Germany</div>
+                     <div class="select-option" data-value="fr">🇫🇷 法国 France</div>
+                           <div class="select-option" data-value="ca">🇨🇦 加拿大 Canada</div>
                      </div>
+                 </div>
                     </div>
+                </div>
+          </div>
+
+         <div class="demo-card">
+                <div class="glass-effect"></div>
+              <div class="glass-tint"></div>
+              <div class="glass-shine"></div>
+              <div class="glass-content">
+                <h2 class="card-title"><i class="bi bi-palette"></i>不同尺寸</h2>
+                  <p class="card-desc">提供小、中、大三种尺寸选择</p>
+              <div class="select-group">
+                        <label class="select-label">小尺寸 Small</label>
+                    <div class="custom-select select-sm">
+                        <div class="select-trigger">
+                    <span class="select-text">🔴 红色 Red</span>
+                         <div class="select-arrow"></div>
+                         </div>
+                          <div class="select-dropdown">
+                             <div class="select-option selected" data-value="red">🔴 红色 Red</div>
+                     <div class="select-option" data-value="blue">🔵 蓝色 Blue</div>
+                                <div class="select-option" data-value="green">🟢 绿色 Green</div>
+                             <div class="select-option" data-value="yellow">🟡 黄色 Yellow</div>
+                  </div>
+                    </div>
+                </div>
+                <div class="select-group">
+                   <label class="select-label">大尺寸 Large</label>
+                        <div class="custom-select select-lg">
+                       <div class="select-trigger">
+                                <span class="select-text">💻 开发工程师</span>
+                           <div class="select-arrow"></div>
+                </div>
+                            <div class="select-dropdown">
+                        <div class="select-option selected" data-value="developer">💻 开发工程师</div>
+                       <div class="select-option" data-value="designer">🎨 UI/UX 设计师</div>
+                           <div class="select-option" data-value="manager">📊 产品经理</div>
+                           <div class="select-option" data-value="student">📚 学生</div>
+                            </div>
+                        </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -369,87 +464,128 @@
         var defaultBg = "url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880')";
         var presets = [
             'https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880',
-       'https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=900&auto=format&fit=crop&q=60',
-            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&auto=format&fit=crop&q=60',
+            'https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=900&auto=format&fit=crop&q=60',
+       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&auto=format&fit=crop&q=60',
             'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=900&auto=format&fit=crop&q=60'
-     ];
+        ];
 
         var presetsContainer = document.getElementById('bgPresets');
-        presets.forEach(function(url, i) {
+      presets.forEach(function(url, i) {
             var div = document.createElement('div');
-            div.className = 'bg-preset' + (i === 0 ? ' active' : '');
-            div.style.backgroundImage = 'url(' + url + ')';
+        div.className = 'bg-preset' + (i === 0 ? ' active' : '');
+          div.style.backgroundImage = 'url(' + url + ')';
             div.addEventListener('click', function() {
-                setBackground(url);
+              setBackground(url);
                 document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
                 div.classList.add('active');
-          });
-            presetsContainer.appendChild(div);
+            });
+          presetsContainer.appendChild(div);
         });
 
-        function setBackground(url) {
-         bgEl.style.backgroundImage = 'url(' + url + ')';
+      function setBackground(url) {
+            bgEl.style.backgroundImage = 'url(' + url + ')';
             try { localStorage.setItem('lg-bg', url); } catch(e) {}
         }
 
         var saved = localStorage.getItem('lg-bg');
         if (saved) setBackground(saved);
 
-        document.getElementById('bgToggleBtn').addEventListener('click', function() {
+     document.getElementById('bgToggleBtn').addEventListener('click', function() {
             document.getElementById('bgPanel').classList.toggle('show');
         });
 
         document.addEventListener('click', function(e) {
-         var panel = document.getElementById('bgPanel');
+            var panel = document.getElementById('bgPanel');
             var btn = document.getElementById('bgToggleBtn');
             if (!panel.contains(e.target) && !btn.contains(e.target)) {
-                panel.classList.remove('show');
+          panel.classList.remove('show');
             }
         });
 
-      document.getElementById('bgApplyBtn').addEventListener('click', function() {
+        document.getElementById('bgApplyBtn').addEventListener('click', function() {
             var url = document.getElementById('bgUrlInput').value.trim();
             if (url) {
-             setBackground(url);
-            document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
-            }
+                setBackground(url);
+           document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+          }
         });
 
         var uploadArea = document.getElementById('bgUploadArea');
         var fileInput = document.getElementById('bgFileInput');
         uploadArea.addEventListener('click', function() { fileInput.click(); });
         fileInput.addEventListener('change', function() {
-          if (fileInput.files.length > 0) {
-              var file = fileInput.files[0];
-             if (file.type.startsWith('image/')) {
-                    var reader = new FileReader();
-                  reader.onload = function(e) {
-                 setBackground(e.target.result);
-               document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
-              };
-                 reader.readAsDataURL(file);
-                }
-         }
+            if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+                if (file.type.startsWith('image/')) {
+            var reader = new FileReader();
+                    reader.onload = function(e) {
+                   setBackground(e.target.result);
+                      document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+                 };
+               reader.readAsDataURL(file);
+            }
+            }
         });
 
         document.getElementById('bgResetBtn').addEventListener('click', function() {
-        bgEl.style.backgroundImage = defaultBg;
-            try { localStorage.removeItem('lg-bg'); } catch(e) {}
+            bgEl.style.backgroundImage = defaultBg;
+       try { localStorage.removeItem('lg-bg'); } catch(e) {}
             document.querySelectorAll('.bg-preset').forEach(function(p, i) {
-         p.classList.toggle('active', i === 0);
+           p.classList.toggle('active', i === 0);
             });
         });
 
-      // 自定义下拉框逻辑
-        document.querySelectorAll('.custom-select').forEach(function(container) {
-            var select = container.querySelector('select');
-            var display = container.querySelector('.select-display');
-            var textSpan = display.querySelector('.select-text');
+        // 自定义下拉框逻辑
+        document.querySelectorAll('.custom-select').forEach(function(selectContainer) {
+        var trigger = selectContainer.querySelector('.select-trigger');
+            var dropdown = selectContainer.querySelector('.select-dropdown');
+            var textSpan = selectContainer.querySelector('.select-text');
+         var options = selectContainer.querySelectorAll('.select-option');
 
-            select.addEventListener('change', function() {
-                var selectedOption = this.options[this.selectedIndex];
-           textSpan.textContent = selectedOption.text;
+            // 点击触发器展开/收起
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+
+                // 关闭其他所有下拉框
+            document.querySelectorAll('.custom-select').forEach(function(other) {
+         if (other !== selectContainer) {
+             other.classList.remove('active');
+                  }
+              });
+
+              // 切换当前下拉框
+            selectContainer.classList.toggle('active');
             });
+
+            // 点击选项
+            options.forEach(function(option) {
+            option.addEventListener('click', function(e) {
+                  e.stopPropagation();
+
+                  // 移除所有选中状态
+                    options.forEach(function(opt) {
+                 opt.classList.remove('selected');
+            });
+
+                 // 添加选中状态
+                    option.classList.add('selected');
+
+                    // 更新显示文字
+                    textSpan.textContent = option.textContent;
+
+                    // 关闭下拉框
+             selectContainer.classList.remove('active');
+              });
+          });
+        });
+
+        // 点击外部区域关闭所有下拉框
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select')) {
+           document.querySelectorAll('.custom-select').forEach(function(select) {
+                    select.classList.remove('active');
+       });
+            }
         });
     })();
     </script>
