@@ -10,273 +10,479 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh; display: flex; justify-content: center; align-items: center;
-            padding: 20px; position: relative; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
         }
-        .page-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
-        .page-bg-color {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
-            background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
-        }
-        .page-bg-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse at 70% 30%, rgba(139, 92, 246, 0.2), transparent 70%),
-                        radial-gradient(ellipse at 30% 70%, rgba(0, 122, 255, 0.2), transparent 70%);
+        .animated-background {
+            width: 100%; height: 100%;
+            background-image: url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            position: fixed; top: 0; left: 0; z-index: -1;
         }
         .register-card {
             width: 100%; max-width: 520px;
-            border-radius: var(--lg-radius-xl); overflow: hidden; position: relative; z-index: 1;
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
             box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.08);
             transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.6);
-            cursor: default; will-change: transform;
+            cursor: default;
+            background: transparent;
+            will-change: transform;
+        }
+        .glass-effect {
+            position: absolute; inset: 0; z-index: 0;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            filter: url(#glass-distortion);
+            isolation: isolate;
+            border-radius: 24px;
+        }
+        .glass-tint {
+            position: absolute; inset: 0; z-index: 1;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 24px;
+        }
+        .glass-shine {
+            position: absolute; inset: 0; z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 24px;
+            box-shadow:
+                inset 1px 1px 8px 0 rgba(255, 255, 255, 0.18),
+                inset -1px -1px 8px 0 rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .glass-content {
+            position: relative; z-index: 3;
+            color: white;
         }
         .register-header {
-            padding: 30px 32px 20px; text-align: center;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(0, 122, 255, 0.3));
+            padding: 36px 32px 24px;
+            text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            position: relative; z-index: 5;
         }
-        .register-header h1 { font-size: 22px; color: #fff; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .register-header .logo {
+            width: 64px; height: 64px; border-radius: 18px; margin: 0 auto 16px;
+            background: linear-gradient(135deg, #8b5cf6, #007aff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; color: #fff;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+        }
+        .register-header h1 { font-size: 22px; color: #fff; margin-bottom: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .register-header p { color: rgba(255,255,255,0.7); font-size: 14px; }
-        .register-body { padding: 24px 32px; position: relative; z-index: 5; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .form-group { margin-bottom: 16px; }
+        .register-body { padding: 28px 32px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+        .form-group { margin-bottom: 18px; }
         .form-label { display: block; margin-bottom: 8px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13px; }
-        .form-control, .form-select {
+        .input-group { position: relative; }
+        .input-group i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5); font-size: 16px; z-index: 4; }
+        .glass-input {
             width: 100%; padding: 12px 16px;
             border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
-            font-size: 14px; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            color: #fff; transition: all 0.3s ease; outline: none;
+            background: rgba(255, 255, 255, 0.1); color: #fff;
+            font-size: 14px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s ease; outline: none;
         }
-        .form-control::placeholder { color: rgba(255,255,255,0.5); }
-        .form-control:focus, .form-select:focus {
-            background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3);
+        .glass-input.with-icon { padding-left: 42px; }
+        .glass-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255,255,255,0.3);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
-        .form-select option { background: rgba(0,0,0,0.8); color: #fff; }
-        .form-hint { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 14px 28px;
+        .form-hint { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; display: block; }
+        .agreement { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+        .agreement input { margin-top: 3px; accent-color: #007aff; cursor: pointer; }
+        .agreement a { color: rgba(255,255,255,0.9); text-decoration: none; }
+        .agreement a:hover { color: #fff; text-decoration: underline; }
+        .glass-button {
+            display: block; width: 100%; padding: 14px;
+            border: 1px solid rgba(255,255,255,0.25); border-radius: 10px;
             background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            color: #fff; border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 10px; font-size: 15px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+            color: #fff; font-size: 15px; font-weight: 600;
+            cursor: pointer; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s ease; position: relative; overflow: hidden;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.08); background: rgba(255,255,255,0.22); }
-        .btn:active { transform: translateY(0); }
-        .form-actions { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .register-footer { text-align: center; padding: 16px 32px 24px; color: rgba(255,255,255,0.6); font-size: 13px; position: relative; z-index: 5; }
+        .glass-button:hover {
+            background: rgba(255,255,255,0.22);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.08);
+        }
+        .glass-button:active { transform: translateY(0); background: rgba(255,255,255,0.3); }
+        .register-footer { text-align: center; padding: 20px 32px 28px; color: rgba(255,255,255,0.6); font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); }
         .register-footer a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; }
         .register-footer a:hover { color: #fff; text-decoration: underline; }
-        .agreement { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
-        .agreement input { margin-top: 3px; accent-color: #007aff; }
-        .agreement a { color: rgba(255,255,255,0.9); text-decoration: none; }
+
+        .bg-switcher { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; align-items: center; }
+        .bg-switcher-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: #fff; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s ease;
+        }
+        .bg-switcher-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.08); }
+        .bg-panel {
+            position: fixed; top: 68px; right: 16px; z-index: 999;
+            width: 320px; padding: 20px; border-radius: 18px;
+            background: rgba(0,0,0,0.35); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            color: #fff; display: none;
+        }
+        .bg-panel.show { display: block; }
+        .bg-panel h4 { font-size: 14px; font-weight: 600; margin-bottom: 14px; opacity: 0.9; }
+        .bg-panel label { font-size: 12px; opacity: 0.7; display: block; margin-bottom: 6px; }
+        .bg-url-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .bg-url-input {
+            flex: 1; padding: 8px 12px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            color: #fff; font-size: 13px; outline: none; transition: all 0.2s;
+        }
+        .bg-url-input::placeholder { color: rgba(255,255,255,0.5); }
+        .bg-url-input:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); }
+        .bg-apply-btn {
+            padding: 8px 14px; border-radius: 10px; border: none;
+            background: rgba(255,255,255,0.2); color: #fff;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .bg-apply-btn:hover { background: rgba(255,255,255,0.3); }
+        .bg-upload-area {
+            border: 2px dashed rgba(255,255,255,0.25); border-radius: 12px;
+            padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.25s; margin-bottom: 14px;
+        }
+        .bg-upload-area:hover { border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.05); }
+        .bg-upload-area .upload-icon { font-size: 28px; margin-bottom: 6px; }
+        .bg-upload-area .upload-text { font-size: 12px; opacity: 0.6; }
+        .bg-upload-area.dragover { border-color: rgba(100,160,255,0.7); background: rgba(100,160,255,0.1); }
+        .bg-presets { display: flex; gap: 8px; flex-wrap: wrap; }
+        .bg-preset {
+            width: 52px; height: 36px; border-radius: 8px;
+            border: 2px solid transparent; cursor: pointer;
+            background-size: cover; background-position: center; transition: all 0.2s;
+        }
+        .bg-preset:hover { transform: scale(1.1); border-color: rgba(255,255,255,0.5); }
+        .bg-preset.active { border-color: #64a0ff; }
+        .bg-reset {
+            margin-top: 12px; padding: 6px 12px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); background: transparent;
+            color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer;
+            transition: all 0.2s; width: 100%;
+        }
+        .bg-reset:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        #bgFileInput { display: none; }
+
         @media (max-width: 560px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .register-body { padding: 20px 24px; }
+            .form-grid { grid-template-columns: 1fr; gap: 0; }
+            .register-header { padding: 28px 24px 20px; }
+            .register-body { padding: 24px; }
+            .bg-panel { width: calc(100vw - 32px); right: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="glass-bg-switcher">
-        <button class="glass-bg-switcher-btn" title="切换背景">🖼</button>
+    <div class="bg-switcher">
+        <button class="bg-switcher-btn" id="bgToggleBtn" title="切换背景">🖼</button>
     </div>
-    <div class="glass-bg-panel">
+    <div class="bg-panel" id="bgPanel">
         <h4>切换背景</h4>
-        <label>图片 URL</label>
-        <div class="glass-bg-url-row">
-            <input type="text" class="glass-bg-url-input" placeholder="输入图片直链...">
-            <button class="glass-bg-apply-btn">应用</button>
+        <label>图片直连地址</label>
+        <div class="bg-url-row">
+            <input type="text" class="bg-url-input" id="bgUrlInput" placeholder="粘贴图片URL...">
+            <button class="bg-apply-btn" id="bgApplyBtn">应用</button>
         </div>
-        <div class="glass-bg-upload-area">
+        <label>上传本地图片</label>
+        <div class="bg-upload-area" id="bgUploadArea">
             <div class="upload-icon">📁</div>
-            <div class="upload-text">拖拽图片或点击上传</div>
-            <input type="file" class="glass-bg-file-input" accept="image/*" style="display:none">
+            <div class="upload-text">点击或拖拽图片到此处</div>
         </div>
+        <input type="file" id="bgFileInput" accept="image/*">
         <label>预设背景</label>
-        <div class="glass-bg-presets">
-            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920" style="background-image:url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=100)"></div>
-            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=100)"></div>
-            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920" style="background-image:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=100)"></div>
-            <div class="glass-bg-preset" data-url="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920" style="background-image:url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=100)"></div>
-        </div>
-        <button class="glass-bg-reset">恢复默认背景</button>
+        <div class="bg-presets" id="bgPresets"></div>
+        <button class="bg-reset" id="bgResetBtn">恢复默认背景</button>
     </div>
 
-    <div class="page-bg">
-        <div class="page-bg-color"></div>
-        <div class="page-bg-overlay"></div>
+    <div class="animated-background"></div>
+
+    <svg style="display: none">
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+            <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence" />
+            <feComponentTransfer in="turbulence" result="mapped">
+                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+            </feComponentTransfer>
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+                <fePointLight x="-200" y="-200" z="300" />
+            </feSpecularLighting>
+            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
+            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <div class="register-card" id="tiltCard">
+        <div class="glass-effect"></div>
+        <div class="glass-tint"></div>
+        <div class="glass-shine"></div>
+        <div class="glass-content">
+            <div class="register-header">
+                <div class="logo"><i class="bi bi-person-plus-fill"></i></div>
+                <h1>创建账号</h1>
+                <p>Fill in your details to get started</p>
+            </div>
+            <div class="register-body">
+                <form onsubmit="event.preventDefault();">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">名字</label>
+                            <div class="input-group">
+                                <i class="bi bi-person"></i>
+                                <input type="text" class="glass-input with-icon" placeholder="First name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">姓氏</label>
+                            <div class="input-group">
+                                <i class="bi bi-person"></i>
+                                <input type="text" class="glass-input with-icon" placeholder="Last name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱</label>
+                        <div class="input-group">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" class="glass-input with-icon" placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <div class="input-group">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" class="glass-input with-icon" placeholder="At least 8 characters" id="passwordInput">
+                        </div>
+                        <span class="form-hint" id="passwordHint">Use a mix of letters, numbers, and symbols</span>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">国家</label>
+                            <div class="input-group">
+                                <i class="bi bi-globe"></i>
+                                <select class="glass-input with-icon">
+                                    <option value="">Select country</option>
+                                    <option value="cn">China</option>
+                                    <option value="us">United States</option>
+                                    <option value="jp">Japan</option>
+                                    <option value="kr">South Korea</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="de">Germany</option>
+                                    <option value="fr">France</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">角色</label>
+                            <div class="input-group">
+                                <i class="bi bi-briefcase"></i>
+                                <select class="glass-input with-icon">
+                                    <option value="">Select role</option>
+                                    <option value="developer">Developer</option>
+                                    <option value="designer">Designer</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="student">Student</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agreement">
+                        <input type="checkbox" id="agreeCheckbox">
+                        <label for="agreeCheckbox">我同意 <a href="#">服务条款</a> 和 <a href="#">隐私政策</a></label>
+                    </div>
+                    <button type="submit" class="glass-button" id="submitBtn">创建账号</button>
+                </form>
+            </div>
+            <div class="register-footer">
+                已有账号？<a href="login.html">立即登录</a>
+            </div>
+        </div>
     </div>
 
-    <div class="register-card liquid-glass glass-tilt glass-entrance">
-        <div class="register-header">
-            <h1><i class="bi bi-person-plus"></i> Create Account</h1>
-            <p>Fill in your details to get started</p>
-        </div>
-        <div class="register-body">
-            <form onsubmit="event.preventDefault();">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" placeholder="John">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" placeholder="Doe">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" placeholder="john@example.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="At least 8 characters">
-                    <span class="form-hint">Use a mix of letters, numbers, and symbols</span>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Country</label>
-                        <select class="form-select">
-                            <option value="">Select country</option>
-                            <option value="cn">China</option>
-                            <option value="us">United States</option>
-                            <option value="jp">Japan</option>
-                            <option value="kr">South Korea</option>
-                            <option value="uk">United Kingdom</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Role</label>
-                        <select class="form-select">
-                            <option value="">Select role</option>
-                            <option value="developer">Developer</option>
-                            <option value="designer">Designer</option>
-                            <option value="manager">Manager</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="agreement">
-                    <input type="checkbox" id="agree">
-                    <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn glass-click-bounce"><i class="bi bi-check-lg"></i> Create Account</button>
-                </div>
-            </form>
-        </div>
-        <div class="register-footer">
-            Already have an account? <a href="login.html">Sign In</a>
-        </div>
-    </div>
-
-    <script src="../dist/liquid-glass.js"></script>
     <script>
-        // 初始化液态玻璃效果
-        if (window.initLiquidGlass) {
-            window.initLiquidGlass();
-    }
-        if (window.initTiltEffect) {
-            window.initTiltEffect();
-        }
-        if (window.initEntranceAnimations) {
-            window.initEntranceAnimations();
-        }
-        if (window.initClickBounce) {
-      window.initClickBounce();
-        }
-        if (window.initBackgroundSwitcher) {
-        window.initBackgroundSwitcher();
-        }
-
-        // 表单验证
-        const form = document.querySelector('form');
-        const agreeCheckbox = document.getElementById('agree');
-
-      form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-        // 获取表单数据
-            const firstName = form.querySelector('input[placeholder="John"]').value;
-         const lastName = form.querySelector('input[placeholder="Doe"]').value;
-            const email = form.querySelector('input[type="email"]').value;
-            const password = form.querySelector('input[type="password"]').value;
-            const country = form.querySelector('select').value;
-            const role = form.querySelectorAll('select')[1].value;
-
-            // 验证
-            if (!firstName || !lastName) {
-                alert('Please enter your full name');
-             return;
-            }
-
-            if (!email || !email.includes('@')) {
-              alert('Please enter a valid email address');
-                return;
-            }
-
-        if (!password || password.length < 8) {
-      alert('Password must be at least 8 characters');
-              return;
-            }
-
-            if (!country || !role) {
-              alert('Please select country and role');
-                return;
-            }
-
-            if (!agreeCheckbox.checked) {
-        alert('Please agree to the Terms of Service and Privacy Policy');
-                return;
-        }
-
-            // 模拟注册成功
-            const btn = form.querySelector('.btn');
-       btn.innerHTML = '<i class="bi bi-check-circle"></i> Account Created!';
-            btn.style.background = 'rgba(76, 217, 100, 0.3)';
-            btn.style.borderColor = 'rgba(76, 217, 100, 0.5)';
-
-       setTimeout(() => {
-       alert('Registration successful! Redirecting to login...');
-             window.location.href = 'login.html';
-      }, 1500);
+    (function() {
+        var card = document.getElementById('tiltCard');
+        card.addEventListener('mousemove', function(e) {
+            var rect = card.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            var centerX = rect.width / 2;
+            var centerY = rect.height / 2;
+            var maxTilt = 12;
+            var rotateY = ((x - centerX) / centerX) * maxTilt;
+            var rotateX = -((y - centerY) / centerY) * maxTilt;
+            card.style.transform = 'perspective(600px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.02)';
+        });
+        card.addEventListener('mouseleave', function() {
+            card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)';
         });
 
-        // 实时密码强度检查
-        const passwordInput = form.querySelector('input[type="password"]');
-        const passwordHint = form.querySelector('.form-hint');
+        var bgEl = document.querySelector('.animated-background');
+        var defaultBg = "url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880')";
+        var presets = [
+            'https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880',
+            'https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=900&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=900&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=900&auto=format&fit=crop&q=60'
+        ];
+
+        var presetsContainer = document.getElementById('bgPresets');
+        presets.forEach(function(url, i) {
+            var div = document.createElement('div');
+            div.className = 'bg-preset' + (i === 0 ? ' active' : '');
+            div.style.backgroundImage = 'url(' + url + ')';
+            div.addEventListener('click', function() {
+                setBackground(url);
+                document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+                div.classList.add('active');
+            });
+            presetsContainer.appendChild(div);
+        });
+
+        function setBackground(url) {
+            bgEl.style.backgroundImage = 'url(' + url + ')';
+            try { localStorage.setItem('lg-bg', url); } catch(e) {}
+        }
+
+        var saved = localStorage.getItem('lg-bg');
+        if (saved) setBackground(saved);
+
+        document.getElementById('bgToggleBtn').addEventListener('click', function() {
+            document.getElementById('bgPanel').classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            var panel = document.getElementById('bgPanel');
+            var btn = document.getElementById('bgToggleBtn');
+            if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                panel.classList.remove('show');
+            }
+        });
+
+        document.getElementById('bgApplyBtn').addEventListener('click', function() {
+            var url = document.getElementById('bgUrlInput').value.trim();
+            if (url) {
+                setBackground(url);
+                document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+            }
+        });
+
+        document.getElementById('bgUrlInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('bgApplyBtn').click();
+        });
+
+        var uploadArea = document.getElementById('bgUploadArea');
+        var fileInput = document.getElementById('bgFileInput');
+
+        uploadArea.addEventListener('click', function() { fileInput.click(); });
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                setBackground(e.target.result);
+                document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('bgResetBtn').addEventListener('click', function() {
+            bgEl.style.backgroundImage = defaultBg;
+            try { localStorage.removeItem('lg-bg'); } catch(e) {}
+            document.querySelectorAll('.bg-preset').forEach(function(p, i) {
+                p.classList.toggle('active', i === 0);
+            });
+            document.getElementById('bgUrlInput').value = '';
+        });
+
+        // Password strength indicator
+        var passwordInput = document.getElementById('passwordInput');
+        var passwordHint = document.getElementById('passwordHint');
 
         passwordInput.addEventListener('input', function() {
-         const password = this.value;
-         let strength = 0;
+            var password = this.value;
+            var strength = 0;
 
-          if (password.length >= 8) strength++;
+            if (password.length >= 8) strength++;
             if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
             if (/\d/.test(password)) strength++;
             if (/[^a-zA-Z\d]/.test(password)) strength++;
 
-            if (strength === 0) {
-              passwordHint.textContent = 'Use a mix of letters, numbers, and symbols';
-          passwordHint.style.color = 'rgba(255,255,255,0.5)';
+            if (strength === 0 || password.length === 0) {
+                passwordHint.textContent = 'Use a mix of letters, numbers, and symbols';
+                passwordHint.style.color = 'rgba(255,255,255,0.5)';
             } else if (strength === 1) {
-                passwordHint.textContent = '⚠️ Weak password';
-             passwordHint.style.color = '#ff453a';
+                passwordHint.textContent = '⚠ Weak password';
+                passwordHint.style.color = '#ff453a';
             } else if (strength === 2) {
-            passwordHint.textContent = '⚡ Fair password';
-            passwordHint.style.color = '#ff9f0a';
+                passwordHint.textContent = '⚡ Fair password';
+                passwordHint.style.color = '#ff9f0a';
             } else if (strength === 3) {
-              passwordHint.textContent = '✓ Good password';
-             passwordHint.style.color = '#ffd60a';
+                passwordHint.textContent = '✓ Good password';
+                passwordHint.style.color = '#ffd60a';
             } else {
                 passwordHint.textContent = '✓✓ Strong password';
-              passwordHint.style.color = '#30d158';
+                passwordHint.style.color = '#30d158';
             }
-      });
+        });
+
+        // Form submission
+        var form = document.querySelector('form');
+        var agreeCheckbox = document.getElementById('agreeCheckbox');
+        var submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!agreeCheckbox.checked) {
+                alert('请同意服务条款和隐私政策');
+                return;
+            }
+
+            submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> 账号创建成功！';
+            submitBtn.style.background = 'rgba(76, 217, 100, 0.3)';
+            submitBtn.style.borderColor = 'rgba(76, 217, 100, 0.5)';
+
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    })();
     </script>
 </body>
 </html>

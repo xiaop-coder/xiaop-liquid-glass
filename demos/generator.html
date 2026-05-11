@@ -8,240 +8,433 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../dist/liquid-glass.css" rel="stylesheet">
     <style>
-        :root {
-            --highlight-top: rgba(255,255,255,0.25);
-            --highlight-edge: rgba(255,255,255,0.6);
-            --refraction-line: rgba(255,255,255,0.5);
-        }
-        @media (prefers-color-scheme: light) {
-            :root {
-                --highlight-top: rgba(255,255,255,0.8);
-                --highlight-edge: rgba(255,255,255,0.9);
-                --refraction-line: rgba(0,0,0,0.08);
-            }
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh; position: relative;
-            background: linear-gradient(135deg, var(--lg-bg-gradient-1), var(--lg-bg-gradient-2), var(--lg-bg-gradient-3), var(--lg-bg-gradient-4));
-            background-size: 400% 400%; animation: lgGradientShift 15s ease infinite;
-            color: var(--lg-text-primary);
-        }
-        body::before {
-            content: ""; position: fixed; inset: 0; z-index: -1;
-            background:
-                radial-gradient(ellipse at 20% 30%, rgba(0,122,255,0.15), transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(139,92,246,0.15), transparent 50%);
-            pointer-events: none;
-        }
-        .page-nav {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--lg-header-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid var(--lg-header-border);
-            box-shadow: 0 4px 30px var(--lg-glass-shadow), var(--lg-glass-inner-highlight);
-            padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            position: relative;
             overflow: hidden;
         }
-        .page-nav::after {
-            content: ""; position: absolute; bottom: 0; left: 5%; right: 5%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--refraction-line), transparent);
-            pointer-events: none;
+        .animated-background {
+            width: 100%; height: 100%;
+            background-image: url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880');
+        background-size: cover; background-position: center; background-repeat: no-repeat;
+            position: fixed; top: 0; left: 0; z-index: -1;
         }
-        .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--lg-text-primary); }
-        .nav-brand i { background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 22px; }
-        .nav-links { display: flex; gap: 6px; }
-        .nav-link { padding: 8px 16px; border-radius: 10px; color: var(--lg-text-secondary); text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.2s; }
-        .nav-link:hover, .nav-link.active { background: var(--lg-item-hover); color: var(--lg-text-primary); }
+
+        .page-nav {
+            position: sticky; top: 0; z-index: 100;
+            border-radius: 0;
+         overflow: hidden;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+        background: transparent;
+        }
+        .nav-glass-effect {
+            position: absolute; inset: 0; z-index: 0;
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+         filter: url(#glass-distortion);
+    }
+        .nav-glass-tint {
+        position: absolute; inset: 0; z-index: 1;
+            background: rgba(0, 0, 0, 0.12);
+        }
+        .nav-glass-shine {
+            position: absolute; inset: 0; z-index: 2;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+            box-shadow:
+                inset 0 1px 8px 0 rgba(255, 255, 255, 0.18),
+             inset 0 -1px 8px 0 rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+        }
+        .nav-content {
+          position: relative; z-index: 3;
+            padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #fff; text-decoration: none; }
+        .nav-brand i { font-size: 22px; }
+      .nav-links { display: flex; gap: 6px; }
+        .nav-link { padding: 8px 16px; border-radius: 10px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .nav-link.active { background: rgba(255,255,255,0.2); color: #fff; }
 
         .generator-layout {
             display: grid; grid-template-columns: 380px 1fr;
             height: calc(100vh - 60px); overflow: hidden;
         }
         @media (max-width: 900px) {
-            .generator-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+        .generator-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
             .controls-panel { max-height: 50vh; }
         }
 
         .controls-panel {
-            background: var(--lg-card-bg); backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-right: 1px solid var(--lg-card-border);
-            padding: 24px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;
+            position: relative;
+            border-radius: 0;
+         overflow: hidden;
+            box-shadow: 4px 0 24px 0 rgba(0,0,0,0.10);
         }
-        .controls-panel::-webkit-scrollbar { width: 5px; }
-        .controls-panel::-webkit-scrollbar-thumb { background: var(--lg-text-tertiary); border-radius: 3px; }
+        .panel-glass-effect {
+            position: absolute; inset: 0; z-index: 0;
+            backdrop-filter: blur(10px) saturate(150%); -webkit-backdrop-filter: blur(10px) saturate(150%);
+            filter: url(#glass-distortion);
+        }
+        .panel-glass-tint {
+            position: absolute; inset: 0; z-index: 1;
+         background: rgba(0, 0, 0, 0.18);
+    }
+        .panel-glass-shine {
+          position: absolute; inset: 0; z-index: 2;
+            border-right: 1px solid rgba(255, 255, 255, 0.13);
+            box-shadow:
+                inset 1px 0 8px 0 rgba(255, 255, 255, 0.15),
+           inset -1px 0 8px 0 rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .panel-content {
+            position: relative; z-index: 3;
+            padding: 24px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;
+        height: 100%;
+        }
+        .panel-content::-webkit-scrollbar { width: 5px; }
+    .panel-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
 
         .control-group { display: flex; flex-direction: column; gap: 4px; }
-        .control-group label { font-size: 12px; font-weight: 600; color: var(--lg-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-group label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.5px; }
         .control-row { display: flex; align-items: center; gap: 8px; }
-        .control-row input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--lg-primary), var(--lg-secondary)); outline: none; }
-        .control-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid var(--lg-primary); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-        .control-val { min-width: 44px; text-align: right; font-size: 13px; font-weight: 600; color: var(--lg-primary); font-variant-numeric: tabular-nums; }
-        .control-row input[type="color"] { width: 36px; height: 28px; border-radius: 6px; border: 1px solid var(--lg-glass-border); cursor: pointer; padding: 0; background: none; }
-        .control-row select { flex: 1; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--lg-glass-border); background: var(--lg-input-bg); color: var(--lg-text-primary); font-size: 13px; outline: none; cursor: pointer; }
-
-        .actions-row { display: flex; gap: 8px; margin-top: 4px; }
-        .action-btn {
-            flex: 1; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--lg-glass-border);
-            background: var(--lg-glass-bg); color: var(--lg-text-primary); font-size: 12px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
+      .control-row input[type="range"] {
+            flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px;
+            background: linear-gradient(to right, rgba(0,122,255,0.8), rgba(139,92,246,0.8));
+          outline: none;
         }
-        .action-btn:hover { background: var(--lg-glass-hover); transform: translateY(-1px); }
-        .action-btn.copy-btn { background: var(--lg-btn-primary-bg); border-color: var(--lg-btn-primary-border); color: #fff; }
+        .control-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+       background: #fff; border: 2px solid rgba(0,122,255,0.8); cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .control-val { min-width: 44px; text-align: right; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); font-variant-numeric: tabular-nums; }
+        .control-row input[type="color"] {
+            width: 36px; height: 28px; border-radius: 6px;
+         border: 1px solid rgba(255,255,255,0.2); cursor: pointer; padding: 0; background: none;
+     }
+        .control-row select {
+            flex: 1; padding: 6px 10px; border-radius: 8px;
+       border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1); color: #fff;
+            font-size: 13px; outline: none; cursor: pointer;
+        }
+        .control-row select option { background: rgba(0,0,0,0.9); color: #fff; }
+
+      .actions-row { display: flex; gap: 8px; margin-top: 4px; }
+        .action-btn {
+      flex: 1; padding: 8px 12px; border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.12); color: #fff;
+            font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+      }
+        .action-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+        .action-btn.copy-btn { background: rgba(0,122,255,0.3); border-color: rgba(0,122,255,0.5); }
 
         .preview-area {
             display: flex; align-items: center; justify-content: center; padding: 40px;
             overflow: auto; position: relative;
         }
         .preview-area::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: radial-gradient(circle, rgba(128,128,128,0.08) 1px, transparent 1px);
+         content: ""; position: absolute; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
             background-size: 24px 24px; pointer-events: none; z-index: 0;
         }
 
         .code-overlay {
-            position: fixed; inset: 0; background: var(--lg-overlay-bg);
-            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             z-index: 1000; display: none; align-items: center; justify-content: center;
         }
         .code-overlay.show { display: flex; }
         .code-panel {
-            background: var(--lg-modal-bg); backdrop-filter: blur(40px) saturate(200%);
-            -webkit-backdrop-filter: blur(40px) saturate(200%);
-            border-radius: 20px; border: 1px solid var(--lg-modal-border);
-            box-shadow: var(--lg-modal-shadow); max-width: 700px; width: 90%; max-height: 80vh;
-            overflow: hidden; display: flex; flex-direction: column;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+         box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 700px; width: 90%; max-height: 80vh;
+        display: flex; flex-direction: column;
+        }
+        .code-glass-effect {
+            position: absolute; inset: 0; z-index: 0;
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            filter: url(#glass-distortion);
+        }
+        .code-glass-tint {
+            position: absolute; inset: 0; z-index: 1;
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .code-glass-shine {
+         position: absolute; inset: 0; z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 20px;
+            box-shadow:
+            inset 1px 1px 8px 0 rgba(255, 255, 255, 0.18),
+             inset -1px -1px 8px 0 rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .code-panel-content {
+            position: relative; z-index: 3;
+          display: flex; flex-direction: column;
+         height: 100%;
         }
         .code-panel-header {
-            padding: 16px 20px; border-bottom: 1px solid var(--lg-divider);
+        padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--lg-section-bg);
         }
-        .code-panel-header h3 { font-size: 15px; font-weight: 600; }
-        .code-panel-header button { padding: 6px 16px; border-radius: 8px; border: 1px solid var(--lg-glass-border); background: var(--lg-glass-bg); color: var(--lg-text-primary); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .code-panel-header button:hover { background: var(--lg-glass-hover); }
-        .code-tabs { display: flex; gap: 4px; padding: 8px 20px; border-bottom: 1px solid var(--lg-divider); }
-        .code-tab { padding: 6px 14px; border-radius: 8px; border: none; background: none; color: var(--lg-text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .code-tab.active { background: var(--lg-btn-primary-bg); color: #fff; }
-        .code-content {
-            padding: 20px; overflow-y: auto; flex: 1;
+        .code-panel-header h3 { font-size: 15px; font-weight: 600; color: #fff; }
+        .code-panel-header button {
+            padding: 6px 16px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.12); color: #fff;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .code-panel-header button:hover { background: rgba(255,255,255,0.22); }
+        .code-tabs { display: flex; gap: 4px; padding: 8px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .code-tab {
+            padding: 6px 14px; border-radius: 8px; border: none;
+            background: none; color: rgba(255,255,255,0.7);
+            font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .code-tab.active { background: rgba(0,122,255,0.3); color: #fff; }
+     .code-content {
+          padding: 20px; overflow-y: auto; flex: 1;
             font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            font-size: 13px; line-height: 1.6; white-space: pre; color: var(--lg-text-primary);
-            background: rgba(0,0,0,0.1); border-radius: 0 0 20px 20px;
+            font-size: 13px; line-height: 1.6; white-space: pre; color: rgba(255,255,255,0.9);
+            background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;
         }
         .code-content::-webkit-scrollbar { width: 6px; }
-        .code-content::-webkit-scrollbar-thumb { background: var(--lg-text-tertiary); border-radius: 3px; }
+        .code-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
 
         .toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: var(--lg-btn-primary-bg); color: #fff; padding: 10px 24px;
-            border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 2000;
+            background: rgba(0,122,255,0.8); color: #fff; padding: 10px 24px;
+        border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 2000;
             opacity: 0; transition: opacity 0.3s; pointer-events: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
         .toast.show { opacity: 1; }
+
+        .bg-switcher { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; align-items: center; }
+        .bg-switcher-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          color: #fff; font-size: 18px; cursor: pointer;
+       display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s ease;
+        }
+        .bg-switcher-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.08); }
+        .bg-panel {
+            position: fixed; top: 68px; right: 16px; z-index: 999;
+            width: 320px; padding: 20px; border-radius: 18px;
+            background: rgba(0,0,0,0.35); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            color: #fff; display: none;
+        }
+        .bg-panel.show { display: block; }
+        .bg-panel h4 { font-size: 14px; font-weight: 600; margin-bottom: 14px; opacity: 0.9; }
+        .bg-panel label { font-size: 12px; opacity: 0.7; display: block; margin-bottom: 6px; }
+        .bg-url-row { display: flex; gap: 8px; margin-bottom: 14px; }
+      .bg-url-input {
+            flex: 1; padding: 8px 12px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            color: #fff; font-size: 13px; outline: none; transition: all 0.2s;
+        }
+      .bg-url-input::placeholder { color: rgba(255,255,255,0.5); }
+        .bg-url-input:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); }
+        .bg-apply-btn {
+            padding: 8px 14px; border-radius: 10px; border: none;
+            background: rgba(255,255,255,0.2); color: #fff;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .bg-apply-btn:hover { background: rgba(255,255,255,0.3); }
+        .bg-upload-area {
+            border: 2px dashed rgba(255,255,255,0.25); border-radius: 12px;
+         padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.25s; margin-bottom: 14px;
+        }
+        .bg-upload-area:hover { border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.05); }
+        .bg-upload-area .upload-icon { font-size: 28px; margin-bottom: 6px; }
+        .bg-upload-area .upload-text { font-size: 12px; opacity: 0.6; }
+        .bg-upload-area.dragover { border-color: rgba(100,160,255,0.7); background: rgba(100,160,255,0.1); }
+        .bg-presets { display: flex; gap: 8px; flex-wrap: wrap; }
+        .bg-preset {
+            width: 52px; height: 36px; border-radius: 8px;
+            border: 2px solid transparent; cursor: pointer;
+            background-size: cover; background-position: center; transition: all 0.2s;
+        }
+        .bg-preset:hover { transform: scale(1.1); border-color: rgba(255,255,0.5); }
+        .bg-preset.active { border-color: #64a0ff; }
+        .bg-reset {
+         margin-top: 12px; padding: 6px 12px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2); background: transparent;
+            color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer;
+            transition: all 0.2s; width: 100%;
+        }
+        .bg-reset:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        #bgFileInput { display: none; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .bg-panel { width: calc(100vw - 32px); right: 16px; }
+     }
     </style>
 </head>
 <body>
-    <nav class="page-nav">
-        <a class="nav-brand" href="../index.html"><i class="bi bi-droplet"></i> XIAOP</a>
-        <div class="nav-links">
-            <a class="nav-link" href="../index.html">首页</a>
-            <a class="nav-link" href="glass-styles.html">玻璃效果</a>
-            <a class="nav-link active" href="generator.html">生成器</a>
-            <a class="nav-link" href="components.html">组件演示</a>
+    <div class="bg-switcher">
+        <button class="bg-switcher-btn" id="bgToggleBtn" title="切换背景">🖼</button>
+    </div>
+    <div class="bg-panel" id="bgPanel">
+        <h4>切换背景</h4>
+        <label>图片直连地址</label>
+        <div class="bg-url-row">
+        <input type="text" class="bg-url-input" id="bgUrlInput" placeholder="粘贴图片URL...">
+            <button class="bg-apply-btn" id="bgApplyBtn">应用</button>
         </div>
+        <label>上传本地图片</label>
+        <div class="bg-upload-area" id="bgUploadArea">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">点击或拖拽图片到此处</div>
+        </div>
+        <input type="file" id="bgFileInput" accept="image/*">
+        <label>预设背景</label>
+        <div class="bg-presets" id="bgPresets"></div>
+        <button class="bg-reset" id="bgResetBtn">恢复默认背景</button>
+    </div>
+
+    <div class="animated-background"></div>
+
+    <svg style="display: none">
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+            <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence" />
+            <feComponentTransfer in="turbulence" result="mapped">
+                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+            <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+            </feComponentTransfer>
+          <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+                <fePointLight x="-200" y="-200" z="300" />
+          </feSpecularLighting>
+            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
+            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <nav class="page-nav">
+        <div class="nav-glass-effect"></div>
+        <div class="nav-glass-tint"></div>
+        <div class="nav-glass-shine"></div>
+        <div class="nav-content">
+          <a class="nav-brand" href="../index.html"><i class="bi bi-droplet-fill"></i> XIAOP</a>
+            <div class="nav-links">
+              <a class="nav-link" href="../index.html">首页</a>
+                <a class="nav-link" href="glass-styles.html">玻璃效果</a>
+                <a class="nav-link active" href="generator.html">生成器</a>
+                <a class="nav-link" href="components.html">组件演示</a>
+            </div>
+     </div>
     </nav>
 
     <div class="generator-layout">
-        <div class="controls-panel" id="controls">
-            <div class="control-group">
-                <label>折射模式 Refraction Mode</label>
+      <div class="controls-panel">
+            <div class="panel-glass-effect"></div>
+       <div class="panel-glass-tint"></div>
+            <div class="panel-glass-shine"></div>
+            <div class="panel-content" id="controls">
+                <div class="control-group">
+                    <label>折射模式 Refraction Mode</label>
+                    <div class="control-row">
+                <select id="ctrl-mode" onchange="updateAll()">
+                   <option value="standard">Standard 标准 (边缘折射)</option>
+                      <option value="polar">Polar 极坐标 (圆形元素)</option>
+              <option value="prominent">Prominent 强化 (更强折射)</option>
+                      <option value="frosted">Frosted 磨砂 (仅模糊)</option>
+                  </select>
+                    </div>
+             </div>
+                <div class="control-group">
+            <label>尺寸 Size</label>
                 <div class="control-row">
-                    <select id="ctrl-mode" onchange="updateAll()">
-                        <option value="standard">Standard 标准 (边缘折射)</option>
-                        <option value="polar">Polar 极坐标 (圆形元素)</option>
-                        <option value="prominent">Prominent 强化 (更强折射)</option>
-                        <option value="frosted">Frosted 磨砂 (仅模糊)</option>
-                    </select>
+                   <input type="range" id="ctrl-width" min="80" max="600" value="300" oninput="updateAll()">
+             <span class="control-val" id="val-width">300px</span>
+                 </div>
+                <div class="control-row">
+                     <input type="range" id="ctrl-height" min="60" max="400" value="200" oninput="updateAll()">
+                  <span class="control-val" id="val-height">200px</span>
+                    </div>
                 </div>
+                <div class="control-group">
+               <label>圆角 Border Radius</label>
+              <div class="control-row">
+                     <input type="range" id="ctrl-radius" min="0" max="100" value="28" oninput="updateAll()">
+                      <span class="control-val" id="val-radius">28%</span>
             </div>
-            <div class="control-group">
-                <label>尺寸 Size</label>
-                <div class="control-row">
-                    <input type="range" id="ctrl-width" min="80" max="600" value="300" oninput="updateAll()">
-                    <span class="control-val" id="val-width">300px</span>
-                </div>
-                <div class="control-row">
-                    <input type="range" id="ctrl-height" min="60" max="400" value="200" oninput="updateAll()">
-                    <span class="control-val" id="val-height">200px</span>
-                </div>
             </div>
-            <div class="control-group">
-                <label>圆角 Border Radius</label>
-                <div class="control-row">
-                    <input type="range" id="ctrl-radius" min="0" max="100" value="28" oninput="updateAll()">
-                    <span class="control-val" id="val-radius">28%</span>
+                <div class="control-group">
+             <label>饱和度 Saturation</label>
+            <div class="control-row">
+                   <input type="range" id="ctrl-saturation" min="50" max="300" value="120" oninput="updateAll()">
+                <span class="control-val" id="val-saturation">120%</span>
+              </div>
                 </div>
+                <div class="control-group">
+               <label>内阴影 Inner Shadow</label>
+                  <div class="control-row">
+             <input type="color" id="ctrl-inner-color" value="#000000" onchange="updateAll()">
+             <input type="range" id="ctrl-inner-blur" min="0" max="40" value="15" oninput="updateAll()">
+                        <span class="control-val" id="val-inner-blur">15px</span>
+                    </div>
+                <div class="control-row">
+                        <input type="range" id="ctrl-inner-spread" min="-20" max="20" value="-5" oninput="updateAll()">
+                        <span class="control-val" id="val-inner-spread">-5px</span>
+                  </div>
+                </div>
+                <div class="control-group">
+                    <label>玻璃色调 Glass Tint</label>
+                    <div class="control-row">
+                     <input type="color" id="ctrl-tint-color" value="#ffff" onchange="updateAll()">
+                        <input type="range" id="ctrl-tint-opacity" min="0" max="100" value="0" oninput="updateAll()">
+                        <span class="control-val" id="val-tint-opacity">0%</span>
             </div>
-            <div class="control-group">
-                <label>饱和度 Saturation</label>
-                <div class="control-row">
-                    <input type="range" id="ctrl-saturation" min="50" max="300" value="120" oninput="updateAll()">
-                    <span class="control-val" id="val-saturation">120%</span>
                 </div>
-            </div>
-            <div class="control-group">
-                <label>内阴影 Inner Shadow</label>
-                <div class="control-row">
-                    <input type="color" id="ctrl-inner-color" value="#000000" onchange="updateAll()">
-                    <input type="range" id="ctrl-inner-blur" min="0" max="40" value="15" oninput="updateAll()">
-                    <span class="control-val" id="val-inner-blur">15px</span>
-                </div>
-                <div class="control-row">
-                    <input type="range" id="ctrl-inner-spread" min="-20" max="20" value="-5" oninput="updateAll()">
-                    <span class="control-val" id="val-inner-spread">-5px</span>
-                </div>
-            </div>
-            <div class="control-group">
-                <label>玻璃色调 Glass Tint</label>
-                <div class="control-row">
-                    <input type="color" id="ctrl-tint-color" value="#ffffff" onchange="updateAll()">
-                    <input type="range" id="ctrl-tint-opacity" min="0" max="100" value="0" oninput="updateAll()">
-                    <span class="control-val" id="val-tint-opacity">0%</span>
-                </div>
-            </div>
-            <div class="control-group">
-                <label>霜冻模糊 Frost Blur</label>
-                <div class="control-row">
+             <div class="control-group">
+                    <label>霜冻模糊 Frost Blur</label>
+                 <div class="control-row">
                     <input type="range" id="ctrl-frost-blur" min="0" max="40" value="0" oninput="updateAll()">
-                    <span class="control-val" id="val-frost-blur">0px</span>
+              <span class="control-val" id="val-frost-blur">0px</span>
+               </div>
                 </div>
-            </div>
-            <div class="control-group">
+                <div class="control-group">
                 <label>折射强度 Refraction (仅shader模式)</label>
-                <div class="control-row">
-                    <input type="range" id="ctrl-noise-freq" min="0.002" max="0.05" step="0.001" value="0.008" oninput="updateAll()">
-                    <span class="control-val" id="val-noise-freq">0.008</span>
+                  <div class="control-row">
+               <input type="range" id="ctrl-noise-freq" min="0.002" max="0.05" step="0.001" value="0.008" oninput="updateAll()">
+                <span class="control-val" id="val-noise-freq">0.008</span>
+               </div>
+                  <div class="control-row">
+                <input type="range" id="ctrl-noise-strength" min="0" max="150" value="77" oninput="updateAll()">
+                     <span class="control-val" id="val-noise-strength">77</span>
                 </div>
-                <div class="control-row">
-                    <input type="range" id="ctrl-noise-strength" min="0" max="150" value="77" oninput="updateAll()">
-                    <span class="control-val" id="val-noise-strength">77</span>
                 </div>
+                <div class="control-group">
+                    <label>弹性 Elasticity</label>
+               <div class="control-row">
+                     <input type="range" id="ctrl-elasticity" min="0" max="1" step="0.01" value="0.15" oninput="updateAll()">
+                 <span class="control-val" id="val-elasticity">0.15</span>
             </div>
-            <div class="control-group">
-                <label>弹性 Elasticity</label>
-                <div class="control-row">
-                    <input type="range" id="ctrl-elasticity" min="0" max="1" step="0.01" value="0.15" oninput="updateAll()">
-                    <span class="control-val" id="val-elasticity">0.15</span>
                 </div>
-            </div>
-            <div class="actions-row">
-                <button class="action-btn copy-btn" onclick="showCode()"><i class="bi bi-code-slash"></i> 导出代码</button>
-                <button class="action-btn" onclick="copyLink()"><i class="bi bi-share"></i> 复制链接</button>
-                <button class="action-btn" onclick="resetAll()"><i class="bi bi-arrow-counterclockwise"></i> 重置</button>
+                <div class="actions-row">
+                    <button class="action-btn copy-btn" onclick="showCode()"><i class="bi bi-code-slash"></i> 导出代码</button>
+                 <button class="action-btn" onclick="copyLink()"><i class="bi bi-share"></i> 复制链接</button>
+           <button class="action-btn" onclick="resetAll()"><i class="bi bi-arrow-counterclockwise"></i> 重置</button>
+             </div>
             </div>
         </div>
         <div class="preview-area" id="preview-area">
@@ -251,20 +444,25 @@
 
     <div class="code-overlay" id="code-overlay" onclick="if(event.target===this)hideCode()">
         <div class="code-panel">
-            <div class="code-panel-header">
-                <h3><i class="bi bi-code-slash"></i> 代码导出</h3>
+            <div class="code-glass-effect"></div>
+      <div class="code-glass-tint"></div>
+            <div class="code-glass-shine"></div>
+            <div class="code-panel-content">
+                <div class="code-panel-header">
+              <h3><i class="bi bi-code-slash"></i> 代码导出</h3>
                 <div style="display:flex;gap:6px;">
-                    <button onclick="copyGeneratedCode()"><i class="bi bi-clipboard"></i> 复制</button>
-                    <button onclick="hideCode()"><i class="bi bi-x-lg"></i></button>
+                  <button onclick="copyGeneratedCode()"><i class="bi bi-clipboard"></i> 复制</button>
+                        <button onclick="hideCode()"><i class="bi bi-x-lg"></i></button>
+                  </div>
                 </div>
+                <div class="code-tabs">
+                    <button class="code-tab active" onclick="switchCodeTab('html')">HTML</button>
+                  <button class="code-tab" onclick="switchCodeTab('css')">CSS</button>
+               <button class="code-tab" onclick="switchCodeTab('vue')">Vue</button>
+                    <button class="code-tab" onclick="switchCodeTab('react')">React</button>
+           </div>
+                <div class="code-content" id="code-content"></div>
             </div>
-            <div class="code-tabs">
-                <button class="code-tab active" onclick="switchCodeTab('html')">HTML</button>
-                <button class="code-tab" onclick="switchCodeTab('css')">CSS</button>
-                <button class="code-tab" onclick="switchCodeTab('vue')">Vue</button>
-                <button class="code-tab" onclick="switchCodeTab('react')">React</button>
-            </div>
-            <div class="code-content" id="code-content"></div>
         </div>
     </div>
 
@@ -273,10 +471,10 @@
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
         <defs>
             <filter id="glass-shader" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
                 <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
                 <feDisplacementMap in="SourceGraphic" in2="blurred" scale="77" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
+        </filter>
         </defs>
     </svg>
 
@@ -285,39 +483,39 @@
         var defaults = {
             mode: 'standard', width: 300, height: 200, radius: 28,
             saturation: 120, innerColor: '#000000', innerBlur: 15, innerSpread: -5,
-            tintColor: '#ffffff', tintOpacity: 0, frostBlur: 0,
+          tintColor: '#ffffff', tintOpacity: 0, frostBlur: 0,
             noiseFreq: 0.008, noiseStrength: 77, elasticity: 0.15
         };
 
         function getValues() {
             return {
-                mode: document.getElementById('ctrl-mode').value,
+         mode: document.getElementById('ctrl-mode').value,
                 width: parseInt(document.getElementById('ctrl-width').value),
                 height: parseInt(document.getElementById('ctrl-height').value),
-                radius: parseInt(document.getElementById('ctrl-radius').value),
+            radius: parseInt(document.getElementById('ctrl-radius').value),
                 saturation: parseInt(document.getElementById('ctrl-saturation').value),
                 innerColor: document.getElementById('ctrl-inner-color').value,
-                innerBlur: parseInt(document.getElementById('ctrl-inner-blur').value),
-                innerSpread: parseInt(document.getElementById('ctrl-inner-spread').value),
-                tintColor: document.getElementById('ctrl-tint-color').value,
+             innerBlur: parseInt(document.getElementById('ctrl-inner-blur').value),
+              innerSpread: parseInt(document.getElementById('ctrl-inner-spread').value),
+            tintColor: document.getElementById('ctrl-tint-color').value,
                 tintOpacity: parseInt(document.getElementById('ctrl-tint-opacity').value),
                 frostBlur: parseInt(document.getElementById('ctrl-frost-blur').value),
-                noiseFreq: parseFloat(document.getElementById('ctrl-noise-freq').value),
-                noiseStrength: parseInt(document.getElementById('ctrl-noise-strength').value),
+              noiseFreq: parseFloat(document.getElementById('ctrl-noise-freq').value),
+            noiseStrength: parseInt(document.getElementById('ctrl-noise-strength').value),
                 elasticity: parseFloat(document.getElementById('ctrl-elasticity').value)
             };
         }
 
         function updateDisplay() {
-            var v = getValues();
-            document.getElementById('val-width').textContent = v.width + 'px';
+         var v = getValues();
+         document.getElementById('val-width').textContent = v.width + 'px';
             document.getElementById('val-height').textContent = v.height + 'px';
-            document.getElementById('val-radius').textContent = v.radius + '%';
+          document.getElementById('val-radius').textContent = v.radius + '%';
             document.getElementById('val-saturation').textContent = v.saturation + '%';
-            document.getElementById('val-inner-blur').textContent = v.innerBlur + 'px';
+          document.getElementById('val-inner-blur').textContent = v.innerBlur + 'px';
             document.getElementById('val-inner-spread').textContent = v.innerSpread + 'px';
             document.getElementById('val-tint-opacity').textContent = v.tintOpacity + '%';
-            document.getElementById('val-frost-blur').textContent = v.frostBlur + 'px';
+        document.getElementById('val-frost-blur').textContent = v.frostBlur + 'px';
             document.getElementById('val-noise-freq').textContent = v.noiseFreq.toFixed(3);
             document.getElementById('val-noise-strength').textContent = v.noiseStrength;
             document.getElementById('val-elasticity').textContent = v.elasticity.toFixed(2);
@@ -331,13 +529,13 @@
             glass.style.width = v.width + 'px';
             glass.style.height = v.height + 'px';
             glass.style.borderRadius = radiusPx + 'px';
-            glass.style.setProperty('--lg-saturation', v.saturation + '%');
+         glass.style.setProperty('--lg-saturation', v.saturation + '%');
 
             var outer = glass.querySelector('.liquid-glass-outer');
-            var cover = glass.querySelector('.liquid-glass-cover');
+         var cover = glass.querySelector('.liquid-glass-cover');
             var sharp = glass.querySelector('.liquid-glass-sharp');
-            var reflect = glass.querySelector('.liquid-glass-reflect');
-            var content = glass.querySelector('.liquid-glass-content');
+         var reflect = glass.querySelector('.liquid-glass-reflect');
+         var content = glass.querySelector('.liquid-glass-content');
 
             if (!outer) { initLiquidGlass(); outer = glass.querySelector('.liquid-glass-outer'); cover = glass.querySelector('.liquid-glass-cover'); sharp = glass.querySelector('.liquid-glass-sharp'); reflect = glass.querySelector('.liquid-glass-reflect'); content = glass.querySelector('.liquid-glass-content'); }
 
@@ -351,17 +549,17 @@
             cover.style.webkitBackdropFilter = 'blur(' + v.frostBlur + 'px) saturate(' + v.saturation + '%)';
 
             var tint = hexToRgba(v.tintColor, v.tintOpacity / 100);
-            sharp.style.boxShadow = 'inset 0 0 ' + v.innerBlur + 'px ' + v.innerSpread + 'px ' + v.innerColor;
+          sharp.style.boxShadow = 'inset 0 0 ' + v.innerBlur + 'px ' + v.innerSpread + 'px ' + v.innerColor;
 
             var tintBasis = v.tintOpacity / 100;
-            cover.style.background = 'rgba(0,0,0,' + (0.12 * (1 - tintBasis)) + ')';
+          cover.style.background = 'rgba(0,0,0,' + (0.12 * (1 - tintBasis)) + ')';
 
             if (content && !content.querySelector('span')) {
-                content.innerHTML = '<span style="font-size:24px;font-weight:500;color:' + getComputedStyle(document.body).getPropertyValue('--lg-text-primary').trim() + ';text-shadow:0 2px 4px rgba(0,0,0,0.2);">Liquid Glass</span>';
+              content.innerHTML = '<span style="font-size:24px;font-weight:500;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.2);">Liquid Glass</span>';
             }
 
             saveHash();
-        }
+      }
 
         function hexToRgba(hex, alpha) {
             var r = parseInt(hex.slice(1,3), 16);
@@ -377,35 +575,35 @@
 
         function loadHash() {
             if (!location.hash || location.hash.length < 2) return;
-            try {
+          try {
                 var data = JSON.parse(decodeURIComponent(location.hash.slice(1)));
                 document.getElementById('ctrl-mode').value = data.mode || 'standard';
-                document.getElementById('ctrl-width').value = data.width || 300;
+              document.getElementById('ctrl-width').value = data.width || 300;
                 document.getElementById('ctrl-height').value = data.height || 200;
                 document.getElementById('ctrl-radius').value = data.radius || 28;
                 document.getElementById('ctrl-saturation').value = data.saturation || 120;
-                document.getElementById('ctrl-inner-color').value = data.innerColor || '#000000';
-                document.getElementById('ctrl-inner-blur').value = data.innerBlur || 15;
+           document.getElementById('ctrl-inner-color').value = data.innerColor || '#000000';
+            document.getElementById('ctrl-inner-blur').value = data.innerBlur || 15;
                 document.getElementById('ctrl-inner-spread').value = data.innerSpread || -5;
-                document.getElementById('ctrl-tint-color').value = data.tintColor || '#ffffff';
+          document.getElementById('ctrl-tint-color').value = data.tintColor || '#ffffff';
                 document.getElementById('ctrl-tint-opacity').value = data.tintOpacity || 0;
                 document.getElementById('ctrl-frost-blur').value = data.frostBlur || 0;
                 document.getElementById('ctrl-noise-freq').value = data.noiseFreq || 0.008;
-                document.getElementById('ctrl-noise-strength').value = data.noiseStrength || 77;
+           document.getElementById('ctrl-noise-strength').value = data.noiseStrength || 77;
                 document.getElementById('ctrl-elasticity').value = data.elasticity || 0.15;
-            } catch(e) {}
+         } catch(e) {}
         }
 
         function saveHash() {
-            var v = getValues();
+          var v = getValues();
             try {
-                history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(v)));
+              history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(v)));
             } catch(e) {}
         }
 
         function resetAll() {
             document.getElementById('ctrl-mode').value = 'standard';
-            document.getElementById('ctrl-width').value = 300;
+         document.getElementById('ctrl-width').value = 300;
             document.getElementById('ctrl-height').value = 200;
             document.getElementById('ctrl-radius').value = 28;
             document.getElementById('ctrl-saturation').value = 120;
@@ -413,18 +611,18 @@
             document.getElementById('ctrl-inner-blur').value = 15;
             document.getElementById('ctrl-inner-spread').value = -5;
             document.getElementById('ctrl-tint-color').value = '#ffffff';
-            document.getElementById('ctrl-tint-opacity').value = 0;
+       document.getElementById('ctrl-tint-opacity').value = 0;
             document.getElementById('ctrl-frost-blur').value = 0;
-            document.getElementById('ctrl-noise-freq').value = 0.008;
+         document.getElementById('ctrl-noise-freq').value = 0.008;
             document.getElementById('ctrl-noise-strength').value = 77;
             document.getElementById('ctrl-elasticity').value = 0.15;
-            updateAll();
+         updateAll();
             showToast('已重置为默认值');
         }
 
         function copyLink() {
             navigator.clipboard.writeText(location.href).then(function() {
-                showToast('链接已复制！');
+        showToast('链接已复制！');
             });
         }
 
@@ -436,19 +634,18 @@
             for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
             event.target.classList.add('active');
             renderCode();
-        }
-
+      }
         function showCode() {
             document.getElementById('code-overlay').classList.add('show');
             codeTab = 'html';
             var tabs = document.querySelectorAll('.code-tab');
             for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
             tabs[0].classList.add('active');
-            renderCode();
+       renderCode();
         }
 
         function hideCode() {
-            document.getElementById('code-overlay').classList.remove('show');
+        document.getElementById('code-overlay').classList.remove('show');
         }
 
         function renderCode() {
@@ -456,102 +653,102 @@
             var radiusPx = Math.min(v.width, v.height) * (v.radius / 100);
             var tint = hexToRgba(v.tintColor, v.tintOpacity / 100);
 
-            if (codeTab === 'html') {
+      if (codeTab === 'html') {
                 document.getElementById('code-content').textContent =
                     '<div class="liquid-glass">\n' +
-                    '  <div class="glass-text">Liquid Glass</div>\n' +
-                    '</div>\n\n' +
-                    '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n' +
-                    '  <defs>\n' +
-                    '    <filter id="glass-shader" x="0%" y="0%" width="100%" height="100%">\n' +
-                    '      <feTurbulence type="fractalNoise" baseFrequency="' + v.noiseFreq + ' ' + v.noiseFreq + '" numOctaves="2" seed="92" result="noise" />\n' +
+           '  <div class="glass-text">Liquid Glass</div>\n' +
+                 '</div>\n\n' +
+               '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n' +
+              '  <defs>\n' +
+                  '    <filter id="glass-shader" x="0%" y="0%" width="100%" height="100%">\n' +
+            '      <feTurbulence type="fractalNoise" baseFrequency="' + v.noiseFreq + ' ' + v.noiseFreq + '" numOctaves="2" seed="92" result="noise" />\n' +
                     '      <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />\n' +
-                    '      <feDisplacementMap in="SourceGraphic" in2="blurred" scale="' + v.noiseStrength + '" xChannelSelector="R" yChannelSelector="G" />\n' +
-                    '    </filter>\n' +
-                    '  </defs>\n' +
-                    '</svg>';
+                 '      <feDisplacementMap in="SourceGraphic" in2="blurred" scale="' + v.noiseStrength + '" xChannelSelector="R" yChannelSelector="G" />\n' +
+            '    </filter>\n' +
+               '  </defs>\n' +
+                  '</svg>';
             } else if (codeTab === 'css') {
                 document.getElementById('code-content').textContent =
-                    '.liquid-glass {\n' +
-                    '  width: ' + v.width + 'px;\n' +
-                    '  height: ' + v.height + 'px;\n' +
-                    '  border-radius: ' + radiusPx.toFixed(1) + 'px;\n' +
-                    '  position: relative;\n' +
+                '.liquid-glass {\n' +
+               '  width: ' + v.width + 'px;\n' +
+             '  height: ' + v.height + 'px;\n' +
+                 '  border-radius: ' + radiusPx.toFixed(1) + 'px;\n' +
+             '  position: relative;\n' +
                     '  isolation: isolate;\n' +
-                    '  box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.2);\n' +
-                    '  display: flex;\n' +
-                    '  align-items: center;\n' +
+        '  box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.2);\n' +
+                 '  display: flex;\n' +
+                '  align-items: center;\n' +
                     '  justify-content: center;\n' +
                     '  border: none;\n' +
-                    '  background: none;\n' +
+                '  background: none;\n' +
                     '  cursor: pointer;\n' +
                     '}\n\n' +
                     '.liquid-glass::before {\n' +
                     '  content: \'\';\n' +
                     '  position: absolute;\n' +
                     '  inset: 0;\n' +
-                    '  z-index: 0;\n' +
+                  '  z-index: 0;\n' +
                     '  border-radius: ' + radiusPx.toFixed(1) + 'px;\n' +
                     '  box-shadow: inset 0 0 ' + v.innerBlur + 'px ' + v.innerSpread + 'px ' + v.innerColor + ';\n' +
                     '  background-color: ' + tint + ';\n' +
                     '}\n\n' +
-                    '.liquid-glass::after {\n' +
-                    '  content: \'\';\n' +
+                '.liquid-glass::after {\n' +
+                 '  content: \'\';\n' +
                     '  position: absolute;\n' +
-                    '  inset: 0;\n' +
+                '  inset: 0;\n' +
                     '  z-index: -1;\n' +
-                    '  border-radius: ' + radiusPx.toFixed(1) + 'px;\n' +
-                    '  backdrop-filter: blur(' + v.frostBlur + 'px) saturate(' + v.saturation + '%);\n' +
+              '  border-radius: ' + radiusPx.toFixed(1) + 'px;\n' +
+           '  backdrop-filter: blur(' + v.frostBlur + 'px) saturate(' + v.saturation + '%);\n' +
                     '  -webkit-backdrop-filter: blur(' + v.frostBlur + 'px) saturate(' + v.saturation + '%);\n' +
-                    '  filter: url(#glass-shader);\n' +
+                '  filter: url(#glass-shader);\n' +
                     '  -webkit-filter: url(#glass-shader);\n' +
                     '}\n\n' +
-                    '.glass-text {\n' +
-                    '  position: relative;\n' +
-                    '  color: var(--lg-text-primary);\n' +
+                  '.glass-text {\n' +
+                 '  position: relative;\n' +
+                    '  color: #fff;\n' +
                     '  font-size: 24px;\n' +
                     '  font-weight: 500;\n' +
-                    '  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);\n' +
-                    '}';
+                  '  text-shadow: 0px 2px 4px rgba(0, 0, 0.2);\n' +
+                  '}';
             } else if (codeTab === 'vue') {
-                document.getElementById('code-content').textContent =
-                    '<template>\n' +
+          document.getElementById('code-content').textContent =
+          '<template>\n' +
                     '  <LiquidGlassContainer\n' +
-                    '    :width="' + v.width + '"\n' +
+          '    :width="' + v.width + '"\n' +
                     '    :height="' + v.height + '"\n' +
-                    '    :borderRadius="' + v.radius + '"\n' +
-                    '    :innerShadowColor="\'' + v.innerColor + '\'"\n' +
+                 '    :borderRadius="' + v.radius + '"\n' +
+                 '    :innerShadowColor="\'' + v.innerColor + '\'"\n' +
                     '    :innerShadowBlur="' + v.innerBlur + '"\n' +
-                    '    :innerShadowSpread="' + v.innerSpread + '"\n' +
-                    '    :glassTintColor="\'' + v.tintColor + '\'"\n' +
+                 '    :innerShadowSpread="' + v.innerSpread + '"\n' +
+                  '    :glassTintColor="\'' + v.tintColor + '\'"\n' +
                     '    :glassTintOpacity="' + v.tintOpacity + '"\n' +
                     '    :frostBlurRadius="' + v.frostBlur + '"\n' +
                     '    :noiseFrequency="' + v.noiseFreq + '"\n' +
-                    '    :noiseStrength="' + v.noiseStrength + '"\n' +
+                  '    :noiseStrength="' + v.noiseStrength + '"\n' +
                     '  >\n' +
-                    '    <div class="content">Liquid Glass</div>\n' +
-                    '  </LiquidGlassContainer>\n' +
+              '    <div class="content">Liquid Glass</div>\n' +
+               '  </LiquidGlassContainer>\n' +
                     '</template>';
-            } else if (codeTab === 'react') {
+          } else if (codeTab === 'react') {
                 document.getElementById('code-content').textContent =
-                    'import { LiquidGlassContainer } from \'@tinymomentum/liquid-glass-react\';\n\n' +
-                    'function Component() {\n' +
+                'import { LiquidGlassContainer } from \'@tinymomentum/liquid-glass-react\';\n\n' +
+            'function Component() {\n' +
                     '  return (\n' +
-                    '    <LiquidGlassContainer\n' +
-                    '      width={' + v.width + '}\n' +
+                '    <LiquidGlassContainer\n' +
+              '      width={' + v.width + '}\n' +
                     '      height={' + v.height + '}\n' +
-                    '      borderRadius={' + v.radius + '}\n' +
-                    '      innerShadowColor="' + v.innerColor + '"\n' +
-                    '      innerShadowBlur={' + v.innerBlur + '}\n' +
-                    '      innerShadowSpread={' + v.innerSpread + '}\n' +
+               '      borderRadius={' + v.radius + '}\n' +
+            '      innerShadowColor="' + v.innerColor + '"\n' +
+                 '      innerShadowBlur={' + v.innerBlur + '}\n' +
+                  '      innerShadowSpread={' + v.innerSpread + '}\n' +
                     '      glassTintColor="' + v.tintColor + '"\n' +
                     '      glassTintOpacity={' + v.tintOpacity + '}\n' +
-                    '      frostBlurRadius={' + v.frostBlur + '}\n' +
-                    '      noiseFrequency={' + v.noiseFreq + '}\n' +
-                    '      noiseStrength={' + v.noiseStrength + '}\n' +
+                 '      frostBlurRadius={' + v.frostBlur + '}\n' +
+             '      noiseFrequency={' + v.noiseFreq + '}\n' +
+          '      noiseStrength={' + v.noiseStrength + '}\n' +
                     '    >\n' +
-                    '      <div className="content">Liquid Glass</div>\n' +
-                    '    </LiquidGlassContainer>\n' +
+             '      <div className="content">Liquid Glass</div>\n' +
+                 '    </LiquidGlassContainer>\n' +
                     '  );\n' +
                     '}';
             }
@@ -560,7 +757,7 @@
         function copyGeneratedCode() {
             navigator.clipboard.writeText(document.getElementById('code-content').textContent).then(function() {
                 showToast('代码已复制！');
-            });
+       });
         }
 
         function showToast(msg) {
@@ -570,6 +767,105 @@
             clearTimeout(toast._timer);
             toast._timer = setTimeout(function() { toast.classList.remove('show'); }, 2000);
         }
+
+        // Background switcher
+        (function() {
+            var bgEl = document.querySelector('.animated-background');
+            var defaultBg = "url('https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880')";
+            var presets = [
+             'https://haowallpaper.com/link/common/file/previewFileImg/18347150586858880',
+                'https://plus.unsplash.com/premium_photo-1748960861503-99b1f5412a81?w=900&auto=format&fit=crop&q=60',
+                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&auto=format&fit=crop&q=60',
+                'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=900&auto=format&fit=crop&q=60',
+              'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&auto=format&fit=crop&q=60',
+                'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=900&auto=format&fit=crop&q=60'
+            ];
+
+         var presetsContainer = document.getElementById('bgPresets');
+            presets.forEach(function(url, i) {
+           var div = document.createElement('div');
+          div.className = 'bg-preset' + (i === 0 ? ' active' : '');
+                div.style.backgroundImage = 'url(' + url + ')';
+                div.addEventListener('click', function() {
+                  setBackground(url);
+              document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+                  div.classList.add('active');
+              });
+            presetsContainer.appendChild(div);
+            });
+
+            function setBackground(url) {
+                bgEl.style.backgroundImage = 'url(' + url + ')';
+           try { localStorage.setItem('lg-bg', url); } catch(e) {}
+            }
+
+            var saved = localStorage.getItem('lg-bg');
+            if (saved) setBackground(saved);
+
+            document.getElementById('bgToggleBtn').addEventListener('click', function() {
+                document.getElementById('bgPanel').classList.toggle('show');
+            });
+
+            document.addEventListener('click', function(e) {
+                var panel = document.getElementById('bgPanel');
+            var btn = document.getElementById('bgToggleBtn');
+           if (!panel.contains(e.target) && !btn.contains(e.target)) {
+               panel.classList.remove('show');
+         }
+            });
+
+            document.getElementById('bgApplyBtn').addEventListener('click', function() {
+          var url = document.getElementById('bgUrlInput').value.trim();
+                if (url) {
+              setBackground(url);
+                document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+                }
+            });
+
+            document.getElementById('bgUrlInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('bgApplyBtn').click();
+            });
+
+            var uploadArea = document.getElementById('bgUploadArea');
+            var fileInput = document.getElementById('bgFileInput');
+            uploadArea.addEventListener('click', function() { fileInput.click(); });
+
+            uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+          uploadArea.addEventListener('dragleave', function() {
+           uploadArea.classList.remove('dragover');
+            });
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+            });
+
+            fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+            });
+
+            function handleFile(file) {
+            if (!file.type.startsWith('image/')) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  setBackground(e.target.result);
+                    document.querySelectorAll('.bg-preset').forEach(function(p) { p.classList.remove('active'); });
+        };
+                reader.readAsDataURL(file);
+            }
+
+            document.getElementById('bgResetBtn').addEventListener('click', function() {
+                bgEl.style.backgroundImage = defaultBg;
+                try { localStorage.removeItem('lg-bg'); } catch(e) {}
+            document.querySelectorAll('.bg-preset').forEach(function(p, i) {
+                p.classList.toggle('active', i === 0);
+            });
+           document.getElementById('bgUrlInput').value = '';
+            });
+        })();
 
         loadHash();
         updateDisplay();
