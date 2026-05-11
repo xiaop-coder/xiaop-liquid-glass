@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XiaoP Liquid Glass v3.0 - 完整展示</title>
+  <link rel="stylesheet" href="../dist/liquid-glass.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 3rem;
+      color: white;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      min-height: 200px;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    .mode-selector {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .mode-btn.active {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .feature-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌊 XiaoP Liquid Glass v3.0</h1>
+    <p class="subtitle">终极液态玻璃设计系统 - 融合所有最佳实践</p>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="standard">标准模式</button>
+      <button class="mode-btn" data-mode="polar">极坐标</button>
+      <button class="mode-btn" data-mode="prominent">强化折射</button>
+      <button class="mode-btn" data-mode="frosted">磨砂玻璃</button>
+      <button class="mode-btn" data-mode="diamond">菱形</button>
+      <button class="mode-btn" data-mode="hexagon">六边形</button>
+      <button class="mode-btn" data-mode="wave">波浪形</button>
+    </div>
+
+    <div class="grid">
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>🎨 Canvas SDF 位移贴图</h2>
+        <p>基于 Signed Distance Field 算法生成边缘折射效果，支持8种不同的形状模式。</p>
+        <span class="feature-badge">shuding/liquid-glass</span>
+      </div>
+
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>🔮 SVG 滤镜系统</h2>
+        <p>使用 feDisplacementMap 实现真实的光线折射，配合 backdrop-filter 创造多层玻璃效果。</p>
+        <span class="feature-badge">lucasromerodb</span>
+      </div>
+
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>✨ 4层渲染架构</h2>
+        <p>outer(边缘折射) + cover(低模糊) + sharp(高光) + reflect(反射) 四层结构完美还原液态玻璃质感。</p>
+        <span class="feature-badge">多层架构</span>
+      </div>
+
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>🎯 鼠标交互效果</h2>
+        <p>弹性跟随、3D倾斜、光晕追踪、磁吸效果、涟漪扩散等20+种交互特效。</p>
+        <span class="feature-badge">rdev/liquid-glass-react</span>
+      </div>
+
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>🌈 色差与着色器</h2>
+        <p>RGB通道分离、边缘色差、渐变遮罩等高级视觉效果，打造赛博朋克风格。</p>
+        <span class="feature-badge">wxperia/liquid-glass-vue</span>
+      </div>
+
+      <div class="liquid-glass card liquid-glass-animate" data-mode="standard">
+        <h2>⚡ 性能优化</h2>
+        <p>LRU缓存、RAF节流、Worker线程、WebGL加速，确保流畅的60fps体验。</p>
+        <span class="feature-badge">高性能</span>
+      </div>
+    </div>
+
+    <div class="liquid-glass liquid-glass-animate" data-mode="standard" style="padding: 2rem;">
+      <h2 style="margin-bottom: 1rem;">📊 技术指标</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value">8</span>
+          <span class="stat-label">SDF 模式</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">20+</span>
+          <span class="stat-label">交互效果</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">50+</span>
+          <span class="stat-label">组件</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">0</span>
+          <span class="stat-label">依赖</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import LiquidGlass from '../dist/liquid-glass.esm.js';
+
+    LiquidGlass.init({
+      effects: true,
+      animations: true,
+      mouseEffects: {
+        elasticFollow: true,
+        tilt3D: true,
+        glow: true,
+        ripple: true,
+      },
+    });
+
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const cards = document.querySelectorAll('.liquid-glass');
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+
+        modeButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        cards.forEach((card) => {
+          card.dataset.mode = mode;
+          const instance = card._liquidGlassInstance;
+          if (instance) {
+            instance.update({ mode });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

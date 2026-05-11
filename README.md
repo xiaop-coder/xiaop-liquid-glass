@@ -1,10 +1,10 @@
 <div align="center">
 
-# 💧 XiaoP Liquid Glass
+# 💧 XiaoP Liquid Glass v3.0
 
-**小P液态玻璃设计系统 — Apple iOS 26 Liquid Glass (Canvas位移贴图+SVG边缘折射+4层渲染)**
+**终极液态玻璃设计系统 — 融合所有最佳实践**
 
-纯 CSS + JS 实现的液态玻璃设计系统。核心技术：Canvas 生成位移贴图 → SDF 边缘折射（SVG feImage+feDisplacementMap）→ 4层结构(outer/cover/sharp/reflect) → 活跃态高透切换。零依赖、跨框架、完全响应式，自带深色模式。
+完全重构的模块化液态玻璃系统。核心技术：Canvas SDF 位移贴图 + SVG feDisplacementMap 边缘折射 + 4层渲染架构 + 8种SDF模式 + 20+交互效果 + 50+组件。零依赖、TypeScript支持、Tree-shaking友好。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-zero-green.svg)](package.json)
@@ -23,18 +23,50 @@
 
 ## 🇨🇳 中文
 
-### ✨ 特性
+### ✨ v3.0 核心特性
 
-- **4 种玻璃效果风格** — 液态玻璃（Canvas位移+SVG折射）、毛玻璃、半透明、标准玻璃卡片
-- **50+ CSS 变量** — 完整的 `--lg-*` 设计令牌系统
-- **35+ 组件** — 卡片、按钮、输入框、徽章、警告框、下拉框、弹窗、导航等
-- **13 种 JS 交互效果** — 弹性鼠标跟随、色差效果、3D倾斜、鼠标追光、点击涟漪、入场动画、滚动背景、点击弹跳、鼠标光晕、SVG折射滤镜等
-- **4层液态玻璃结构** — outer(SVG折射+mask边缘) + cover(模糊覆盖) + sharp(四边高光) + reflect(柔和反射)
-- **Canvas 位移贴图** — roundedRectSDF + smoothStep 生成真实折射贴图，通过 feImage 注入 SVG 滤镜
-- **自动深色模式** — 跟随 `prefers-color-scheme`，支持变量覆盖
-- **背景切换器** — 每个演示页均可切换背景（URL/上传/预设），体验不同背景下的玻璃效果
-- **零依赖** — 纯 CSS + 原生 JavaScript，无需任何框架
-- **完全响应式** — 移动端优先设计
+#### 🎨 技术融合
+深度融合5个优秀开源项目的核心技术：
+- **shuding/liquid-glass** - Canvas SDF 位移贴图生成
+- **lucasromerodb/liquid-glass-effect-macos** - 多层 backdrop-filter 架构
+- **rdev/liquid-glass-react** - 色差效果和弹性鼠标跟随
+- **wxperia/liquid-glass-vue** - 着色器效果和主题切换
+- **liquid-glass.pro** - 设计系统方法论
+
+#### 🔮 8种SDF折射模式
+- **standard** - 标准圆角矩形折射
+- **polar** - 极坐标圆形折射
+- **prominent** - 强化边缘折射
+- **frosted** - 无折射纯模糊
+- **diamond** - 菱形折射
+- **hexagon** - 六边形折射
+- **wave** - 波浪形折射
+- **custom** - 自定义SDF函数
+
+#### 🎭 20+交互效果
+- 鼠标交互：弹性跟随、3D倾斜、光晕追踪、磁吸、涟漪
+- 视觉效果：RGB色差、旋转高光、渐变遮罩、粒子系统
+- 动画效果：IntersectionObserver入场、滚动视差、页面转场、弹性缩放、呼吸发光
+
+#### 📦 50+组件
+- 基础：Button、Input、Select、Checkbox、Radio、Switch、Badge、Tag、Avatar、Progress
+- 布局：Card、Modal、Dialog、Drawer、Tabs、Accordion、Navigation、Sidebar
+- 高级：DatePicker、Slider、Upload、Table、Chart、Toast、Notification
+
+#### 🚀 性能优化
+- WebGL加速渲染（可选）
+- Worker线程计算
+- LRU缓存策略
+- RAF节流
+- 虚拟滚动
+- IntersectionObserver懒加载
+
+#### 🛠 开发体验
+- **TypeScript完整支持** - 100%类型覆盖
+- **模块化架构** - ESM/CJS/UMD三种格式
+- **Tree-shaking友好** - 按需引入
+- **零依赖** - 纯原生实现
+- **完整文档** - API文档 + 交互式示例
 
 ### 🔮 玻璃效果风格
 
@@ -60,19 +92,31 @@
 
 ### 🚀 快速开始
 
-#### 方式一：直接引入
+#### 方式一：CDN引入
 
 ```html
-<link rel="stylesheet" href="dist/liquid-glass.css">
-<script src="dist/liquid-glass.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xiaop-liquid-glass@3.0.0/dist/liquid-glass.css">
+<script src="https://cdn.jsdelivr.net/npm/xiaop-liquid-glass@3.0.0/dist/liquid-glass.js"></script>
 ```
 
-#### 方式二：npm 安装（即将发布）
+#### 方式二：npm安装
 
 ```bash
 npm install xiaop-liquid-glass
 ```
-> ⚠️ 目前 npm 包尚未发布，请使用方式一（直接下载 dist/ 文件）或 `git clone https://github.com/xiaop-coder/xiaop-liquid-glass.git`
+
+```javascript
+// ESM
+import LiquidGlass from 'xiaop-liquid-glass';
+import 'xiaop-liquid-glass/dist/liquid-glass.css';
+
+// CommonJS
+const LiquidGlass = require('xiaop-liquid-glass');
+```
+
+#### 方式三：直接下载
+
+下载 `dist/` 目录中的文件到你的项目。
 
 #### 最小示例
 
@@ -83,20 +127,51 @@ npm install xiaop-liquid-glass
   <link rel="stylesheet" href="dist/liquid-glass.css">
 </head>
 <body>
-  <div class="liquid-glass" style="padding: 24px; max-width: 400px; margin: 100px auto;">
-    <h2>你好，液态玻璃！</h2>
-    <p>Canvas位移贴图 + SVG边缘折射 + 4层结构</p>
-    <button class="liquid-glass-btn">点击体验</button>
-  </div>
-
-  <div class="frosted-card" style="padding: 24px; max-width: 400px; margin: 20px auto;">
-    <h2>毛玻璃效果</h2>
-    <p>macOS 风格的磨砂玻璃质感。</p>
+  <!-- 液态玻璃卡片 -->
+  <div class="liquid-glass" data-mode="standard">
+    <h2>Hello Liquid Glass 3.0!</h2>
+    <p>终极液态玻璃效果</p>
   </div>
 
   <script src="dist/liquid-glass.js"></script>
+  <script>
+    // 自动初始化
+    LiquidGlass.init({
+      effects: true,
+      animations: true,
+      mouseEffects: {
+        elasticFollow: true,
+        tilt3D: true,
+        glow: true,
+        ripple: true
+      }
+    });
+  </script>
 </body>
 </html>
+```
+
+#### TypeScript示例
+
+```typescript
+import LiquidGlass, { LiquidGlassOptions } from 'xiaop-liquid-glass';
+
+const element = document.querySelector('.my-glass') as HTMLElement;
+
+const options: LiquidGlassOptions = {
+  mode: 'standard',
+  scale: 20,
+  radius: 16,
+  blur: 40
+};
+
+const glass = new LiquidGlass(element, options);
+
+// 更新配置
+glass.update({ mode: 'polar', scale: 30 });
+
+// 销毁
+glass.destroy();
 ```
 
 ### 📦 组件列表

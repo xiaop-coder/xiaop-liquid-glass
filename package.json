@@ -1,7 +1,7 @@
 {
   "name": "xiaop-liquid-glass",
-  "version": "2.1.1",
-  "description": "XiaoP Liquid Glass — 纯 CSS + JS 实现 Apple iOS 26 液态玻璃效果设计系统，含4种玻璃风格、4种SDF折射模式、13种JS交互效果、50+ CSS变量，零依赖",
+  "version": "3.0.0",
+  "description": "XiaoP Liquid Glass v3.0 — 终极液态玻璃设计系统，融合所有最佳实践。8种SDF折射模式、20+交互效果、50+组件、TypeScript支持、零依赖",
   "type": "module",
   "main": "dist/liquid-glass.cjs.js",
   "module": "dist/liquid-glass.esm.js",

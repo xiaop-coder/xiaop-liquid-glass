@@ -1,254 +1,121 @@
 /**
- * Animation effects
- * @module effects/animations
+ * Animations - 动画效果系统
  */
 
-import { rafThrottle, debounce } from '../utils/helpers.js';
+export class Animations {
+  constructor() {
+    this.observers = new Map();
+  }
 
-/**
- * Initialize scroll blur effect for navigation
- */
-export function initScrollBlur() {
-    const handleScroll = rafThrottle(() => {
-        const navContainers = document.querySelectorAll('.nav-container');
-        navContainers.forEach(nav => {
-            const blur = Math.min(20 + window.scrollY * 0.02, 30);
-            nav.style.setProperty('--nav-blur', `${blur}px`);
-        });
-    });
+  initIntersectionObserver(elements, options = {}) {
+    const observerOptions = {
+      threshold: options.threshold || 0.1,
+      rootMargin: options.rootMargin || '0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('liquid-glass-visible');
+          if (options.once) {
+            observer.unobserve(entry.target);
+          }
+        } else if (!options.once) {
+          entry.target.classList.remove('liquid-glass-visible');
+        }
+      });
+    }, observerOptions);
+
+    elements.forEach((el) => observer.observe(el));
+    this.observers.set('intersection', observer);
+
+    return observer;
+  }
+
+  addScrollParallax(element, speed = 0.5) {
+    const handleScroll = () => {
+      const rect = element.getBoundingClientRect();
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * speed;
+      
+      element.style.transform = `translateY(${rate}px)`;
+    };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-}
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }
 
-/**
- * Initialize ripple effect on buttons
- */
-export function initRippleEffect() {
-    document.addEventListener('click', (e) => {
-        const target = e.target.closest('.btn, .hero-btn, .nav-btn, button[class*="btn"], .liquid-glass-btn, .liquid-glass-pill');
-        if (!target) return;
+  addBreathingGlow(element, duration = 3000) {
+    element.style.animation = `liquid-glass-breathe ${duration}ms ease-in-out infinite`;
+  }
 
-        const rect = target.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const size = Math.max(rect.width, rect.height) * 2;
+  addRotatingHighlight(element, duration = 5000) {
+    element.style.setProperty('--rotate-duration', `${duration}ms`);
+    element.classList.add('liquid-glass-rotating-highlight');
+  }
 
-        const ripple = document.createElement('span');
-        ripple.className = 'glass-ripple';
-        ripple.style.width = `${size}px`;
-        ripple.style.height = `${size}px`;
-        ripple.style.left = `${x - size / 2}px`;
-        ripple.style.top = `${y - size / 2}px`;
+  addElasticScale(element, options = {}) {
+    const scale = options.scale || 1.05;
+    const duration = options.duration || 300;
 
-        if (!target.classList.contains('glass-ripple-container')) {
-            target.classList.add('glass-ripple-container');
-        }
-
-        target.appendChild(ripple);
-        ripple.addEventListener('animationend', () => ripple.remove());
-    });
-}
-
-/**
- * Initialize entrance animations with IntersectionObserver
- */
-export function initEntranceAnimations() {
-    const elements = document.querySelectorAll('.glass-entrance');
-    if (elements.length === 0) return;
-
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('glass-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-
-        elements.forEach(el => observer.observe(el));
-    } else {
-        // Fallback for browsers without IntersectionObserver
-        elements.forEach(el => el.classList.add('glass-visible'));
-    }
-}
-
-/**
- * Initialize page transition effect
- */
-export function initPageTransition() {
-    const mainContent = document.querySelector('.container, .page-content, main, .login-card, .register-card, .register-container');
-    if (mainContent) {
-        mainContent.classList.add('glass-page-transition');
-    }
-}
-
-/**
- * Initialize scrolling background effect
- */
-export function initScrollingBackground() {
-    const elements = document.querySelectorAll('.glass-scrolling-bg');
-    elements.forEach(el => {
-        el.style.backgroundSize = 'cover';
-    });
-}
-
-/**
- * Initialize background switcher
- */
-export function initBackgroundSwitcher() {
-    const container = document.querySelector('.glass-bg-switcher');
-    if (!container) return;
-
-    const btn = container.querySelector('.glass-bg-switcher-btn');
-    const panel = document.querySelector('.glass-bg-panel');
-    const urlInput = document.querySelector('.glass-bg-url-input');
-    const applyBtn = document.querySelector('.glass-bg-apply-btn');
-    const uploadArea = document.querySelector('.glass-bg-upload-area');
-    const fileInput = document.querySelector('.glass-bg-file-input');
-    const presetsContainer = document.querySelector('.glass-bg-presets');
-    const resetBtn = document.querySelector('.glass-bg-reset');
-
-    if (!btn || !panel) return;
-
-    const pageKey = `lg-bg-${window.location.pathname}`;
-
-    // Create or get background layer
-    let bgLayer = document.querySelector('.lg-custom-bg');
-    if (!bgLayer) {
-        bgLayer = document.createElement('div');
-        bgLayer.className = 'lg-custom-bg';
-        bgLayer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;transition:opacity 0.5s ease;opacity:0;';
-        document.body.insertBefore(bgLayer, document.body.firstChild);
-    }
-
-    // Toggle panel
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        panel.classList.toggle('show');
+    element.style.transition = `transform ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
+    
+    element.addEventListener('mouseenter', () => {
+      element.style.transform = `scale(${scale})`;
     });
 
-    document.addEventListener('click', (e) => {
-        if (!container.contains(e.target) && !panel.contains(e.target)) {
-            panel.classList.remove('show');
-        }
+    element.addEventListener('mouseleave', () => {
+      element.style.transform = 'scale(1)';
     });
+  }
 
-    // Apply background
-    function applyBackground(url) {
-        bgLayer.style.backgroundImage = `url(${url})`;
-        bgLayer.style.opacity = '1';
-        try {
-            localStorage.setItem(pageKey, url);
-        } catch (e) {
-            console.warn('Failed to save background to localStorage:', e);
-        }
-    }
-
-    // Reset background
-    function resetBackground() {
-        bgLayer.style.opacity = '0';
+  addPageTransition(fromElement, toElement, type = 'fade') {
+    return new Promise((resolve) => {
+      fromElement.classList.add(`liquid-glass-transition-out-${type}`);
+      
+      setTimeout(() => {
+        fromElement.style.display = 'none';
+        toElement.style.display = 'block';
+        toElement.classList.add(`liquid-glass-transition-in-${type}`);
+        
         setTimeout(() => {
-            bgLayer.style.backgroundImage = '';
-        }, 500);
-        try {
-            localStorage.removeItem(pageKey);
-        } catch (e) {
-            console.warn('Failed to remove background from localStorage:', e);
-        }
-    }
+          toElement.classList.remove(`liquid-glass-transition-in-${type}`);
+          resolve();
+        }, 300);
+      }, 300);
+    });
+  }
 
-    // URL input
-    if (applyBtn && urlInput) {
-        applyBtn.addEventListener('click', () => {
-            const url = urlInput.value.trim();
-            if (url) applyBackground(url);
-        });
+  addChromaticAberration(element, offset = 2) {
+    element.classList.add('liquid-glass-chromatic');
+    element.style.setProperty('--chromatic-offset', `${offset}px`);
+  }
 
-        urlInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const url = urlInput.value.trim();
-                if (url) applyBackground(url);
-            }
-        });
-    }
+  addGradientMaskBlur(element, angle = 45) {
+    element.classList.add('liquid-glass-gradient-mask');
+    element.style.setProperty('--mask-angle', `${angle}deg`);
+  }
 
-    // File upload
-    if (uploadArea && fileInput) {
-        uploadArea.addEventListener('click', () => fileInput.click());
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (ev) => applyBackground(ev.target.result);
-                reader.readAsDataURL(file);
-            }
-        });
-
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (ev) => applyBackground(ev.target.result);
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    // Presets
-    if (presetsContainer) {
-        const presets = presetsContainer.querySelectorAll('.glass-bg-preset');
-        presets.forEach(preset => {
-            preset.addEventListener('click', () => {
-                const url = preset.getAttribute('data-url') ||
-                    preset.style.backgroundImage.slice(4, -1).replace(/['"]/g, '');
-                if (url) {
-                    applyBackground(url);
-                    presets.forEach(p => p.classList.remove('active'));
-                    preset.classList.add('active');
-                }
-            });
-        });
-    }
-
-    // Reset button
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetBackground);
-    }
-
-    // Load saved background
-    try {
-        const savedBg = localStorage.getItem(pageKey);
-        if (savedBg) applyBackground(savedBg);
-    } catch (e) {
-        console.warn('Failed to load background from localStorage:', e);
-    }
+  destroy() {
+    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.clear();
+  }
 }
 
-/**
- * Initialize hover growth effect
- */
-export function initHoverGrowth() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .liquid-glass-nav:hover { padding: 8px 14px; }
-        .liquid-glass-btn:hover { padding: 10px 22px; }
-        .liquid-glass-pill:hover { padding: 6px 16px; }
-    `;
-    document.head.appendChild(style);
+export function initAnimations(selector = '.liquid-glass-animate', options = {}) {
+  const animations = new Animations();
+  const elements = document.querySelectorAll(selector);
+  
+  if (elements.length > 0) {
+    animations.initIntersectionObserver(elements, {
+      threshold: 0.1,
+      once: true,
+      ...options,
+    });
+  }
+
+  return animations;
 }
+
+export default Animations;

@@ -1,170 +1,119 @@
 /**
- * Liquid Glass 4-layer structure initialization
- * @module core/liquid-glass
+ * LiquidGlass - 4层液态玻璃核心类
  */
 
-import { getCachedDisplacementMap } from './shader.js';
-import { buildRefractionFilter, buildChromaFilter, createFilterContainer } from './filter.js';
+import { Shader } from './shader.js';
+import { Filter } from './filter.js';
 
-/**
- * Initialize SVG filters for all refraction modes
- * @returns {SVGSVGElement} SVG filter container
- */
-export function initLiquidGlassFilter() {
-    // Check if already initialized
-    if (document.getElementById('liquid-glass-svg-filters')) {
-        return document.getElementById('liquid-glass-svg-filters');
-    }
+export class LiquidGlass {
+  constructor(element, options = {}) {
+    this.element = element;
+    this.options = {
+      mode: options.mode || 'standard',
+      scale: options.scale || 20,
+      radius: options.radius || 16,
+      blur: options.blur || 40,
+      customSDF: options.customSDF || null,
+      enableEffects: options.enableEffects !== false,
+      ...options,
+    };
 
-    const svg = createFilterContainer();
-    const defs = svg.querySelector('defs');
+    this.shader = new Shader();
+    this.filter = new Filter();
+    this.layers = {};
+    this.initialized = false;
 
-    const modes = ['standard', 'polar', 'prominent'];
-    const mapSize = 128;
+    this.init();
+  }
 
-    modes.forEach(mode => {
-        const mapUrl = getCachedDisplacementMap(mapSize, mode);
+  init() {
+    if (this.initialized) return;
+    this.element.classList.add('liquid-glass-container');
+    this.createLayers();
+    this.applyDisplacementMap();
+    this.applyStyles();
+    this.initialized = true;
+  }
 
-        // Determine scale based on mode
-        let modeScale = 60;
-        if (mode === 'prominent') modeScale = 85;
-        if (mode === 'polar') modeScale = 55;
-
-        // Create refraction filter
-        const refrFilter = buildRefractionFilter(`lg-rf-${mode}`, mapUrl, modeScale);
-        defs.appendChild(refrFilter);
-
-        // Create chromatic aberration filter
-        const chromaScales = mode === 'prominent' ? [-85, -80, -75] : [-70, -66.5, -63];
-        const chromaFilter = buildChromaFilter(`lg-cf-${mode}`, mapUrl, chromaScales);
-        defs.appendChild(chromaFilter);
+  createLayers() {
+    const layerNames = ['outer', 'cover', 'sharp', 'reflect'];
+    layerNames.forEach((name) => {
+      let layer = this.element.querySelector(`.liquid-glass-${name}`);
+      if (!layer) {
+        layer = document.createElement('div');
+        layer.className = `liquid-glass-${name}`;
+        this.element.appendChild(layer);
+      }
+      this.layers[name] = layer;
     });
 
-    document.body.appendChild(svg);
-    return svg;
-}
-
-/**
- * Create 4-layer liquid glass structure for an element
- * @param {HTMLElement} element - Target element
- * @param {string} mode - Refraction mode (standard, polar, prominent, frosted)
- */
-export function createLiquidGlassLayers(element, mode = 'standard') {
-    // Skip if already initialized
-    if (element.querySelector('.liquid-glass-outer')) {
-        return;
+    let content = this.element.querySelector('.liquid-glass-content');
+    if (!content) {
+      content = document.createElement('div');
+      content.className = 'liquid-glass-content';
+      const children = Array.from(this.element.childNodes).filter(
+        (node) => !node.classList || !node.classList.contains('liquid-glass-')
+      );
+      children.forEach((child) => content.appendChild(child));
+      this.element.appendChild(content);
     }
+    this.layers.content = content;
+  }
 
-    const filterId = mode === 'frosted' ? 'none' : `lg-rf-${mode}`;
-    const chromaId = `lg-cf-${mode}`;
+  applyDisplacementMap() {
+    if (this.options.mode === 'frosted') return;
 
-    // Move existing content to content layer
-    const content = document.createElement('div');
-    content.className = 'liquid-glass-content';
-    while (element.firstChild) {
-        content.appendChild(element.firstChild);
-    }
+    const rect = this.element.getBoundingClientRect();
+    const width = rect.width || 300;
+    const height = rect.height || 200;
 
-    // Create 4 layers
-    const outer = document.createElement('div');
-    outer.className = 'liquid-glass-outer';
-    outer.style.backdropFilter = `url(#${filterId})`;
-    outer.style.webkitBackdropFilter = `url(#${filterId})`;
+    const displacementMapURL = this.shader.generateDisplacementMap(
+      width, height, this.options.radius, this.options.mode, this.options.scale, this.options.customSDF
+    );
 
-    const cover = document.createElement('div');
-    cover.className = 'liquid-glass-cover';
+    const filterURL = this.filter.createSVGFilter(displacementMapURL, this.options.scale);
+    this.layers.outer.style.filter = filterURL;
+  }
 
-    const sharp = document.createElement('div');
-    sharp.className = 'liquid-glass-sharp';
+  applyStyles() {
+    this.element.style.setProperty('--lg-blur', `${this.options.blur}px`);
+    this.element.style.setProperty('--lg-radius', `${this.options.radius}px`);
+    const modeClass = `liquid-glass-mode-${this.options.mode}`;
+    this.element.classList.add(modeClass);
+  }
 
-    const reflect = document.createElement('div');
-    reflect.className = 'liquid-glass-reflect';
+  update(options = {}) {
+    this.options = { ...this.options, ...options };
+    this.applyDisplacementMap();
+    this.applyStyles();
+  }
 
-    // Append layers in order
-    element.appendChild(outer);
-    element.appendChild(cover);
-    element.appendChild(sharp);
-    element.appendChild(reflect);
-    element.appendChild(content);
-
-    // Apply chromatic aberration if requested
-    if (element.hasAttribute('data-chromatic') || element.classList.contains('glass-chromatic')) {
-        element.style.setProperty('--lg-chroma-filter', `url(#${chromaId})`);
-    }
-}
-
-/**
- * Initialize all liquid glass elements on the page
- * @param {string|NodeList|HTMLElement} selector - Elements to initialize
- */
-export function initLiquidGlass(selector) {
-    // Initialize SVG filters first
-    initLiquidGlassFilter();
-
-    // Get elements
-    let elements = [];
-    if (typeof selector === 'string') {
-        const selectors = [
-            '.liquid-glass',
-            '.liquid-glass-btn',
-            '.liquid-glass-pill',
-            '.liquid-glass-nav',
-            '[data-liquid-glass]',
-            '[data-liquid-glass="card"]',
-            '[data-liquid-glass="btn"]',
-            '[data-liquid-glass="pill"]',
-            '[data-liquid-glass="nav"]',
-            '[data-liquid-glass="icon"]'
-        ];
-        selectors.forEach(sel => {
-            document.querySelectorAll(sel).forEach(el => {
-                if (!elements.includes(el)) elements.push(el);
-            });
-        });
-    } else if (selector instanceof NodeList) {
-        elements = Array.from(selector);
-    } else if (selector instanceof HTMLElement) {
-        elements = [selector];
-    } else {
-        // Default: find all liquid glass elements
-        const selectors = ['.liquid-glass', '[data-liquid-glass]'];
-        selectors.forEach(sel => {
-            document.querySelectorAll(sel).forEach(el => {
-                if (!elements.includes(el)) elements.push(el);
-            });
-        });
-    }
-
-    // Initialize each element
-    elements.forEach(el => {
-        const mode = el.getAttribute('data-refraction-mode') || 'standard';
-        createLiquidGlassLayers(el, mode);
+  destroy() {
+    this.filter.removeFilter();
+    this.shader.clearCache();
+    Object.values(this.layers).forEach((layer) => {
+      if (layer && layer.parentNode) layer.remove();
     });
+    this.element.classList.remove('liquid-glass-container');
+    this.initialized = false;
+  }
 }
 
-/**
- * Destroy liquid glass layers from an element
- * @param {HTMLElement} element - Target element
- */
-export function destroyLiquidGlass(element) {
-    const layers = [
-        '.liquid-glass-outer',
-        '.liquid-glass-cover',
-        '.liquid-glass-sharp',
-        '.liquid-glass-reflect'
-    ];
+export function initAll(options = {}) {
+  const elements = document.querySelectorAll('.liquid-glass');
+  const instances = [];
 
-    layers.forEach(selector => {
-        const layer = element.querySelector(selector);
-        if (layer) layer.remove();
-    });
+  elements.forEach((element) => {
+    const mode = element.dataset.mode || options.mode || 'standard';
+    const scale = parseFloat(element.dataset.scale) || options.scale || 20;
+    const radius = parseFloat(element.dataset.radius) || options.radius || 16;
+    const blur = parseFloat(element.dataset.blur) || options.blur || 40;
 
-    // Move content back
-    const content = element.querySelector('.liquid-glass-content');
-    if (content) {
-        while (content.firstChild) {
-            element.appendChild(content.firstChild);
-        }
-        content.remove();
-    }
+    const instance = new LiquidGlass(element, { mode, scale, radius, blur, ...options });
+    instances.push(instance);
+  });
+
+  return instances;
 }
+
+export default LiquidGlass;

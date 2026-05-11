@@ -1,150 +1,141 @@
 /**
- * Shader and displacement map generation
- * @module core/shader
+ * Shader - SDF 位移贴图生成核心
+ * 基于 shuding/liquid-glass 的 Canvas SDF 算法
  */
 
-import { smoothStep, roundedRectSDF, length } from '../utils/helpers.js';
+export class Shader {
+  constructor(options = {}) {
+    this.cache = new Map();
+    this.maxCacheSize = options.maxCacheSize || 50;
+  }
 
-/**
- * Generate displacement map from fragment shader function
- * @param {number} width - Canvas width
- * @param {number} height - Canvas height
- * @param {Function} fragmentFn - Fragment shader function
- * @returns {string} Data URL of displacement map
- */
-export function generateDisplacementMap(width, height, fragmentFn) {
+  smoothStep(edge0, edge1, x) {
+    const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  length(x, y) {
+    return Math.sqrt(x * x + y * y);
+  }
+
+  roundedRectSDF(x, y, width, height, radius) {
+    const qx = Math.abs(x) - width + radius;
+    const qy = Math.abs(y) - height + radius;
+    return (
+      Math.min(Math.max(qx, qy), 0) +
+      this.length(Math.max(qx, 0), Math.max(qy, 0)) -
+      radius
+    );
+  }
+
+  polarCircleSDF(x, y, radius) {
+    return this.length(x, y) - radius;
+  }
+
+  diamondSDF(x, y, size) {
+    const dx = Math.abs(x);
+    const dy = Math.abs(y);
+    return (dx + dy - size) / Math.sqrt(2);
+  }
+
+  hexagonSDF(x, y, radius) {
+    const k = [-0.866025404, 0.5, 0.577350269];
+    const px = Math.abs(x);
+    const py = Math.abs(y);
+    const dot1 = k[0] * px + k[1] * py;
+    const qx = px - 2 * Math.min(0, dot1) * k[0];
+    const qy = py - 2 * Math.min(0, dot1) * k[1];
+    const d = this.length(
+      qx - Math.max(-k[2] * radius, Math.min(k[2] * radius, qx)),
+      qy - radius
+    );
+    return d * Math.sign(qy - radius);
+  }
+
+  waveSDF(x, y, width, height, radius, frequency = 3, amplitude = 5) {
+    const wave = Math.sin((x / width) * Math.PI * frequency) * amplitude;
+    return this.roundedRectSDF(x, y + wave, width, height, radius);
+  }
+
+  generateDisplacementMap(width, height, radius, mode = 'standard', scale = 20, customSDF = null) {
+    const cacheKey = `${width}-${height}-${radius}-${mode}-${scale}`;
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey);
+    }
+
     const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-    const data = new Uint8ClampedArray(width * height * 4);
-    let maxScale = 0;
-    const rawValues = [];
+    const padding = Math.ceil(scale * 2);
+    canvas.width = width + padding * 2;
+    canvas.height = height + padding * 2;
 
-    // First pass: calculate displacement values
-    for (let i = 0; i < data.length; i += 4) {
-        const x = (i / 4) % width;
-        const y = Math.floor((i / 4) / width);
-        const uv = { x: x / width, y: y / height };
-        const pos = fragmentFn(uv);
-        const dx = pos.x * width - x;
-        const dy = pos.y * height - y;
-        maxScale = Math.max(maxScale, Math.abs(dx), Math.abs(dy));
-        rawValues.push(dx, dy);
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const data = imageData.data;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const w = width / 2;
+    const h = height / 2;
+
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        const px = x - centerX;
+        const py = y - centerY;
+
+        let distance;
+        switch (mode) {
+          case 'polar':
+            distance = this.polarCircleSDF(px, py, Math.min(w, h));
+            break;
+          case 'diamond':
+            distance = this.diamondSDF(px, py, Math.min(w, h));
+            break;
+          case 'hexagon':
+            distance = this.hexagonSDF(px, py, Math.min(w, h));
+            break;
+          case 'wave':
+            distance = this.waveSDF(px, py, w, h, radius);
+            break;
+          case 'prominent':
+            distance = this.roundedRectSDF(px, py, w, h, radius) * 1.5;
+            break;
+          case 'frosted':
+            distance = 0;
+            break;
+          case 'custom':
+            distance = customSDF ? customSDF(px, py, w, h, radius) : 0;
+            break;
+          default:
+            distance = this.roundedRectSDF(px, py, w, h, radius);
+        }
+
+        const edgeDistance = Math.abs(distance);
+        const displacement = this.smoothStep(scale, 0, edgeDistance);
+
+        const idx = (y * canvas.width + x) * 4;
+        const value = Math.floor(displacement * 255);
+        data[idx] = value;
+        data[idx + 1] = value;
+        data[idx + 2] = value;
+        data[idx + 3] = 255;
+      }
     }
 
-    // Normalize scale
-    maxScale *= 0.5;
-    if (maxScale < 1) maxScale = 1;
+    ctx.putImageData(imageData, 0, 0);
+    const dataURL = canvas.toDataURL();
 
-    // Second pass: encode to RGB
-    let idx = 0;
-    for (let j = 0; j < data.length; j += 4) {
-        const r = rawValues[idx++] / maxScale + 0.5;
-        const g = rawValues[idx++] / maxScale + 0.5;
-        data[j] = r * 255;
-        data[j + 1] = g * 255;
-        data[j + 2] = 128;
-        data[j + 3] = 255;
+    if (this.cache.size >= this.maxCacheSize) {
+      const firstKey = this.cache.keys().next().value;
+      this.cache.delete(firstKey);
     }
+    this.cache.set(cacheKey, dataURL);
 
-    ctx.putImageData(new ImageData(data, width, height), 0, 0);
-    return canvas.toDataURL();
+    return dataURL;
+  }
+
+  clearCache() {
+    this.cache.clear();
+  }
 }
 
-// SDF parameters
-const SDF_WIDTH = 0.35;
-const SDF_HEIGHT = 0.25;
-const SDF_RADIUS = 0.6;
-
-/**
- * Standard liquid glass fragment shader
- * @param {Object} uv - UV coordinates {x, y}
- * @returns {Object} Displaced UV coordinates
- */
-export function liquidGlassFragmentStandard(uv) {
-    const ix = uv.x - 0.5;
-    const iy = uv.y - 0.5;
-    const d = roundedRectSDF(ix, iy, SDF_WIDTH, SDF_HEIGHT, SDF_RADIUS);
-    const disp = smoothStep(0.05, -0.08, d);
-    const s = 1 - smoothStep(-0.12, -0.02, d) * 0.4;
-    return { x: ix * s + 0.5, y: iy * s + 0.5 };
-}
-
-/**
- * Polar coordinate liquid glass fragment shader
- * @param {Object} uv - UV coordinates {x, y}
- * @returns {Object} Displaced UV coordinates
- */
-export function liquidGlassFragmentPolar(uv) {
-    const ix = uv.x - 0.5;
-    const iy = uv.y - 0.5;
-    const r = Math.sqrt(ix * ix + iy * iy);
-    const angle = Math.atan2(iy, ix);
-    const d = r - 0.38;
-    const disp = smoothStep(0.06, -0.06, d);
-    const s = 1 - disp * 0.5;
-    return { x: Math.cos(angle) * r * s + 0.5, y: Math.sin(angle) * r * s + 0.5 };
-}
-
-/**
- * Prominent edge refraction fragment shader
- * @param {Object} uv - UV coordinates {x, y}
- * @returns {Object} Displaced UV coordinates
- */
-export function liquidGlassFragmentProminent(uv) {
-    const ix = uv.x - 0.5;
-    const iy = uv.y - 0.5;
-    const d = roundedRectSDF(ix, iy, SDF_WIDTH, SDF_HEIGHT, SDF_RADIUS);
-    const disp = smoothStep(0.08, -0.1, d);
-    const s = 1 - disp * 0.65;
-    return { x: ix * s + 0.5, y: iy * s + 0.5 };
-}
-
-/**
- * Frosted glass (no refraction)
- * @param {Object} uv - UV coordinates {x, y}
- * @returns {Object} Original UV coordinates
- */
-export function liquidGlassFragmentFrosted(uv) {
-    return { x: uv.x, y: uv.y };
-}
-
-/**
- * Shader mode registry
- */
-export const shaderModes = {
-    standard: liquidGlassFragmentStandard,
-    polar: liquidGlassFragmentPolar,
-    prominent: liquidGlassFragmentProminent,
-    frosted: liquidGlassFragmentFrosted
-};
-
-/**
- * Displacement map cache
- */
-const displacementCache = new Map();
-
-/**
- * Get cached displacement map or generate new one
- * @param {number} size - Map size
- * @param {string} mode - Shader mode
- * @returns {string} Data URL
- */
-export function getCachedDisplacementMap(size, mode) {
-    const key = `${size}_${mode}`;
-    if (displacementCache.has(key)) {
-        return displacementCache.get(key);
-    }
-    const shaderFn = shaderModes[mode] || shaderModes.standard;
-    const url = generateDisplacementMap(size, size, shaderFn);
-    displacementCache.set(key, url);
-    return url;
-}
-
-/**
- * Clear displacement map cache
- */
-export function clearDisplacementCache() {
-    displacementCache.clear();
-}
+export default Shader;
