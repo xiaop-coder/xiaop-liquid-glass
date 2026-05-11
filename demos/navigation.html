@@ -244,6 +244,21 @@
 
     <script src="../dist/liquid-glass.js"></script>
     <script>
+        // 初始化液态玻璃效果
+        if (window.initLiquidGlass) {
+            window.initLiquidGlass();
+      }
+      if (window.initEntranceAnimations) {
+            window.initEntranceAnimations();
+        }
+      if (window.initElasticEffect) {
+            window.initElasticEffect();
+        }
+        if (window.initBackgroundSwitcher) {
+            window.initBackgroundSwitcher();
+        }
+
+        // 标签栏切换
         document.querySelectorAll('.tab-item').forEach(function(tab) {
             tab.addEventListener('click', function() {
                 var bar = this.parentElement;

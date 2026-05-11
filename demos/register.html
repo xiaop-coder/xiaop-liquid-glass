@@ -176,5 +176,107 @@
     </div>
 
     <script src="../dist/liquid-glass.js"></script>
+    <script>
+        // 初始化液态玻璃效果
+        if (window.initLiquidGlass) {
+            window.initLiquidGlass();
+    }
+        if (window.initTiltEffect) {
+            window.initTiltEffect();
+        }
+        if (window.initEntranceAnimations) {
+            window.initEntranceAnimations();
+        }
+        if (window.initClickBounce) {
+      window.initClickBounce();
+        }
+        if (window.initBackgroundSwitcher) {
+        window.initBackgroundSwitcher();
+        }
+
+        // 表单验证
+        const form = document.querySelector('form');
+        const agreeCheckbox = document.getElementById('agree');
+
+      form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+        // 获取表单数据
+            const firstName = form.querySelector('input[placeholder="John"]').value;
+         const lastName = form.querySelector('input[placeholder="Doe"]').value;
+            const email = form.querySelector('input[type="email"]').value;
+            const password = form.querySelector('input[type="password"]').value;
+            const country = form.querySelector('select').value;
+            const role = form.querySelectorAll('select')[1].value;
+
+            // 验证
+            if (!firstName || !lastName) {
+                alert('Please enter your full name');
+             return;
+            }
+
+            if (!email || !email.includes('@')) {
+              alert('Please enter a valid email address');
+                return;
+            }
+
+        if (!password || password.length < 8) {
+      alert('Password must be at least 8 characters');
+              return;
+            }
+
+            if (!country || !role) {
+              alert('Please select country and role');
+                return;
+            }
+
+            if (!agreeCheckbox.checked) {
+        alert('Please agree to the Terms of Service and Privacy Policy');
+                return;
+        }
+
+            // 模拟注册成功
+            const btn = form.querySelector('.btn');
+       btn.innerHTML = '<i class="bi bi-check-circle"></i> Account Created!';
+            btn.style.background = 'rgba(76, 217, 100, 0.3)';
+            btn.style.borderColor = 'rgba(76, 217, 100, 0.5)';
+
+       setTimeout(() => {
+       alert('Registration successful! Redirecting to login...');
+             window.location.href = 'login.html';
+      }, 1500);
+        });
+
+        // 实时密码强度检查
+        const passwordInput = form.querySelector('input[type="password"]');
+        const passwordHint = form.querySelector('.form-hint');
+
+        passwordInput.addEventListener('input', function() {
+         const password = this.value;
+         let strength = 0;
+
+          if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+            if (strength === 0) {
+              passwordHint.textContent = 'Use a mix of letters, numbers, and symbols';
+          passwordHint.style.color = 'rgba(255,255,255,0.5)';
+            } else if (strength === 1) {
+                passwordHint.textContent = '⚠️ Weak password';
+             passwordHint.style.color = '#ff453a';
+            } else if (strength === 2) {
+            passwordHint.textContent = '⚡ Fair password';
+            passwordHint.style.color = '#ff9f0a';
+            } else if (strength === 3) {
+              passwordHint.textContent = '✓ Good password';
+             passwordHint.style.color = '#ffd60a';
+            } else {
+                passwordHint.textContent = '✓✓ Strong password';
+              passwordHint.style.color = '#30d158';
+            }
+      });
+    </script>
 </body>
 </html>

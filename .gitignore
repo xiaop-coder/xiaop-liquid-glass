@@ -2,17 +2,30 @@
 node_modules/
 package-lock.json
 
+# Build outputs
+*.log
+*.tmp
+
 # IDE
 .vscode/
 .idea/
 *.swp
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
 
-# 保留xiaop-liquid-glass文件夹
-# 其他文件夹忽略
-/reference-projects/
-/xuexi/
-/.claude/
+# Backup files
+*.backup
+*-old.*
+
+# Test files
+test-permission.txt
+
+# Reference projects (keep local only)
+reference-projects/
+xuexi/
+
+# Old project folder
+xiaop-liquid-glass/

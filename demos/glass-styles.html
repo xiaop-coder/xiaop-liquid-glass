@@ -220,5 +220,24 @@
     </div>
 
     <script src="../dist/liquid-glass.js"></script>
+    <script>
+        // 初始化液态玻璃效果
+        if (window.initLiquidGlass) {
+            window.initLiquidGlass();
+        }
+        if (window.initEntranceAnimations) {
+            window.initEntranceAnimations();
+        }
+        if (window.initBackgroundSwitcher) {
+            window.initBackgroundSwitcher();
+        }
+
+      // 为液态玻璃胶囊按钮添加点击切换效果
+      document.querySelectorAll('.liquid-glass-pill').forEach(function(pill) {
+        pill.addEventListener('click', function() {
+                this.classList.toggle('active');
+        });
+        });
+    </script>
 </body>
 </html>

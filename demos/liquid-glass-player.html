@@ -177,5 +177,54 @@ p {
   </div>
 </div>
 
+<link href="../dist/liquid-glass.css" rel="stylesheet">
+<script src="../dist/liquid-glass.js"></script>
+<script>
+// 初始化背景切换器
+if (window.initBackgroundSwitcher) {
+    window.initBackgroundSwitcher();
+}
+
+// 初始化液态玻璃效果
+if (window.initLiquidGlass) {
+  window.initLiquidGlass();
+}
+
+// 为音乐播放器按钮添加交互效果
+document.querySelectorAll('.liquid_glass-wrapper').forEach(function(wrapper) {
+    wrapper.addEventListener('mouseenter', function() {
+        var cover = this.querySelector('.liquid_glass-cover');
+        if (cover) {
+            cover.style.backdropFilter = 'blur(0px)';
+            cover.style.background = 'rgba(0, 0, 0, 0.05)';
+        }
+    });
+
+    wrapper.addEventListener('mouseleave', function() {
+        var cover = this.querySelector('.liquid_glass-cover');
+     if (cover) {
+            cover.style.backdropFilter = 'blur(2px)';
+            cover.style.background = 'rgba(0, 0, 0, 0.12)';
+        }
+    });
+
+    wrapper.addEventListener('mousedown', function() {
+        this.style.transform = 'scale(0.95)';
+    });
+
+    wrapper.addEventListener('mouseup', function() {
+        this.style.transform = 'scale(1)';
+    });
+});
+
+// 添加过渡效果
+document.querySelectorAll('.liquid_glass-wrapper').forEach(function(wrapper) {
+    wrapper.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    var cover = wrapper.querySelector('.liquid_glass-cover');
+    if (cover) {
+        cover.style.transition = 'all 0.3s ease';
+    }
+});
+</script>
 </body>
 </html>
