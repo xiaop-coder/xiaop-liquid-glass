@@ -331,34 +331,6 @@ xiaop-liquid-glass/
 
 ---
 
-## 🛠️ 开发
-
-### 安装依赖
-
-```bash
-npm install
-```
-
-### 开发模式
-
-```bash
-npm run dev
-```
-
-### 构建
-
-```bash
-npm run build
-```
-
-### 测试
-
-```bash
-npm test
-```
-
----
-
 ## 🙏 致谢
 
 感谢以下开源项目的启发和技术支持：
